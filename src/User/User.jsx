@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { socket } from "../socket"
-import { getDataUser } from "../api"
+import { getDataUser, getAllUser } from "../api"
 
 const User = () => {
   const { id } = useParams()
@@ -13,15 +13,15 @@ const User = () => {
     sender: null,
     receiver: null
   })
-  const [localStream, setLocalStream] = useState(null)
-  const [messagesError, setMessagesError] = useState('')
-  const videoRef = useRef(null)
+  const [allUser, setAllUser] = useState([])
 
 
   const fetchUser = async () => {
     const response = await getDataUser(id)
     localStorage.removeItem('user')
     localStorage.setItem('user', JSON.stringify(response))
+    const allUser = await getAllUser()
+    setAllUser(allUser)
     setUser(response)
   }
   useEffect(() => {
@@ -47,9 +47,6 @@ const User = () => {
     }
   }, [socket])
 
-  // const createPeerConnection = () => {
-    
-  // }
 
   const handleCallVideo =async (user) => {
 
@@ -70,9 +67,6 @@ const User = () => {
       <p>User Name: {user?.name}</p>
       <button><a href='/roomchats'>room chat</a></button>
       {
-        messagesError && <strong>{messagesError}</strong>
-      }
-      {
         listUsers.map((user, index) => {
           if(user.userId !== id) {
             return (
@@ -86,9 +80,22 @@ const User = () => {
           }
         })
       }
-      {
-        localStream && 'video'
-      }
+
+        <table>
+        {
+          allUser.length > 0 && allUser.map((user, index) => {
+            return (
+              <tr key={index}>
+                <td>{user._id}</td>
+                <td>{user.name}</td>
+                <td>{user.picture}</td>
+                <td>{user.typeAccount}</td>
+              </tr>
+            )
+        })
+           }
+       </table>
+
     </div>
   )
 }

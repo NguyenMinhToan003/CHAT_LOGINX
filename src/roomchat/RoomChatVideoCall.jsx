@@ -81,6 +81,7 @@ const RoomChatVideoCall = () => {
       }
 
       await roomInstance.publish(localTrack);
+      console.log('publishVideoLocal', publishVideoLocal)
       console.log("Room publish successful");
     } catch (error) {
       console.error("Publish error:", error);
