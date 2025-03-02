@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react"
 import { useParams } from "react-router-dom"
 import { socket } from "../socket"
 import { getDataUser, getAllUser } from "../api"
+import IsCommingCall from "../router/components/IsCommingCall"
 
 const User = () => {
   const { id } = useParams()
@@ -106,26 +107,14 @@ const User = () => {
     }
     socket.emit('callVideo', onCommingCallData)
   }
-  const videoInCommingCallDesign = () => {
-    return (
-      <div style={{ position: 'fixed', top: '0', left: '0', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <div style={{width: '300px', height: '300px', backgroundColor: 'white', borderRadius: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap:'10px'}}>
-          <p>{onCommingCall.sender.name} is calling you</p>
-          <div style={{display:'flex', gap:'10px'}}>
-          <button onClick={handleAcceptCall} style={{backgroundColor:'green', color:'white'}}>Accept</button>
-          <button style={{backgroundColor:'red', color:'white'}}
-          onClick={handleHangup}
-          >Decline</button>
-          </div>
-        </div>
-      </div>
-    )
-  }
+ 
+
+
 
   return (
     <div>
       {
-        onCommingCall.isRinging && videoInCommingCallDesign()
+        onCommingCall.isRinging && <IsCommingCall handleAcceptCall={handleAcceptCall} handleHangup={handleHangup} onCommingCall={onCommingCall} />
       }
       <p>User ID: {id}</p>
       <p>User Name: {user?.name}</p>
