@@ -5,9 +5,16 @@ import Home from "../Home";
 import RoomChat from "../roomchat/RoomChat";
 import RoomChatId from "../roomchat/RoomChatId";
 import RoomChatVideoCall from "../roomchat/RoomChatVideoCall";
+import { useEffect } from "react";
 
 
 const AppRouter = () => {
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+      window.location.href = '/'
+    }
+  },[])
   return (
     <Router>
       <Routes>

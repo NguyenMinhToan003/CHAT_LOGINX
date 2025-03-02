@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createMessage, createRoomStringee, getAllMessage, getRoomChat } from "../api";
+import { createMessage, getAllMessage, getRoomChat } from "../api";
 import { useParams } from "react-router-dom";
 import { socket } from "../socket";
 
@@ -64,8 +64,7 @@ const RoomChatId = () => {
 
   const handleVideoCall = async () => {
     try {
-    const createdRoom = await createRoomStringee();
-      window.location.href = `/roomChatVideoCall/${createdRoom.roomId}`;
+      console.log('handleVideoCall')
   } catch (error) {
     console.error('Lỗi trong handleVideoCall:', error);
   }
