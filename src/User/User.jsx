@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams } from "react-router-dom"
 import { socket } from "../socket"
 import { getDataUser, getAllUser } from "../api"
@@ -8,14 +8,15 @@ const User = () => {
   const { id } = useParams()
   const [user, setUser] = useState(null)
   const [listUsers, setListUsers] = useState([])
+  const [localStream, setLocalStream] = useState(null)
+  const videoRef = useRef(null)
+  
   const [onCommingCall, setOnCommingCall] = useState({
     isRinging: false,
     sender: null,
     receiver: null
   })
   const [allUser, setAllUser] = useState([])
-  const [localStream, setLocalStream] = useState(null)
-
 
 
   const fetchUser = async () => {
@@ -30,24 +31,31 @@ const User = () => {
     fetchUser()
   }, [])
 
-  useEffect(() => {
-    onCommingCall.isRinging && window.confirm(`${onCommingCall.sender.name} is calling you`)
-      ? handleAcceptCall()
-      : handleHangUp()
-  },[onCommingCall])
+  useEffect(()=>{
 
-  const handleHangUp = () => {
-    console.log('Hang up')
-  }
-  const handleAcceptCall = async() => {
+    if (videoRef.current && localStream) {
+      videoRef.current.srcObject = localStream
+    }
+  },[localStream])
+
+
+
+  const handleAcceptCall = async () => {
     setOnCommingCall((prev) => {
       return {
         ...prev,
         isRinging: false
       }
     })
-    const stream = await getMediaStream()
-    console.log('Accept call:', stream)
+    await getMediaStream()
+  }
+  const handleHangup = async ()=>{
+    setOnCommingCall((prev) => {
+      return {
+        ...prev,
+        isRinging: false
+      }
+    })
   }
   useEffect(() => {
     socket.on('getListUsers', (data) => {
@@ -62,42 +70,63 @@ const User = () => {
     }
   }, [socket])
 
+  const getMediaStream = async (facingMode) => {
+    if(localStream) return localStream
+    try {
+      // const devices = await navigator.mediaDevices.enumerateDevices()
+      // const videoDevice = devices.filter(device => device.kind === 'videoinput')
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+        
+      })
+      console.log('stream:', stream)
+      setLocalStream(stream)
+      return stream
+    }
+    catch (error) {
+      console.error('Error getting user media:', error)
+    }
+  }
 
-  const handleCallVideo = async (user) => {
-    const stream = await getMediaStream()
-    console.log('Call video:', stream)
-    socket.emit('callVideo', {
-      receiver: user,
+  const handleCallVideo =async (userReciver) => {
+    const onCommingCallData =  {
+      receiver: userReciver,
       sender: {
         userId: id,
         name: user.name,
         picture: user.picture
       },
       isRinging: true
-    })
+    }
+    const stream = await getMediaStream()
+    if (!stream) {
+      console.log('Stream is not available')
+      return
+    }
+    socket.emit('callVideo', onCommingCallData)
   }
-
-  const getMediaStream = async () => {
-    if (localStream) return localStream
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      setLocalStream(stream) 
-      const video = document.createElement('video')
-      video.srcObject = stream
-      video.play()
-      const localVideo = document.querySelector('.local-video')
-      if (localVideo) {
-        localVideo.appendChild(video)
-      }
-      return stream
-    }
-    catch (error) {
-      console.log('Error when get media stream:', error)
-    }
+  const videoInCommingCallDesign = () => {
+    return (
+      <div style={{ position: 'fixed', top: '0', left: '0', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <div style={{width: '300px', height: '300px', backgroundColor: 'white', borderRadius: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap:'10px'}}>
+          <p>{onCommingCall.sender.name} is calling you</p>
+          <div style={{display:'flex', gap:'10px'}}>
+          <button onClick={handleAcceptCall} style={{backgroundColor:'green', color:'white'}}>Accept</button>
+          <button style={{backgroundColor:'red', color:'white'}}
+          onClick={handleHangup}
+          >Decline</button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div>
+      {
+        onCommingCall.isRinging && videoInCommingCallDesign()
+      }
       <p>User ID: {id}</p>
       <p>User Name: {user?.name}</p>
       <button><a href='/roomchats'>room chat</a></button>
@@ -129,8 +158,8 @@ const User = () => {
             )
         })
            }
-      </table>
-      <div className="local-vide"></div>
+       </table>
+      <video ref={videoRef} autoPlay playsInline muted />
     </div>
   )
 }
