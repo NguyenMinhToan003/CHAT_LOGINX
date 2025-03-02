@@ -14,6 +14,8 @@ const User = () => {
     receiver: null
   })
   const [allUser, setAllUser] = useState([])
+  const [localStream, setLocalStream] = useState(null)
+
 
 
   const fetchUser = async () => {
@@ -30,10 +32,23 @@ const User = () => {
 
   useEffect(() => {
     onCommingCall.isRinging && window.confirm(`${onCommingCall.sender.name} is calling you`)
-      ? console.log('Accept')
-      : console.log('Cancel')
+      ? handleAcceptCall()
+      : handleHangUp()
   },[onCommingCall])
 
+  const handleHangUp = () => {
+    console.log('Hang up')
+  }
+  const handleAcceptCall = async() => {
+    setOnCommingCall((prev) => {
+      return {
+        ...prev,
+        isRinging: false
+      }
+    })
+    const stream = await getMediaStream()
+    console.log('Accept call:', stream)
+  }
   useEffect(() => {
     socket.on('getListUsers', (data) => {
       setListUsers(data)
@@ -48,8 +63,9 @@ const User = () => {
   }, [socket])
 
 
-  const handleCallVideo =async (user) => {
-
+  const handleCallVideo = async (user) => {
+    const stream = await getMediaStream()
+    console.log('Call video:', stream)
     socket.emit('callVideo', {
       receiver: user,
       sender: {
@@ -59,6 +75,25 @@ const User = () => {
       },
       isRinging: true
     })
+  }
+
+  const getMediaStream = async () => {
+    if (localStream) return localStream
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      setLocalStream(stream) 
+      const video = document.createElement('video')
+      video.srcObject = stream
+      video.play()
+      const localVideo = document.querySelector('.local-video')
+      if (localVideo) {
+        localVideo.appendChild(video)
+      }
+      return stream
+    }
+    catch (error) {
+      console.log('Error when get media stream:', error)
+    }
   }
 
   return (
@@ -94,8 +129,8 @@ const User = () => {
             )
         })
            }
-       </table>
-
+      </table>
+      <div className="local-vide"></div>
     </div>
   )
 }

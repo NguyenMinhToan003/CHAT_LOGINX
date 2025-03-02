@@ -1,6 +1,6 @@
 const Home = () => {
-  const host = 'http://localhost:8123/api';
-  // const host = 'https://loginx.onrender.com/api'
+  // const host = 'http://localhost:8123/api';
+  const host = 'https://loginx.onrender.com/api'
   const loginWithGithub = async () => {
     try {
       // Redirect to the GitHub authentication route
