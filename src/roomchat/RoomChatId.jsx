@@ -1,47 +1,55 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createMessage, getAllMessage, getRoomChat } from "../api";
 import { useParams } from "react-router-dom";
 import { socket } from "../socket";
+import audio from "../../public/sound/message-notification.mp3";
+import "./RoomChatId.css"; // Import file CSS riêng
 
 const RoomChatId = () => {
   const { id } = useParams();
-  const user = JSON.parse(localStorage.getItem('user'));
-  const [usersOnline, setUsersOnline] = useState([])
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [usersOnline, setUsersOnline] = useState([]);
   const [room, setRoom] = useState(null);
-  const [messages, setMessages] = useState([])
-  const [message, setMessage] = useState('')
-  const handleChangeMessage = (e) => {
-    setMessage(e.target.value)
-  }
-  const handleSentMessage = async() => {
-    const response = await createMessage(id, user._id, message)
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const audioRef = useRef(null);
+
+  const handleChangeMessage = (e) => setMessage(e.target.value);
+
+  const handleSentMessage = async () => {
+    const response = await createMessage(id, user._id, message);
     if (response.insertedId) {
-      socket.emit('message', {
+      socket.emit("message", {
         content: message,
         _id: response.insertedId,
-        sender: user._id,
-        roomId: id
-      })
-      setMessage('')
+        sender: {
+          _id: user._id,
+          name: user.name,
+          picture: user.picture,
+        },  
+        roomId: id,
+      });
+      setMessage("");
     }
+  };
+useEffect(() => {
+  if (room && socket) {
+    socket.on('getListUsers', (data) => {
+      const members = room.members
+      const membersOnline = members.filter(member => data.some(user => user.userId === member._id))
+      console.log('membersOnline',membersOnline)
+    })
   }
+}, [room]); 
 
   const fetchRoom = async () => {
     try {
-      const response = await getRoomChat(id); // Chờ dữ liệu trả về
+      const response = await getRoomChat(id);
       if (Array.isArray(response) && response.length > 0) {
-        setRoom(response[0]); // Chỉ lấy phần tử đầu tiên nếu có dữ liệu
-        const resMess = await getAllMessage(id, user._id)
-        if (Array.isArray(resMess)) {
-          setMessages(resMess)
-          socket.emit('join-room', {
-            roomId: id,
-            user: user._id
-          })
-        }
-        else {
-          setMessages([resMess.message])
-        }
+        setRoom(response[0]);
+        const resMess = await getAllMessage(id, user._id);
+        setMessages(Array.isArray(resMess) ? resMess : [resMess.message]);
+        socket.emit("join-room", { roomId: id, user: user._id });
       }
     } catch (error) {
       console.error("Lỗi khi fetch room chat:", error);
@@ -53,75 +61,76 @@ const RoomChatId = () => {
   }, [id]);
 
   useEffect(() => {
-    socket.on('message', (data) => {
-      setMessages((prev) => [...prev, data])
-    })
-    socket.on('getListUsers', (data) => {
-      console.log('getLs user online:', data)
-      setUsersOnline(data)
-    })
-  }, [socket])
+    socket.on("message", (data) => {
+      setMessages((prev) => [...prev, data]);
+      console.log(data)
+      console.log(data.sender._id !== user._id);
+      if (audioRef.current && data.sender._id !== user._id) {
+        audioRef.current.play();
+      }
+    });
 
-  const handleVideoCall = async () => {
-    try {
-      console.log('handleVideoCall')
-  } catch (error) {
-    console.error('Lỗi trong handleVideoCall:', error);
-  }
-  };
-  
-  useEffect(() => {
-    
-  },[ ])
+   
+    return () => {
+      socket.off("message");
+    };
+  }, [socket]);
 
   return (
-    <>
-      <h1>Room Chat</h1>
+    <div className="chat-container">
+      <audio ref={audioRef} src={audio} />
       {room ? (
-        <div>
-          <button onClick={handleVideoCall}>video call</button>
-          <p><strong>Id:</strong> {room._id}</p>
-          <p><strong>Name:</strong> {room.info.name}</p>
-          <p><strong>Type:</strong> {room.type}</p>
-          <p><strong>Avatar:</strong> {room.info.avartar}</p>
-
-          <p><strong>Admin:</strong></p>
-          <ul>
+        <div className="chat-box">
+          {/* Sidebar hiển thị admin */}
+          <div className="sidebar">
+            <h3>Admin</h3>
             {room.info.admins.map((admin) => (
-              <li key={admin._id}>
-                <img src={admin.picture} alt={admin.name} width="30" style={{ borderRadius: "50%" }} /> {admin.name}
-              </li>
+              <div key={admin._id} className="admin-info">
+                <img src={admin.picture} alt={admin.name} className="avatar" />
+                <span>{admin.name}</span>
+              </div>
             ))}
-          </ul>
+            <h3>Online</h3>
+            {
+              
+            }
+          </div>
 
-          <p><strong>Danh sách thành viên:</strong></p>
-          <ul>
-            {room.members.map((member) => (
-              <li key={member._id}>
-                <img src={member.picture} alt={member.name} width="30" style={{ borderRadius: "50%" }} /> {member.name}
-                {
-                  usersOnline.includes(member._id) && <span style={{color:'green'}}> - Online</span>
-                }
-              </li>
-            ))}
-          </ul>
+          <div className="chat-content">
+            <div className="chat-header">
+              <h2>{room.info.name}</h2>
+              <button className="video-call-btn">📹 Video Call</button>
+            </div>
+
+            {/* Danh sách tin nhắn */}
+            <div className="chat-messages">
+              {messages.map((item, index) => (
+                <div
+                  key={index}
+                  className={`message-box ${item.sender._id === user._id ? "sent" : "received"}`}
+                >
+                  {item.sender !== user._id && (
+                    <img src={item.sender.picture} alt={item.sender.name} className="message-avatar" />
+                  )}
+                  <div className="message-content">
+                    {item.sender !== user._id && <span className="sender-name">{item.sender.name}</span>}
+                    <p>{item.content}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Ô nhập tin nhắn */}
+            <div className="chat-input">
+              <input type="text" placeholder="Nhập tin nhắn..." value={message} onChange={handleChangeMessage} />
+              <button onClick={handleSentMessage}>Gửi</button>
+            </div>
+          </div>
         </div>
       ) : (
-        <p>Loading...</p>
+        <p>Đang tải...</p>
       )}
-      <p>Tin nhan </p>
-      
-      {
-       messages.length > 0 && messages.map((item, index) => (
-         <p key={index}>{item?.content}</p>
-        ))
-      }
-      <input 
-        onChange={handleChangeMessage}
-        value={message}
-      />
-      <button onClick={handleSentMessage}>Gui</button>
-    </>
+    </div>
   );
 };
 

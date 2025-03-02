@@ -1,0 +1,100 @@
+/* Background mờ xung quanh */
+.call-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Hộp chứa thông tin cuộc gọi */
+.call-container {
+  width: 360px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+}
+
+/* Ảnh đại diện */
+.call-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #4CAF50;
+  margin-bottom: 18px;
+}
+
+.call-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tên người gọi */
+.call-text {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+/* Chứa các nút bấm */
+.call-buttons {
+  display: flex;
+  gap: 22px;
+  margin-top: 18px;
+}
+
+/* Nút chấp nhận */
+.accept-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.accept-btn:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+/* Nút từ chối */
+.decline-btn {
+  background-color: #dc3545;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.decline-btn:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
