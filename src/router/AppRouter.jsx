@@ -1,20 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import User from "../User/User";
-import Home from "../Home";
+import Home from "../home/Home";
 import RoomChat from "../roomchat/RoomChat";
 import RoomChatId from "../roomchat/RoomChatId";
 import RoomChatVideoCall from "../roomchat/RoomChatVideoCall";
-import { useEffect } from "react";
+
 
 
 const AppRouter = () => {
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user) {
-      window.location.href = '/'
-    }
-  },[])
+  
   return (
     <Router>
       <Routes>

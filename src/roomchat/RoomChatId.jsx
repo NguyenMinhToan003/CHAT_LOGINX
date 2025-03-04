@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { createMessage, getAllMessage, getRoomChat } from "../api";
 import { useParams } from "react-router-dom";
 import { socket } from "../socket";
-import audio from "../../public/sound/message-notification.mp3";
+import audio from "../../public/sound/message-notification.mp3"
 import "./RoomChatId.css"; // Import file CSS riêng
 
 const RoomChatId = () => {
   const { id } = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
-  const [usersOnline, setUsersOnline] = useState([]);
+
   const [room, setRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -32,15 +32,7 @@ const RoomChatId = () => {
       setMessage("");
     }
   };
-useEffect(() => {
-  if (room && socket) {
-    socket.on('getListUsers', (data) => {
-      const members = room.members
-      const membersOnline = members.filter(member => data.some(user => user.userId === member._id))
-      console.log('membersOnline',membersOnline)
-    })
-  }
-}, [room]); 
+
 
   const fetchRoom = async () => {
     try {
@@ -63,8 +55,6 @@ useEffect(() => {
   useEffect(() => {
     socket.on("message", (data) => {
       setMessages((prev) => [...prev, data]);
-      console.log(data)
-      console.log(data.sender._id !== user._id);
       if (audioRef.current && data.sender._id !== user._id) {
         audioRef.current.play();
       }

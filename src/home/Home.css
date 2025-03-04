@@ -1,0 +1,80 @@
+
+.login-container {
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  /* Bright, youthful gradient background */
+  background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Slightly wider gap for a more spaced-out, playful feel */
+  align-items: center ;
+  background:white; /* Slightly transparent dark background for contrast */
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  min-width: 500px;
+  height:250px;
+}
+
+.separator {
+  display: block;
+  color: #fff; /* White text for better contrast with dark background */
+  font-size: 20px; /* Slightly larger for emphasis */
+  margin-bottom: 25px;
+  font-weight: 600; /* Bolder for a youthful, bold look */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Subtle shadow for readability */
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 30px; /* Slightly wider gap for a more spaced-out, playful feel */
+}
+
+.social-btn {
+  width: 50px; /* Kept as is for consistency, but can be increased if desired */
+  height: 50px; /* Kept as is for consistency */
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow for a playful pop */
+}
+
+.social-btn:hover {
+  transform: scale(1.2); /* Slightly more pronounced scaling for a fun effect */
+}
+
+/* Updated gradient for GitHub button (darker grays with a metallic blue touch) */
+.github-btn {
+  background: linear-gradient(45deg, #2d333b, #4a5568);
+}
+
+.github-btn svg {
+  scale: 1.5;
+  fill: #fff; /* White fill for better contrast with gradient */
+}
+
+/* Gradient colors for Twitter button (unchanged) */
+.twitter-btn {
+  background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+}
+
+.twitter-btn svg {
+  scale: 1.5;
+  fill: #fff; /* White fill for better contrast with gradient */
+}
