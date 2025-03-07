@@ -1,23 +1,16 @@
 /* eslint-disable no-undef */
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { socket } from '../socket';
 import { getDataUser, getAllUser } from '../api';
-import IsCommingCall from '../router/components/IsCommingCall';
+import IsCommingCall from '../components/IsCommingCall';
 import { FaGithub, FaTwitter } from 'react-icons/fa'; // Import GitHub và Twitter icons
 import './User.css'; // Import file CSS
+import { useSocket } from '../provider/SocketProvider';
 
 const User = () => {
+  const {onlineUsers, handleCallVideo} = useSocket();
   const { id } = useParams();
   const [user, setUser] = useState(null);
-  const [listUsers, setListUsers] = useState([]);
-  const [localStream, setLocalStream] = useState(null);
-  const videoRef = useRef(null);
-  const [onCommingCall, setOnCommingCall] = useState({
-    isRinging: false,
-    sender: null,
-    receiver: null,
-  });
   const [allUser, setAllUser] = useState([]);
 
   const fetchUser = async () => {
@@ -32,56 +25,10 @@ const User = () => {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    if (videoRef.current && localStream) {
-      videoRef.current.srcObject = localStream;
-    }
-  }, [localStream]);
 
-  useEffect(() => {
-    socket.on('getListUsers', (data) => setListUsers(data));
-    socket.on('inCommingCall', (data) => setOnCommingCall(data));
-    return () => {
-      socket.off('getListUsers');
-      socket.off('inCommingCall');
-    };
-  }, [socket]);
 
-  const getMediaStream = async () => {
-    if (localStream) return localStream;
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
-      setLocalStream(stream);
-      return stream;
-    } catch (error) {
-      console.error('Error getting user media:', error);
-    }
-  };
 
-  const handleCallVideo = async (userReceiver) => {
-    const callData = {
-      receiver: userReceiver,
-      sender: { userId: id, name: user.name, picture: user.picture },
-      isRinging: true,
-    };
-    const stream = await getMediaStream();
-    if (!stream) return console.log('Stream is not available');
-    socket.emit('callVideo', callData);
-  };
-
-  const handleAcceptCall = async () => {
-    setOnCommingCall((prev) => ({ ...prev, isRinging: false }));
-    await getMediaStream();
-  };
-
-  const handleHangup = () => {
-    setOnCommingCall((prev) => ({ ...prev, isRinging: false }));
-  };
-
-  // Hàm xử lý logout
+  
   const handleLogout = () => {
     
     localStorage.removeItem('user');
@@ -102,13 +49,7 @@ const User = () => {
 
   return (
     <div className='container'>
-      {onCommingCall.isRinging && (
-        <IsCommingCall
-          handleAcceptCall={handleAcceptCall}
-          handleHangup={handleHangup}
-          onCommingCall={onCommingCall}
-        />
-      )}
+      
 
       {/* Header Section */}
       <header className='header'>
@@ -131,21 +72,19 @@ const User = () => {
       {/* Main Content */}
       <div className='main-content'>
         {/* Video Section - Commented out */}
-        {/* <div className='video-section'>
-          <video ref={videoRef} autoPlay playsInline muted className='video' />
-        </div> */}
-
         {/* Hidden Online Users Section */}
         <div className='users-section'>
           <h3 className='section-title'>Online Users</h3>
           <ul className='user-list'>
-            {listUsers.map(
+            {onlineUsers.map(
               (onlineUser, index) =>
                 onlineUser.userId !== id && (
                   <li
                     key={index}
                     className='user-item'
-                    onClick={() => handleCallVideo(onlineUser)}
+                    onClick={() => {
+                      handleCallVideo(onlineUser);
+                    }}
                   >
                     <img
                       src={onlineUser.picture}

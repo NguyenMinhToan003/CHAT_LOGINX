@@ -52,19 +52,21 @@ const RoomChatId = () => {
     fetchRoom();
   }, [id]);
 
-  useEffect(() => {
-    socket.on("message", (data) => {
-      setMessages((prev) => [...prev, data]);
-      if (audioRef.current && data.sender._id !== user._id) {
-        audioRef.current.play();
-      }
-    });
+useEffect(() => {
+  const handleMessage = (data) => {
+    setMessages((prev) => [...prev, data]);
+    if (audioRef.current && data.sender._id !== user._id) {
+      audioRef.current.play();
+    }
+  };
 
-   
-    return () => {
-      socket.off("message");
-    };
-  }, [socket]);
+  socket.on("message", handleMessage);
+
+  return () => {
+    socket.off("message", handleMessage);
+  };
+}, []);
+
 
   return (
     <div className="chat-container">
