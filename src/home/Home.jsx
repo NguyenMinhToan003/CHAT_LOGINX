@@ -3,7 +3,8 @@ import { FaXTwitter } from "react-icons/fa6";
 import './Home.css'; 
 
 const Home = () => {
-  const host = 'https://loginx.onrender.com/api';
+  // const host = 'https://loginx.onrender.com/api';
+  const host = 'http://localhost:8123/api';
 
   const loginWithGithub = async () => {
     try {

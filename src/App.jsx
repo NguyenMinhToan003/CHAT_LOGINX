@@ -1,44 +1,21 @@
 
-import { useEffect, useState } from "react";
-import AppRouter from "./router/AppRouter"
-import { socket } from "./socket";
+import AppRouter from './router/AppRouter'
+import { useSocket } from './provider/SocketProvider';
+import IsCommingCall from './components/IsCommingCall';
 const App = () => {
-  const socketClient = socket
-  const [isConnected, setIsConnected] = useState(socketClient.connected)
-  const user = JSON.parse(localStorage.getItem('user'))|| null
-  useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
-    }
-    socket.on('connect', onConnect);
-    return () => {
-      socket.off('connect', onConnect);
-    };
-  }, [])
-  
-  useEffect(() => {
-    if (isConnected && user) {
-      socket.emit('addNewUser', {
-        userId: user?._id,
-        name: user?.name,
-        picture: user?.picture
-      })
-      socket.emit('getListUsers', (data) => {
-        console.log(data)
-      })
-    }
-  }, [isConnected])
-  
+  const { onCommingCall, handleAcceptCall, handleHangupCall } = useSocket();
 
-  useEffect(() => {
-    if (isConnected) {
-      socket.on('inCommingCall', (data) => {
-        window.confirm(`${data.sender.name} is calling you`)
-      })
-    }
-  },[socket])
   return <>
-    <AppRouter/>
+   
+      {onCommingCall.isRinging && (
+          <IsCommingCall
+            handleAcceptCall={handleAcceptCall}
+            handleHangup={handleHangupCall}
+            onCommingCall={onCommingCall}
+          />
+        )}
+      <AppRouter/>
+   
   </>
 }
 export default App
