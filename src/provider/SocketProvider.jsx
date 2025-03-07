@@ -18,7 +18,6 @@ export const SocketProvider = ({ user, children }) => {
   // Khởi tạo và quản lý socket
   useEffect(() => {
     if (!user) {
-      console.log("Không có user, socket không được khởi tạo");
       return;
     }
 
@@ -30,17 +29,14 @@ export const SocketProvider = ({ user, children }) => {
 
     // Chỉ đặt socket khi đã kết nối thành công
     newSocket.on("connect", () => {
-      console.log("Socket đã kết nối:", newSocket.id);
       setSocket(newSocket);
-      newSocket.emit("addNewUser", user); // Gửi thông tin user sau khi kết nối
+      newSocket.emit("addNewUser", user);
     });
 
     newSocket.on("connect_error", (error) => {
-      console.error("Lỗi kết nối socket:", error);
     });
 
     newSocket.on("disconnect", () => {
-      console.log("Socket đã ngắt kết nối");
       setSocket(null); // Đặt lại socket về null khi ngắt kết nối
     });
 
@@ -66,17 +62,14 @@ export const SocketProvider = ({ user, children }) => {
     if (!socket) return;
 
     const handleIncomingCall = (data) => {
-      console.log("Nhận cuộc gọi đến:", data);
       setOnCommingCall(data);
     };
 
     const handleHangupCall = (data) => {
-      console.log("Cuộc gọi bị ngắt:", data);
       setOnCommingCall((prev) => ({ ...prev, isRinging: false }));
     };
 
     const handleAcceptCall = (data) => {
-      console.log("Cuộc gọi được chấp nhận:", data);
       setOnCommingCall(data);
     };
 
@@ -94,7 +87,6 @@ export const SocketProvider = ({ user, children }) => {
   // Gửi yêu cầu gọi video
   const handleCallVideo = (userReceiver) => {
     if (!socket || !socket.connected) {
-      console.log("Socket chưa sẵn sàng để gọi video");
       return;
     }
     const roomId = uuidv4();
@@ -104,7 +96,6 @@ export const SocketProvider = ({ user, children }) => {
       isRinging: true,
       roomId: roomId,
     };
-    console.log("Gửi yêu cầu gọi video:", callData);
     socket.emit("call-video", callData);
     window.open(`/video-call/${roomId}`, "_blank");
   };
@@ -112,7 +103,6 @@ export const SocketProvider = ({ user, children }) => {
   // Chấp nhận cuộc gọi
   const handleAcceptCall = () => {
     if (!socket || !socket.connected) {
-      console.log("Socket chưa sẵn sàng để chấp nhận cuộc gọi");
       return;
     }
     const updateAcceptCall = {
@@ -120,19 +110,15 @@ export const SocketProvider = ({ user, children }) => {
       isRinging: false,
       isCallAccepted: true,
     };
-    console.log("Chấp nhận cuộc gọi:", updateAcceptCall);
     setOnCommingCall(updateAcceptCall);
     socket.emit("accept-call", updateAcceptCall);
     window.open(`/video-call/${onCommingCall.roomId}`, "_blank");
   };
 
-  // Ngắt cuộc gọi
   const handleHangupCall = () => {
     if (!socket || !socket.connected) {
-      console.log("Socket chưa sẵn sàng để ngắt cuộc gọi");
       return;
     }
-    console.log("Ngắt cuộc gọi");
     socket.emit("hangup-call", {
       sender: { userId: user._id, name: user.name, picture: user.picture },
       receiver: onCommingCall.receiver,

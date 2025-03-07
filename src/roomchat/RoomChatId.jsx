@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { createMessage, getAllMessage, getRoomChat } from "../api";
 import { useParams } from "react-router-dom";
-import { socket } from "../socket";
+
 import audio from "../../public/sound/message-notification.mp3"
 import "./RoomChatId.css"; // Import file CSS riêng
+import { useSocket } from "../provider/SocketProvider";
 
 const RoomChatId = () => {
+  const { socket } = useSocket();
   const { id } = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -49,23 +51,23 @@ const RoomChatId = () => {
   };
 
   useEffect(() => {
+    if(!socket) return;
     fetchRoom();
-  }, [id]);
+  }, [id, socket]);
 
-useEffect(() => {
+  useEffect(() => {
+  if (!socket) return;
   const handleMessage = (data) => {
     setMessages((prev) => [...prev, data]);
     if (audioRef.current && data.sender._id !== user._id) {
       audioRef.current.play();
     }
   };
-
   socket.on("message", handleMessage);
-
   return () => {
     socket.off("message", handleMessage);
   };
-}, []);
+}, [socket]);
 
 
   return (
