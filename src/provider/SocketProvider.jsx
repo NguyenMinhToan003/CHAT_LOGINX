@@ -4,6 +4,10 @@ import { io } from "socket.io-client";
 
 const SocketContext = createContext();
 
+// const URL = "http://localhost:8123";
+const URL = 'https://loginx.onrender.com';
+
+
 export const SocketProvider = ({ user, children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -21,7 +25,7 @@ export const SocketProvider = ({ user, children }) => {
       return;
     }
 
-    const newSocket = io("http://localhost:8123", {
+    const newSocket = io(URL, {
       transports: ["websocket"],
       reconnection: true, // Tự động kết nối lại nếu mất kết nối
       reconnectionAttempts: 5, // Số lần thử kết nối lại

@@ -1,6 +1,8 @@
 import axios from 'axios';
-// const host = 'https://loginx.onrender.com/api'
-const host = 'http://localhost:8123/api'
+
+const host = 'https://loginx.onrender.com/api'
+// const host = 'http://localhost:8123/api'
+
 //////////! room
 export const createRoomChat = async (type,name,avartar = null,admins,member) => {
 	const response = await axios.post(`${host}/roomchat/create`, {

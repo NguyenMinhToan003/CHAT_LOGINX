@@ -146,11 +146,11 @@ const VideoCall = () => {
       <div className="main-content">
         <div className="video-section">
           <video ref={localVideoRef} autoPlay playsInline muted className="video" />
-          <p>Video của bạn</p>
+
         </div>
         <div className="video-section">
           <video ref={remoteVideoRef} autoPlay playsInline className="video" />
-          <p>Video của người khác</p>
+
         </div>
       </div>
     </div>
