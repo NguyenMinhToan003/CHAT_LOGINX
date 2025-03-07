@@ -69,13 +69,10 @@ const VideoCall = () => {
         host: URL,
         path: '/',
         secure: true,
-        config: {
-          iceServers: [
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' },
-            { urls: 'stun:stun.l.google.com:19302' },
-          ]
-        }
+        config: {'iceServers': [
+          { url: 'stun:stun.l.google.com:19302' },
+          
+        ]}
       });
       peerRef.current = peer;
 

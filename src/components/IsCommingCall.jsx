@@ -1,11 +1,24 @@
-import React from "react";
+
 import { IoIosCall } from "react-icons/io";
 import { MdCallEnd } from "react-icons/md";
 import "./IsCommingCall.css"; // Import file CSS
+import audio from '../../public/sound/zalo-calling.mp3';
+import { useEffect, useRef } from "react";
 
 const IsCommingCall = ({ handleAcceptCall, handleHangup, onCommingCall }) => {
+  const audioRef = useRef(null);
+  useEffect(() => {
+    if (onCommingCall?.isRinging) {
+      audioRef.current.play();
+    }
+    else {
+      audioRef.current.pause();
+    }
+  },[onCommingCall])
   return (
-    <div className="call-overlay">
+    <>
+      <audio ref={audioRef} src={audio} loop />
+       <div className="call-overlay">
       <div className="call-container">
         {/* Ảnh đại diện */}
         <div className="call-avatar">
@@ -26,6 +39,7 @@ const IsCommingCall = ({ handleAcceptCall, handleHangup, onCommingCall }) => {
         </div>
       </div>
     </div>
+   </>
   );
 };
 
