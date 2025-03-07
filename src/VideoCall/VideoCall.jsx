@@ -5,12 +5,17 @@ import { useParams } from 'react-router-dom';
 import { useSocket } from '../provider/SocketProvider';
 import { MdContentCopy } from "react-icons/md";
 import Peer from 'peerjs';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
+
+// const URL = 'https://loginx.onrender.com';
+// const URL ='http://localhost:8123'
+const URL = '0.peerjs.com';
 
 const VideoCall = () => {
   const { id } = useParams();
   const { socket } = useSocket();
-  const idUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user'))._id : null;
+  const idUser = localStorage.getItem('user')
+    ? JSON.parse(localStorage.getItem('user'))._id : null;
   const [user, setUser] = useState(null);
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
@@ -61,7 +66,7 @@ const VideoCall = () => {
       if (!stream) return;
       const peer = new Peer(idUser || uuidv4(), {
         port: '443', 
-        host: '0.peerjs.com',
+        host: URL,
         path: '/',
       });
       peerRef.current = peer;
