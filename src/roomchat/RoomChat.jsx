@@ -6,8 +6,8 @@ const RoomChat = () => {
   const [roomType, setRoomType] = useState("group");
   const [roomName, setRoomName] = useState("");
   const [avatar, setAvatar] = useState("");
-  const owner = userLocal._id
-  const [member, setMember] = useState(userLocal ? [userLocal._id] : []);
+  const owner = userLocal?._id
+  const [member, setMember] = useState(userLocal ? [userLocal?._id] : []);
   const [users, setUsers] = useState([]);
   const [roomChats , setRoomChats] = useState([]);
 
@@ -20,7 +20,7 @@ const RoomChat = () => {
   const fetchUsers = async () => {
     const response = await getAllUser()
     setUsers(response)
-    const roomChatsResponse = await getRoomChatByUserId(userLocal._id)
+    const roomChatsResponse = await getRoomChatByUserId(userLocal?._id)
     setRoomChats(roomChatsResponse)
   }
   useEffect(() => {

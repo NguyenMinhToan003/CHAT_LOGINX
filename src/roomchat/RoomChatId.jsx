@@ -10,6 +10,9 @@ const RoomChatId = () => {
   const { socket } = useSocket();
   const { id } = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) {
+    window.location.href = "/";
+  }
 
   const [room, setRoom] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -19,15 +22,15 @@ const RoomChatId = () => {
   const handleChangeMessage = (e) => setMessage(e.target.value);
 
   const handleSentMessage = async () => {
-    const response = await createMessage(id, user._id, message);
+    const response = await createMessage(id, user?._id, message);
     if (response.insertedId) {
       socket.emit("message", {
         content: message,
         _id: response.insertedId,
         sender: {
-          _id: user._id,
-          name: user.name,
-          picture: user.picture,
+          _id: user?._id,
+          name: user?.name,
+          picture: user?.picture,
         },  
         roomId: id,
       });
