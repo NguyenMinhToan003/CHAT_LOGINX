@@ -26,10 +26,6 @@ const User = () => {
   useEffect(() => {
     fetchUser()
   }, [])
-
-
-
-
   
   const handleLogout = () => {
     

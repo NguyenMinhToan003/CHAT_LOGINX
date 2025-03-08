@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { getDataUser } from '../api';
+import { getDataUser, getIceServer } from '../api';
 import './VideoCall.css';
 import { useParams } from 'react-router-dom';
 import { useSocket } from '../provider/SocketProvider';
@@ -64,16 +64,33 @@ const VideoCall = () => {
       if (!socket) return
       const stream = await getMediaStream();
       if (!stream) return;
+      const iceServersResponse = await getIceServer();
+
+
+      // Tách STUN và TURN servers đúng chuẩn WebRTC
+      const iceServers = [
+        // Thêm STUN server (không cần username & credential)
+        { urls: "stun:ss-turn2.xirsys.com" },
+
+        // Thêm TURN servers với username & credential
+        ...iceServersResponse.v.iceServers.urls
+          .filter(url => url.startsWith("turn")) // Chỉ lấy TURN servers
+          .map(url => ({
+            urls: url,
+            username: iceServersResponse.v.iceServers.username,
+            credential: iceServersResponse.v.iceServers.credential,
+          }))
+      ];
+
+
       const peer = new Peer(idUser || uuidv4(), {
         port: '443', 
         host: URL,
         path: '/',
         secure: true,
-        config: {'iceServers': [
-          { url: 'stun:stun.l.google.com:19302' },
-          
-        ]}
+        config: { iceServers },
       });
+
       peerRef.current = peer;
 
       // Khi peer đã sẵn sàng

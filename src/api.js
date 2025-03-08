@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const host = 'https://loginx.onrender.com/api'
-// const host = 'http://localhost:8123/api'
+const host = `${import.meta.env.VITE_SERVER_HOST}/api`;
 
 //////////! room
 export const createRoomChat = async (type,name,avartar = null,admins,member) => {
@@ -65,5 +64,11 @@ export const getRoomTokenStringee = async (roomId) => {
 	const response = await axios.post(`${host}/roomVideoCall/get-room-token`, {
 		roomId: roomId
 	})
+	return response?.data;
+}
+
+//////! peerjs server
+export const getIceServer = async () => {
+	const response = await axios.get(`${host}/peer-server/get-ice-server`)
 	return response?.data;
 }

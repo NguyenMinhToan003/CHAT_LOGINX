@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 const SocketContext = createContext();
 
 // const URL = "http://localhost:8123";
-const URL = 'https://loginx.onrender.com';
+const URL = import.meta.env.VITE_SERVER_HOST
 
 
 export const SocketProvider = ({ user, children }) => {
