@@ -1,14 +1,13 @@
 /* eslint-disable no-undef */
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { getDataUser, getAllUser } from '../api'
 import { FaGithub, FaTwitter } from 'react-icons/fa' 
 import './User.css'
 import { useSocket } from '../provider/SocketProvider'
 
 const User = () => {
-  const {onlineUsers, handleCallVideo} = useSocket()
-  const { id } = useParams()
+  const { onlineUsers, handleCallVideo } = useSocket()
+  const id = JSON.parse(localStorage.getItem('user'))._id
   const [user, setUser] = useState(null)
   const [allUser, setAllUser] = useState([])
 
@@ -17,7 +16,6 @@ const User = () => {
     if (!response) {
       window.location.href = '/'
     }
-    localStorage.setItem('user', JSON.stringify(response))
     const allUserData = await getAllUser()
     setAllUser(allUserData)
     setUser(response)
