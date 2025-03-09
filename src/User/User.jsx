@@ -7,18 +7,12 @@ import { useSocket } from '../provider/SocketProvider'
 
 const User = () => {
   const { onlineUsers, handleCallVideo } = useSocket()
-  const id = JSON.parse(localStorage.getItem('user'))._id
-  const [user, setUser] = useState(null)
+  const user = JSON.parse(localStorage.getItem('user'))
   const [allUser, setAllUser] = useState([])
 
   const fetchUser = async () => {
-    const response = await getDataUser(id)
-    if (!response) {
-      window.location.href = '/'
-    }
     const allUserData = await getAllUser()
     setAllUser(allUserData)
-    setUser(response)
   }
 
   useEffect(() => {
@@ -52,7 +46,7 @@ const User = () => {
         <div className='button-group'>
           <div>
             <h4 className='title'>{user?.name || 'User'}</h4>
-            <p className='subtitle'>User ID: {id}</p>
+            <p className='subtitle'>User ID: {user._id}</p>
           </div>
           <img src={user?.picture} alt='avatar' className='avatar' />
           <a href='/roomchats' className='chat-button'>
@@ -73,7 +67,7 @@ const User = () => {
           <ul className='user-list'>
             {onlineUsers.map(
               (onlineUser, index) =>
-                onlineUser.userId !== id && (
+                onlineUser.userId !== user._id && (
                   <li
                     key={index}
                     className='user-item'
