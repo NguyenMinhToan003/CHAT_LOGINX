@@ -16,27 +16,32 @@ export const createRoomChat = async (type,name,avartar = null,admins,member) => 
 	return response?.data;
 }
 
+// lay thong tin phng chat
 export const getRoomChat = async (id) => {
-	const response = await axiosInstance.get(`/roomchat/getRoom?roomId=${id}`)
+	const response = await axiosInstance.get(`/roomchat/get-room-info?roomId=${id}`)
 	return response?.data;
 }
+// lay danh sach thong tin phong chat
+export const getRoomChatByUserId = async (userId) => {
+	const response = await axiosInstance.get(`/roomchat/get-list-room-info-by-userId?userId=${userId}`)
+	return response?.data;
+}
+//////////! message 
+// lay tat ca cac tin nhan cua phong chat
 export const getAllMessage = async (roomId,userId) => {
-	const response = await axiosInstance.post(`/message/all`, {
+	const response = await axiosInstance.post(`/message/get-message-in-room`, {
 		roomId: roomId,
 		userId: userId
 	})
 	return response?.data;
 }
+// sent message
 export const createMessage = async (roomId, userId, message) => {
 	const response = await axiosInstance.post(`/message/create`, {
 		roomId: roomId,
 		sender: userId,
 		content: message
 	})
-	return response?.data;
-}
-export const getRoomChatByUserId = async (userId) => {
-	const response = await axiosInstance.get(`/roomchat/getRoomChatByUserId?userId=${userId}`)
 	return response?.data;
 }
 //////////! user
