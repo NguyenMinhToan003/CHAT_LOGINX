@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 import { useEffect, useState } from 'react'
-import { getAllUser } from '../../api'
+import { getAllUser } from '../api'
 import { FaGithub, FaTwitter } from 'react-icons/fa' 
 import './User.css'
-import { useSocket } from '../../provider/SocketProvider'
+import { useSocket } from '../provider/SocketProvider'
 
 const User = () => {
   const { onlineUsers, handleCallVideo } = useSocket()
@@ -38,7 +38,6 @@ const User = () => {
 
   return (
     <div className='container'>
-      
 
       {/* Header Section */}
       <header className='header'>

@@ -1,12 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 
-import Home from '../pages/home/Home'
-import User from '../pages/user/User'
-import RoomChat from '../pages/roomChat/RoomChat'
-import RoomChatId from '../pages/roomChat/RoomChatId'
+import Home from '../home/Home'
+import User from '../user/User'
+import RoomChat from '../roomchat/RoomChat'
+import RoomChatId from '../roomchat/RoomChatId'
+import VideoCall from '../VideoCall/VideoCall'
 import Login from '../auth/Login'
-import VideoCall from "../pages/VideoCall/VideoCall";
-
 
 
 const AppRouter = () => {
