@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createRoomChat, getAllUser, getRoomChatByUserId } from '../../api';
+import { createRoomChat, getAllUser, getRoomChatByUserId } from '../api';
 
 const userLocal =JSON.parse(localStorage.getItem('user'));
 const RoomChat = () => {
