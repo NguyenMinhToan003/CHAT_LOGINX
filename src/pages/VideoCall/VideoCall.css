@@ -1,8 +1,14 @@
+/* Reset cơ bản */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .container {
   height: 100vh;
   width: 100vw;
   background-color: #ffffff;
-  color: #000000;
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
@@ -12,31 +18,82 @@
 .header {
   padding: 20px;
   background-color: #ffffff;
-  text-align: center;
   border-bottom: 1px solid #000000;
 }
 
-.title {
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.room-id {
+  font-size: 14px;
   color: #000000;
-  margin: 0 0 10px 0;
-  font-weight: bold;
+}
+
+.copy-icon {
+  font-size: 16px;
 }
 
 .subtitle {
   font-size: 14px;
   color: #666666;
-  margin: 0 0 15px 0;
+  margin: 0;
 }
 
-.button-group {
+.user-controls {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 15px;
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #000000;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.user-status {
+  font-size: 12px;
+}
+
+.user-status.online {
+  color: #00cc00;
+}
+
+.user-status.offline {
+  color: #ff0000;
+}
+
 .chat-button {
-  display: inline-block;
   padding: 10px 25px;
   background-color: #000000;
   color: #ffffff;
@@ -77,6 +134,7 @@
   padding: 20px;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
   background-color: #f0f0f0;
   border-right: 1px solid #000000;
@@ -89,111 +147,69 @@
   border-radius: 10px;
   border: 1px solid #000000;
   object-fit: cover;
+  transform: scaleX(-1);
 }
 
-.users-section {
-  flex: 1;
-  padding: 20px;
-  background-color: #ffffff;
-  overflow-y: auto;
-  border-right: 1px solid #000000;
-}
+/* Responsive cho điện thoại */
+@media (max-width: 768px) {
+  .header {
+    padding: 10px;
+  }
 
-.section-title {
-  font-size: 20px;
-  color: #000000;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
 
-.user-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+  .user-controls {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 
-.user-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 15px;
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  border: 1px solid #000000;
-}
+  .user-info {
+    flex-direction: column;
+    text-align: center;
+  }
 
-.user-item:hover {
-  background-color: #e0e0e0;
-}
+  .chat-button, .logout-button {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid #000000;
-}
+  .room-id {
+    font-size: 12px;
+  }
 
-.user-name {
-  font-size: 16px;
-  color: #000000;
-}
+  .subtitle {
+    font-size: 12px;
+  }
 
-.table-section {
-  flex: 1;
-  padding: 20px;
-  background-color: #ffffff;
-  overflow-y: auto;
-}
+  .avatar {
+    width: 30px;
+    height: 30px;
+  }
 
-.table-wrapper {
-  height: 100%;
-  overflow-y: auto;
-}
+  .user-name {
+    font-size: 14px;
+  }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #ffffff;
-}
+  .user-status {
+    font-size: 10px;
+  }
 
-.table-header {
-  padding: 12px;
-  background-color: #000000;
-  color: #ffffff;
-  text-align: left;
-  font-weight: bold;
-  position: sticky;
-  top: 0;
-}
+  .main-content {
+    flex-direction: column;
+  }
 
-.table-row {
-  border-bottom: 1px solid #000000;
-}
+  .video-section {
+    padding: 10px;
+    border-right: none;
+    border-bottom: 1px solid #000000;
+  }
 
-.table-cell {
-  padding: 12px;
-  color: #000000;
-}
-
-.table-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  vertical-align: middle;
-  border: 1px solid #000000;
-}
-
-.type-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.icon {
-  font-size: 16px;
-  color: #000000;
+  .video {
+    max-height: 45vh;
+  }
 }

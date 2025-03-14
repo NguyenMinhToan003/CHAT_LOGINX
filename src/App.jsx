@@ -1,14 +1,14 @@
 
 import AppRouter from './router/AppRouter'
 import { useSocket } from './provider/SocketProvider';
-import IsCommingCall from './components/IsCommingCall';
+import IsComingCall from './components/IsComingCall'
 const App = () => {
   const { onCommingCall, handleAcceptCall, handleHangupCall } = useSocket();
 
   return <>
    
       {onCommingCall.isRinging && (
-          <IsCommingCall
+          <IsComingCall
             handleAcceptCall={handleAcceptCall}
             handleHangup={handleHangupCall}
             onCommingCall={onCommingCall}

@@ -1,7 +1,9 @@
 import { IoIosCall } from "react-icons/io";
 import { MdCallEnd } from "react-icons/md";
 import { useEffect, useRef } from "react";
-import "./IsCommingCall"; // Import CSS file
+import { IoVideocamOutline } from "react-icons/io5"
+import "./IsComingCall.css"; // Import CSS file
+import audio from '../../public/sound/zalo-calling.mp3';
 
 const IsCommingCall = ({ handleAcceptCall, handleHangup, onCommingCall }) => {
   const audioRef = useRef(null);
@@ -16,9 +18,13 @@ const IsCommingCall = ({ handleAcceptCall, handleHangup, onCommingCall }) => {
   
   return (
     <>
-      <audio ref={audioRef} src="/sounds/call-ringtone.mp3" loop />
+      <audio ref={audioRef} src={audio} loop />
       <div className="video-call-overlay">
         <div className="video-call-container">
+          <div className="call-type">
+            <IoVideocamOutline />
+          </div>
+            
           <div className="caller-info">
             <div className="caller-avatar">
               <img src={onCommingCall?.sender.picture} alt="caller" />
@@ -28,8 +34,8 @@ const IsCommingCall = ({ handleAcceptCall, handleHangup, onCommingCall }) => {
                 <span></span>
               </div>
             </div>
-            <h2 className="caller-name">{onCommingCall?.sender.name}</h2>
-            <p className="call-status">Đang gọi...</p>
+            <p className="caller-name">{onCommingCall?.sender.name}</p>
+            <p className="call-status">đang gọi cho bạn</p>
           </div>
           
           <div className="call-actions">
