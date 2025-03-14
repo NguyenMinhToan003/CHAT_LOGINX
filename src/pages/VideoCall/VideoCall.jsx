@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
-import { getDataUser, getIceServer } from '../api';
+import { getDataUser, getIceServer } from '../../api';
 import './VideoCall.css';
 import { useParams } from 'react-router-dom';
-import { useSocket } from '../provider/SocketProvider';
+import { useSocket } from '../../provider/SocketProvider';
 import { MdContentCopy } from "react-icons/md";
 import Peer from 'peerjs';
 import { v4 as uuidv4 } from 'uuid';

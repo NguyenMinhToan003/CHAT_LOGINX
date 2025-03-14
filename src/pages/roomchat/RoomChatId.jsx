@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { createMessage, getAllMessage, getRoomChat } from "../api";
+import { createMessage, getAllMessage, getRoomChat } from '../../api';
 import { useParams } from "react-router-dom";
 
-import audio from "../../public/sound/message-notification.mp3"
+import audio from '../../../public/sound/message-notification.mp3'
 import "./RoomChatId.css"; // Import file CSS riêng
-import { useSocket } from "../provider/SocketProvider";
+import { useSocket } from '../../provider/SocketProvider';
 
 const RoomChatId = () => {
   const { socket } = useSocket();
