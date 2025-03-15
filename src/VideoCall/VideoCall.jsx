@@ -4,6 +4,11 @@ import './VideoCall.css';
 import { useParams } from 'react-router-dom';
 import { useSocket } from '../provider/SocketProvider';
 import { MdContentCopy } from "react-icons/md";
+import { IoVideocamOff } from "react-icons/io5";
+import { IoIosVideocam } from "react-icons/io";
+import { IoMdMic } from "react-icons/io";
+import { IoMdMicOff } from "react-icons/io";
+import { FiCameraOff } from "react-icons/fi";
 import Peer from 'peerjs';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,14 +23,17 @@ const VideoCall = () => {
   const [remoteStream, setRemoteStream] = useState(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
-  const [countMember, setCountMember] = useState(0);
+  const [members, setMembers] = useState([]);
   const peerRef = useRef(null);
+
+
+  const [isMuted, setIsMuted] = useState(false);
+  const [isCameraOff, setIsCameraOff] = useState(false);
 
   useEffect(() => {
     if (localVideoRef.current && localStream) localVideoRef.current.srcObject = localStream;
     if (remoteVideoRef.current && remoteStream) remoteVideoRef.current.srcObject = remoteStream;
   }, [localStream, remoteStream]);
-
 
   const getMediaStream = async () => {
     if (localStream) return localStream;
@@ -66,10 +74,17 @@ const VideoCall = () => {
 
       peerRef.current = peer;
 
-      peer.on('open', (peerId) => socket.emit('join-room', { roomId: id, peerId }));
+      peer.on('open', (peerId) => socket.emit('join-room', {
+        roomId: id,
+        peerId,
+        userId: user._id,
+        picture: user.picture,
+        name: user.name,
+      }));
       peer.on('call', (call) => {
         call.answer(stream);
         call.on('stream', (remoteStream) => setRemoteStream(remoteStream));
+
       });
 
       socket.on('user-joined', ({ peerId }) => {
@@ -86,15 +101,29 @@ const VideoCall = () => {
   useEffect(() => {
     if (!socket) return;
     setUpCall();
-    socket.on('getRoomCountMember', (data) => setCountMember(data));
+    socket.on('getRoomVideoCall', (data) => setMembers(data));
 
     return () => {
-      socket.off('getRoomCountMember');
+      socket.off('getRoomVideoCall');
       socket.off('user-joined');
       if (peerRef.current) peerRef.current.destroy();
       if (localStream) localStream.getTracks().forEach(track => track.stop());
     };
   }, [socket]);
+
+  const toggleMute = () => {
+    if (localStream) {
+      localStream.getAudioTracks().forEach(track => (track.enabled = !track.enabled));
+      setIsMuted(prev => !prev);
+    }
+  };
+
+  const toggleCamera = () => {
+    if (localStream) {
+      localStream.getVideoTracks().forEach(track => (track.enabled = !track.enabled));
+      setIsCameraOff(prev => !prev);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -114,7 +143,7 @@ const VideoCall = () => {
             <span className="room-id">Link: {id}</span>
             <MdContentCopy className="copy-icon" />
           </div>
-          <p className="subtitle">Thành viên: {countMember}</p>
+          <p className="subtitle">Thành viên: {members.length}</p>
           <div className="user-controls">
             <div className="user-info">
               <img src={user?.picture} alt="avatar" className="avatar" />
@@ -130,16 +159,49 @@ const VideoCall = () => {
       <div className="main-content">
         <div className="video-section">
           <video ref={localVideoRef} autoPlay playsInline muted className="video" />
-          <div>{user.name}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding:5}}>
+            <img src={user.picture} alt="avatar" className="avatar" />
+            <div>(Bạn)</div>
+            <button 
+              className={`control-button ${isMuted ? 'active' : 'inactive'}`} 
+              onClick={toggleMute}
+            >
+              {isMuted ? <IoMdMicOff /> : <IoMdMic />}
+            </button>
+
+            <button 
+              className={`control-button ${isCameraOff ? 'active' : 'inactive'}`} 
+              onClick={toggleCamera}
+            >
+              {isCameraOff ? <IoVideocamOff /> : <IoIosVideocam />}
+            </button>
+
+          </div>
+          
         </div>
         <div className="video-section">
-          {
-            remoteStream
-              ?
+          {remoteStream ? (
+            <>
               <video ref={remoteVideoRef} autoPlay playsInline className="video" />
-              : <div className="video-placeholder">Chờ kết nối...</div>
-          }
-          <div>user</div>
+              
+            </>
+          ) : (
+            <div className="video-placeholder">Chờ kết nối...</div>
+          )}
+          <div>{
+            members.map((member, index) => (
+              <div key={index}>
+                {
+                  member.userId === user._id
+                    ? null
+                    : <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: 5}}>
+                        <img src={member.picture} alt="avatar" className="avatar" />
+                        <div>{member.name}</div>
+                      </div>
+                }
+              </div>
+            ))
+          }</div>
         </div>
       </div>
     </div>
