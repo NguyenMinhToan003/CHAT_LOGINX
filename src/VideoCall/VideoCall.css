@@ -210,7 +210,7 @@
   }
 
   .video {
-    max-height: 45vh;
+    max-height: 40vh;
   }
 }
 .control-button {
@@ -250,24 +250,23 @@
   border-right: 1px solid #000000;
 }
 
-.remote-video,
-.local-video {
-  width: 100%;
-  height: 80vh;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid #000000;
-}
 
-/* Chỉnh video của bạn để phản chiếu như camera selfie */
-.local-video {
-  transform: scaleX(-1);
-}
 
 /* Responsive cho điện thoại */
 @media (max-width: 768px) {
   .main-content {
     flex-direction: column-reverse;
+    padding: 0;
+    gap:0
+  }
+  .header{
+    display:none;
+  }
+  .video-section{
+    padding: 5px;
+  }
+  .control-button{
+    padding: 5px;
   }
 }
 

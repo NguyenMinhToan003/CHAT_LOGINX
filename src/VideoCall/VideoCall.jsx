@@ -8,7 +8,6 @@ import { IoVideocamOff } from "react-icons/io5";
 import { IoIosVideocam } from "react-icons/io";
 import { IoMdMic } from "react-icons/io";
 import { IoMdMicOff } from "react-icons/io";
-import { FiCameraOff } from "react-icons/fi";
 import Peer from 'peerjs';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -143,7 +142,7 @@ const VideoCall = () => {
             <span className="room-id">Link: {id}</span>
             <MdContentCopy className="copy-icon" />
           </div>
-          <p className="subtitle">Thành viên: {members.length}</p>
+          <p className="subtitle">Số lượng tham gia: {members.length}</p>
           <div className="user-controls">
             <div className="user-info">
               <img src={user?.picture} alt="avatar" className="avatar" />
