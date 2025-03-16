@@ -1,16 +1,18 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import "./personal.css";
 import Post from "../components/Post";
 import { getPostByAuthorId } from "../api/postAPI";
+import { useParams } from "react-router-dom";
 
 
 const Profile= () => {
   // State for active tab in profile
+  const {id} = useParams()
   const user = JSON.parse(localStorage.getItem("user"))
   const [activeTab, setActiveTab] = useState("posts");
   const [posts, setPosts] = useState([])
   const fetchPost = async () => {
-    const res = await getPostByAuthorId({authorId: user._id, userId: user._id}) 
+    const res = await getPostByAuthorId({authorId:id|| user._id, userId:id|| user._id}) 
     setPosts(res)
 
   }

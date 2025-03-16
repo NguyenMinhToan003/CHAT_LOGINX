@@ -21,8 +21,9 @@ const AppRouter = () => {
         <Route path='/roomchats/:id' element={<RoomChatId />} />
         <Route path='/video-call/:id' element={<VideoCall />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/index' element={<Index />} />
-        <Route path='/profile' element={<Profile />} />
+      <Route path='/index' element={<Index />} />
+        <Route path='/profile/:id' element={<Profile />} />
+      <Route path='/profile' element={<Profile />} />
       </Routes>
 
   );
