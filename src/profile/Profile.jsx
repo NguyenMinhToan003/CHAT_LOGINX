@@ -176,7 +176,7 @@ const Profile= () => {
           <div className="no-posts-message">
             <h3>Không có bài viết</h3>
           </div>
-        </div>
+</div>
       </div>
     </div>
   );
