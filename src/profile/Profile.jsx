@@ -185,10 +185,17 @@ const Profile= () => {
           </div>
           
           {/* Empty state */}
-          <div className="no-posts-message">
-            <h3>Không có bài viết</h3>
-          </div>
+
+          <div className="posts-container">
+        {posts.map(post => {
+          
+          return (
+            <Post post={post}/>
+          );
+        })}
+      </div>
         </div>
+
       </div>
     </div>
   );
