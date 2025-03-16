@@ -1,10 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./personal.css";
+import Post from "../components/Post";
+import { getPostByAuthorId } from "../api/postAPI";
 
 
 const Profile= () => {
   // State for active tab in profile
+  const user = JSON.parse(localStorage.getItem("user"))
   const [activeTab, setActiveTab] = useState("posts");
+  const [posts, setPosts] = useState([])
+  const fetchPost = async () => {
+    const res = await getPostByAuthorId({authorId: user._id, userId: user._id}) 
+    setPosts(res)
+
+  }
+  useEffect(() => {
+    fetchPost()
+  },[])
   
   // Mock data based on the Facebook profile image
   const profileData = {
@@ -176,7 +188,7 @@ const Profile= () => {
           <div className="no-posts-message">
             <h3>Không có bài viết</h3>
           </div>
-</div>
+        </div>
       </div>
     </div>
   );
