@@ -21,9 +21,8 @@
 
     .main-content-index {
       flex: 1;
-      margin-left: 330px; /* Account for sidebar width */
-      margin-right: 344px; /* Account for contacts width */
-    
+      margin: 0 auto;
+      max-width: 700px;
       overflow-y: auto; /* Đảm bảo rằng thuộc tính này được thiết lập */
       padding-bottom: 20px;
     }
@@ -482,8 +481,10 @@
     }
 
     .user-info {
+      
       display: flex;
       flex-direction: column;
+      align-items: flex-start;
     }
 
     .username-container {
@@ -517,7 +518,7 @@
 
     .post-metadata {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
     }
 
     .post-time {
@@ -562,10 +563,15 @@
       display: flex;
       align-items: center;
     }
-
+    .reaction-count{
+      margin-left: 8px;
+      color: #65676b;
+      font-size: 16px;
+      margin-right: 8px;
+    }
     .reaction {
-      width: 18px;
-      height: 18px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -576,13 +582,13 @@
     .like-reaction {
       background-color: #1877f2;
       color: white;
-      font-size: 10px;
+      font-size: 15px;
     }
 
     .haha-reaction {
       background-color: #f7b928;
       color: white;
-      font-size: 10px;
+      font-size: 20px;
     }
 
     .likes-count {
@@ -758,3 +764,24 @@
 
 
 
+.active-like {
+  color: #1877F2;
+}
+
+.active-heart {
+  color: #F33E58;
+}
+
+.active-haha {
+  color: #F7B125;
+}
+a, .nav-link {
+  text-decoration: none;
+  color: black;
+  padding: 5px;
+  transition: color 0.3s;
+}
+
+a:hover, .nav-link:hover {
+  color: blue;
+}

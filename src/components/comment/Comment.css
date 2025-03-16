@@ -420,12 +420,12 @@
   }
   
   .submit-reply {
-    background-color: #1877f2;
-    color: white;
+    color: #65676b !important;
   }
   
   .submit-reply:hover {
     background-color: #166fe5;
+    color: white !important;
   }
   
   /* Main comment input with improved style */
