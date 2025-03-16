@@ -1,37 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import './Comment.css';
+import { createComment, getCommentFollowCommentId, getComments } from '../../api/commentAPI';
 
 const CommentModal = ({ postId, postData, onClose }) => {
   const [commentText, setCommentText] = useState('');
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      username: "Nguyễn Văn A",
-      userImg: "https://via.placeholder.com/32",
-      content: "Đúng thế, mình cũng thấy vậy!",
-      time: "10 phút",
-      likes: 5,
-      replies: []
-    },
-    {
-      id: 2,
-      username: "Trần Thị B",
-      userImg: "https://via.placeholder.com/32",
-      content: "Haha, điều này thật sự rất hài hước 😂",
-      time: "45 phút",
-      likes: 12,
-      replies: [
-        {
-          id: 21,
-          username: "Lê Văn C",
-          userImg: "https://via.placeholder.com/32",
-          content: "Tôi đồng ý với bạn!",
-          time: "30 phút",
-          likes: 3
-        }
-      ]
-    }
-  ]);
+  const [comments, setComments] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"))
   
   const [showReplies, setShowReplies] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
@@ -52,38 +26,50 @@ const CommentModal = ({ postId, postData, onClose }) => {
     };
   }, [onClose]);
 
+  const fetchComments = async () => {
+    const res = await getComments(postId);
+    setComments(res);
+    console.log(res)
+  }
   // Prevent scrolling when modal is open
   useEffect(() => {
+    fetchComments()
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, []);
   
-  const handleCommentSubmit = (e) => {
+  const handleCommentSubmit =async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
     
+
+    const res= await createComment({ postId, authorId: user._id, content: commentText });
     const newComment = {
-      id: comments.length + 1,
-      username: "Vũ",
-      userImg: "https://via.placeholder.com/32",
+      _id: res.insertedId,
       content: commentText,
-      time: "Vừa xong",
-      likes: 0,
-      replies: []
-    };
-    
-    setComments([...comments, newComment]);
+      createAt: new Date().toISOString(),
+      author: {
+        name: user.name,
+        picture: user.picture
+
+      },
+      replyCount: 0,
+    }
+    setComments([newComment,...comments]);
     setCommentText('');
   };
   
-  const toggleReplies = (commentId) => {
-    setShowReplies({
-      ...showReplies,
-      [commentId]: !showReplies[commentId]
-    });
-  };
+const toggleReplies = async (commentId) => {
+  if (showReplies[commentId]) {
+    setShowReplies(prev => ({ ...prev, [commentId]: null }));
+  } else {
+    const replies = await getCommentFollowCommentId(commentId);
+    setShowReplies(prev => ({ ...prev, [commentId]: replies }));
+  }
+};
+
   
   const handleReplyStart = (commentId) => {
     setReplyingTo(commentId);
@@ -94,45 +80,46 @@ const CommentModal = ({ postId, postData, onClose }) => {
     setReplyText('');
   };
   
-  const handleReplySubmit = (commentId) => {
+  const handleReplySubmit = async (commentId) => {
     if (!replyText.trim()) return;
-    
-    const updatedComments = comments.map(comment => {
-      if (comment.id === commentId) {
+    const res = await createComment({ postId, authorId: user._id, content: replyText, followCommentId: commentId });
+    const newReply = {
+      _id: res._id,
+      content: replyText,
+      createAt: new Date().toISOString(),
+      author: {
+        name: user.name,
+        picture: user.picture
+      },
+      replyCount: 0,
+    }
+    const updateComments = comments.map(comment => {
+      if (comment._id === commentId) {
         return {
           ...comment,
-          replies: [
-            ...comment.replies,
-            {
-              id: Date.now(),
-              username: "Vũ",
-              userImg: "https://via.placeholder.com/32",
-              content: replyText,
-              time: "Vừa xong",
-              likes: 0
-            }
-          ]
+          replyCount: comment.replyCount + 1
         };
       }
       return comment;
     });
-    
-    setComments(updatedComments);
+    setComments(updateComments);
     setReplyingTo(null);
     setReplyText('');
     
     // Auto-show replies after adding one
-    setShowReplies({
-      ...showReplies,
-      [commentId]: true
-    });
+    if (showReplies[commentId]) {
+      setShowReplies(prev => ({
+        ...prev,
+        [commentId]: [newReply, ...prev[commentId]]
+      }));
+    }
   };
   
   return (
     <div className="comment-modal-overlay">
       <div className="comment-modal-container" ref={modalRef}>
         <div className="comment-modal-header">
-          <h3>Bài viết của {postData.username}</h3>
+          <h3>Bài viết của {postData.author.name}</h3>
           <button className="close-modal" onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
@@ -144,11 +131,11 @@ const CommentModal = ({ postId, postData, onClose }) => {
             <div className="post-header">
               <div className="post-user">
                 <div className="avatar">
-                  <img src={postData.userImg} />
+                  <img src={postData.assets[0].url} />
                 </div>
                 <div className="user-info">
                   <div className="username-container">
-                    <span className="username">{postData.username}</span>
+                    <span className="username">{postData.author.name}</span>
                     {postData.isVerified && <i className="fas fa-check-circle verified-icon"></i>}
                   </div>
                   <div className="post-metadata">
@@ -165,44 +152,47 @@ const CommentModal = ({ postId, postData, onClose }) => {
             </div>
             
             {/* Post image */}
-            {postData.imageUrl && (
-              <div className="post-image">
-                <img src={postData.imageUrl}  />
-              </div>
-            )}
+            {postData.assets.length > 0 && (
+              postData.assets.map((asset,index) => (
+                <div key={index} className="post-image">
+                  <img src={asset.url} alt="Post" />
+                </div>
+              ))
+            )
+          }
           </div>
           
           <div className="comments-section">
             <div className="comments-list">
               {comments.map(comment => (
-                <div key={comment.id} className="comment-item">
+                <div key={comment._id} className="comment-item">
                   <div className="comment-avatar">
-                    <div style={{width:40 , height:40 , borderRadius:'100%', background:'black'}}></div>
+                    <img src={comment.author.picture} />
                   </div>
                   <div className="comment-content">
                     <div className="comment-bubble">
-                      <div className="comment-user">{comment.username}</div>
+                      <div className="comment-user">{comment.author.name}</div>
                       <div className="comment-text">{comment.content}</div>
                     </div>
                     
                     <div className="comment-actions">
                       <button>Thích</button>
-                      <button onClick={() => handleReplyStart(comment.id)}>Phản hồi</button>
+                      <button onClick={() => handleReplyStart(comment._id)}>Phản hồi</button>
                       <span className="comment-time">{comment.time}</span>
                     </div>
                     
-                    {comment.replies && comment.replies.length > 0 && (
+                    {comment.replyCount > 0 && (
                       <div className="reply-toggle">
                         <button 
                           className="view-replies" 
-                          onClick={() => toggleReplies(comment.id)}
+                          onClick={() => toggleReplies(comment._id)}
                         >
-                          {showReplies[comment.id] ? 'Ẩn phản hồi' : `Xem ${comment.replies.length} phản hồi`}
+                          {showReplies[comment._id] ? 'Ẩn phản hồi' : `Xem ${comment.replyCount} phản hồi`}
                         </button>
                       </div>
                     )}
                     
-                    {replyingTo === comment.id && (
+                    {replyingTo === comment._id && (
                       <div className="reply-input">
                         <div className="avatar">
                            <div style={{width:40 , height:40 , borderRadius:'100%', background:'green'}}></div>
@@ -210,7 +200,7 @@ const CommentModal = ({ postId, postData, onClose }) => {
                         <div className="reply-form">
                           <input 
                             type="text" 
-                            placeholder={`Phản hồi ${comment.username}...`}
+                            placeholder={`Phản hồi ${comment.author.name}...`}
                             value={replyText}
                             onChange={(e) => setReplyText(e.target.value)}
                           />
@@ -223,7 +213,7 @@ const CommentModal = ({ postId, postData, onClose }) => {
                             </button>
                             <button 
                               className="submit-reply"
-                              onClick={() => handleReplySubmit(comment.id)}
+                              onClick={() => handleReplySubmit(comment._id)}
                             >
                               Phản hồi
                             </button>
@@ -232,28 +222,24 @@ const CommentModal = ({ postId, postData, onClose }) => {
                       </div>
                     )}
                     
-                    {showReplies[comment.id] && comment.replies.length > 0 && (
-                      <div className="replies-container">
-                        {comment.replies.map(reply => (
-                          <div key={reply.id} className="reply-item">
-                            <div className="reply-avatar">
-                              <img src={reply.userImg}  />
-                            </div>
-                            <div className="reply-content">
-                              <div className="reply-bubble">
-                                <div className="reply-user">{reply.username}</div>
-                                <div className="reply-text">{reply.content}</div>
-                              </div>
-                              <div className="reply-actions">
-                                <button>Thích</button>
-                                <button onClick={() => handleReplyStart(comment.id)}>Phản hồi</button>
-                                <span className="reply-time">{reply.time}</span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                   {showReplies[comment._id] && (
+  <div className="replies-container">
+    {showReplies[comment._id].map(reply => (
+      <div key={reply._id} className="reply-item">
+        <div className="reply-avatar">
+          <img src={reply.author.picture} />
+        </div>
+        <div className="reply-content">
+          <div className="reply-bubble">
+            <div className="reply-user">{reply.author.name}</div>
+            <div className="reply-text">{reply.content}</div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
                   </div>
                 </div>
               ))}
@@ -263,7 +249,7 @@ const CommentModal = ({ postId, postData, onClose }) => {
         
         <div className="comment-input-main">
           <div className="avatar">
-            <div style={{width:40 , height:40 , borderRadius:'100%', background:'green'}}></div>
+            <img src={user.picture} />
           </div>
           <form className="comment-form" onSubmit={handleCommentSubmit}>
             <input 
