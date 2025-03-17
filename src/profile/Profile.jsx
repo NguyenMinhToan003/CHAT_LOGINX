@@ -38,11 +38,11 @@ const Profile= () => {
   ];
   
   return (
-    <div className="profile-page">
+    <div className="profile-page profile-fix">
       {/* Cover photo area */}
       <div className="cover-photo-container">
         <div className="cover-photo">
-          {/* Cover photo image will be background of this div */}
+          <img src="https://png.pngtree.com/thumb_back/fh260/background/20240310/pngtree-beautiful-cartoon-landscape-background-with-sunset-green-grass-field-and-trees-image_15639145.jpg" style={{objectFit:'fill', width:'100%', heigth:'100%'}}/>
           <button className="edit-cover-photo-btn">
             <i className="fas fa-camera"></i> Thêm ảnh bìa
           </button>
@@ -53,7 +53,7 @@ const Profile= () => {
       <div className="profile-info-container">
         <div className="profile-photo-container">
           <div className="profile-photo">
-            {/* Profile photo will be inserted here */}
+            <img src={user.picture} alt="Profile" style={{width:'100%', height:'100%'}}/>
             <div className="edit-profile-photo">
               <i className="fas fa-camera"></i>
             </div>

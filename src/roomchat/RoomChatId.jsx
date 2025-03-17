@@ -1,22 +1,35 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 import { createMessage, getAllMessage, getRoomChat } from '../api';
-import { useParams } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 
 import audio from '../../public/sound/message-notification.mp3'
-import "./RoomChatId.css"; // Import file CSS riêng
 import { useSocket } from '../provider/SocketProvider';
+
+import Box from '@mui/material/Box'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import Tooltip from '@mui/material/Tooltip'
+import IconButton from '@mui/material/IconButton'
+import AttachFileIcon from '@mui/icons-material/AttachFile'
+import AddReactionIcon from '@mui/icons-material/AddReaction'
+import SendIcon from '@mui/icons-material/Send'
+import Avatar from '@mui/material/Avatar'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import InputBase from '@mui/material/InputBase'
 
 const RoomChatId = () => {
   const { socket } = useSocket();
   const { id } = useParams();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem('user'));
   if (!user) {
-    window.location.href = "/";
+    window.location.href = '/';
   }
 
   const [room, setRoom] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const audioRef = useRef(null);
 
   const handleChangeMessage = (e) => setMessage(e.target.value);
@@ -24,7 +37,7 @@ const RoomChatId = () => {
   const handleSentMessage = async () => {
     const response = await createMessage(id, user?._id, message);
     if (response.insertedId) {
-      socket.emit("message", {
+      socket.emit('message', {
         content: message,
         _id: response.insertedId,
         sender: {
@@ -34,7 +47,7 @@ const RoomChatId = () => {
         },  
         roomId: id,
       });
-      setMessage("");
+      setMessage('');
     }
   };
 
@@ -46,10 +59,10 @@ const RoomChatId = () => {
         setRoom(response[0]);
         const resMess = await getAllMessage(id, user._id);
         setMessages(Array.isArray(resMess) ? resMess : [resMess.message]);
-        socket.emit("join-room", { roomId: id, user: user._id });
+        socket.emit('join-room', { roomId: id, user: user._id });
       }
     } catch (error) {
-      console.error("Lỗi khi fetch room chat:", error);
+      console.error('Lỗi khi fetch room chat:', error);
     }
   };
 
@@ -66,69 +79,185 @@ const RoomChatId = () => {
       audioRef.current.play();
     }
   };
-  socket.on("message", handleMessage);
+  socket.on('message', handleMessage);
   return () => {
-    socket.off("message", handleMessage);
+    socket.off('message', handleMessage);
   };
 }, [socket]);
 
 
-  return (
-    <div className="chat-container">
-      <audio ref={audioRef} src={audio} />
-      {room ? (
-        <div className="chat-box">
-          {/* Sidebar hiển thị admin */}
-          <div className="sidebar">
-            <h3>Admin</h3>
-            {room.info.admins.map((admin) => (
-              <div key={admin._id} className="admin-info">
-                <img src={admin.picture} alt={admin.name} className="avatar" />
-                <span>{admin.name}</span>
-              </div>
-            ))}
-            <h3>Online</h3>
+  return <>
+    <audio ref={audioRef} src={audio} />
+
+      <Box sx={{
+        paddingX: 1,
+        paddingY: 1,
+        backgroundColor: 'background.default',
+        height: '100vh'
+      }}>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: 'secondary.main',
+          height: '100%',
+          borderRadius: 3
+        }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              height: 60,
+              padding: 1
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'start',
+                alignItems: 'center',
+                gap: 1,
+                backgroundColor: 'background.primary'
+              }}
+            >
+              <Tooltip title='back'>
+                <IconButton color='error'>
+                  <ArrowBackIcon />
+                </IconButton>
+              </Tooltip>
+            <Button startIcon={<Avatar sx={{ width: 36, height: 36 }}
+              src={room?.info?.avartar} />}>
+                <Typography sx={{ color: 'text.main' }}>
+                  {room?.info?.name}
+                </Typography>
+              </Button>
+            </Box>
+            <Tooltip title='menu'>
+              <IconButton >
+                <MoreHorizIcon sx={{ color: 'text.primary' }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Divider />
+          <Box sx={{ overflowY: 'auto', overflowX: 'hidden', height: '100%', padding: 1 }}>
             {
-              
-            }
-          </div>
-
-          <div className="chat-content">
-            <div className="chat-header">
-              <h2>{room.info.name}</h2>
-              <button className="video-call-btn">📹 Video Call</button>
-            </div>
-
-            {/* Danh sách tin nhắn */}
-            <div className="chat-messages">
-              {messages.map((item, index) => (
-                <div
+              messages?.map((data, index) => (
+                <Box
                   key={index}
-                  className={`message-box ${item.sender._id === user._id ? "sent" : "received"}`}
+                  sx={{
+                    display: 'flex',
+                    justifyContent:
+                      data.sender._id === user._id ? 'row-reverse' : 'row',
+                    alignItems: 'start',
+                    maxWidth: '100%',
+                    flexDirection: data.sender._id === user._id ? 'row-reverse' : 'row',
+                    gap: 1,
+                    padding: '5px',
+                    ':hover .more': { opacity: 1, visibility: 'visible' }
+                  }}
                 >
-                  {item.sender !== user._id && (
-                    <img src={item.sender.picture} alt={item.sender.name} className="message-avatar" />
+                  {data.sender._id !== user._id && (
+                    <Avatar
+                      src={data.sender.picture}
+                      sx={{ width: 36, height: 36 }}
+                    />
                   )}
-                  <div className="message-content">
-                    {item.sender !== user._id && <span className="sender-name">{item.sender.name}</span>}
-                    <p>{item.content}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  <Box sx={{
+                    maxWidth: '70%',
+                    backgroundColor:
+                      data.sender._id === user._id
+                        ? 'messages.bg_primary'
+                        : 'messages.bg_secondary',
+                    borderRadius: 5,
+                    padding: '0.75rem 1.25rem',
+                    height: 'fit-content',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 0.5
+                  }}>
+                    {
+                      data.sender._id !== user._id && (
+                        <Typography
+                          sx={{
+                            color: 'black',
+                            fontWeight: 500,
+                            fontSize: '1.0625rem',
+                            lineHeight: '1.625rem',
+                            whiteSpace: 'pre-wrap',
+                            overflowWrap: 'break-word'
+                          }}
+                        >
+                          {data.sender.name}
+                        </Typography>
+                      )
+                    }
+                    <Typography
+                      sx={{
+                        color:
+                          data.sender._id === user._id
+                            ? 'messages.text_primary'
+                            : 'messages.text_secondary',
+                        fontWeight: 500,
+                        fontSize: '1.0625rem',
+                        lineHeight: '1.625rem',
+                        whiteSpace: 'pre-wrap',
+                        overflowWrap: 'break-word'
+                      }}
+                    >
+                      {data.content}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))
+            }
+          </Box>
+          <Divider />
+          <Box sx={{
+            height: 60,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            padding: 1
+          }}>
 
-            {/* Ô nhập tin nhắn */}
-            <div className="chat-input">
-              <input type="text" placeholder="Nhập tin nhắn..." value={message} onChange={handleChangeMessage} />
-              <button onClick={handleSentMessage}>Gửi</button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <p>Đang tải...</p>
-      )}
-    </div>
-  );
+            <Tooltip title='Add reaction'>
+              <IconButton color='error'>
+                <AddReactionIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Attach file'>
+              <IconButton color='warning' component='label'>
+                <AttachFileIcon />
+                <input type='file' style={{ display: 'none' }} />
+              </IconButton>
+            </Tooltip>
+          <InputBase
+              value={message}
+              onChange={(event)=>handleChangeMessage(event)}
+              component='textarea'
+              placeholder='Aa'
+              sx={{
+                backgroundColor: 'background.default',
+                border: 'none',
+                width: '100%',
+                height: '100%',
+                outline: 'none',
+                color: 'text.main',
+                fontSize: '1rem',
+                borderRadius: 3,
+                padding: 3
+              }}
+            />
+            
+            <Tooltip title='Send'>
+              <IconButton color='info' onClick={handleSentMessage}>
+                <SendIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+      </Box >
+  </>
 };
 
 export default RoomChatId;
