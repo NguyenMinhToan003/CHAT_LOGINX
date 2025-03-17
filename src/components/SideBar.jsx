@@ -5,7 +5,7 @@ import '../index/index.css'
 const Sidebar = () => {
   return (
     <nav className="sidebar">
-      <h1 className="logo">TheSocialNest</h1>
+      <h1 className="logo">STU</h1>
       <ul className="menu">
         <NavLink to="/index" exact>
           <li className="active"><i className="fas fa-home"></i> <span>Trang chủ</span></li>
