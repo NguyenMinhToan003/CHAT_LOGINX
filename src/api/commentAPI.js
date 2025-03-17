@@ -20,3 +20,4 @@ export const createComment = async ({ postId, authorId, content, followCommentId
   })
   return response.data
 }
+
