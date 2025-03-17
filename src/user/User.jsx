@@ -40,7 +40,7 @@ const User = () => {
     <div className='container'>
 
       {/* Header Section */}
-      <header className='header'>
+      <header className='header-user'>
 
         <div className='button-group'>
           <div>
