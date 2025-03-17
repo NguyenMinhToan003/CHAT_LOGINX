@@ -4,6 +4,9 @@
     background-color: #f0f2f5;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
+  .profile-fix {
+    margin-left:245px
+  }
   
   /* Cover Photo */
   .cover-photo-container {
@@ -375,6 +378,9 @@
     .profile-content {
       flex-direction: column;
     }
+    .profile-fix{
+      margin-left:0px
+    }
     
     .profile-left-column {
       width: 100%;
@@ -431,6 +437,9 @@
   @media (max-width: 500px) {
     .profile-info-container {
       margin-top: -50px;
+    }
+    .profile-fix{
+      margin-left:0px
     }
     
     .profile-photo {

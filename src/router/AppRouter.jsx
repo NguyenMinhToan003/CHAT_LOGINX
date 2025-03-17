@@ -8,6 +8,7 @@ import VideoCall from '../VideoCall/VideoCall'
 import Login from '../auth/Login'
 import Index from "../index/Index";
 import Profile from '../profile/Profile'
+import Main from "../index/Main";
 
 
 const AppRouter = () => {
@@ -21,9 +22,13 @@ const AppRouter = () => {
         <Route path='/roomchats/:id' element={<RoomChatId />} />
         <Route path='/video-call/:id' element={<VideoCall />} />
         <Route path='/login' element={<Login />} />
-      <Route path='/index' element={<Index />} />
-        <Route path='/profile/:id' element={<Profile />} />
-      <Route path='/profile' element={<Profile />} />
+      
+        <Route path='/index' element={<Main />} >
+          <Route index  element={<Index />} />
+          <Route path='profile/:id' element={<Profile />} />
+          <Route path='profile' element={<Profile />} />
+        </Route>
+      
       </Routes>
 
   );
