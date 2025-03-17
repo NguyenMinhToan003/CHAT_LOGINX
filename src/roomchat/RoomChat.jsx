@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { createRoomChat, getAllUser, getRoomChatByUserId } from '../api';
+import { useNavigate } from "react-router-dom";
 
 const userLocal =JSON.parse(localStorage.getItem('user'));
 const RoomChat = () => {
+  const navigate = useNavigate();
   const [roomType, setRoomType] = useState("group");
   const [roomName, setRoomName] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -41,7 +43,7 @@ const handleCreateRoom = async () => {
     const response = await createRoomChat(roomType, roomName, avatar, [owner], member);
 
     if (response.insertedId) {
-      window.location.href = `/roomchats/${response.insertedId}`;
+      navigate(`/roomchats/${response.insertedId}`);
       setSuccessMessage("Tạo phòng thành công!");
       setRoomName("");
       setAvatar("");
@@ -94,16 +96,16 @@ const handleCreateRoom = async () => {
         />
 
 
-        {
-  users.length > 0 && users.map((user) => (
-    <button key={user._id} onClick={() => handleAddMember(user._id)} style={{ padding: "8px", cursor: "pointer" }}>
-      {user.name}
-      {
-        member.includes(user._id) ? " (Đã thêm)" : ""
+              {
+        users.length > 0 && users.map((user) => (
+          <button key={user._id} onClick={() => handleAddMember(user._id)} style={{ padding: "8px", cursor: "pointer" }}>
+            {user.name}
+            {
+              member.includes(user._id) ? " (Đã thêm)" : ""
+            }
+          </button>
+        ))
       }
-    </button>
-  ))
-}
 
 
 
@@ -119,7 +121,8 @@ const handleCreateRoom = async () => {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', padding: '20px' }}>
         {
           roomChats.length > 0 && roomChats.map((roomChat) => (
-            <a href={`/roomchats/${roomChat._id}`} key={roomChat._id} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", cursor: "pointer", display:'block'}} onClick={() => window.location.href = `/roomchats/${roomChat._id}`}>
+            <a  key={roomChat._id} style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", cursor: "pointer", display:'block'}} 
+            onClick={() => navigate(`/roomchats/${roomChat._id}`)}>
               <p><strong>Name:</strong> {roomChat.info.name}</p>
               <p><strong>Type:</strong> {roomChat.type}</p>
               <div style={{ width: "50px", height: "50px" }}>
