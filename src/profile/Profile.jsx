@@ -1,23 +1,29 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./personal.css";
 import Post from "../components/Post";
 import { getPostByAuthorId } from "../api/postAPI";
 import { useParams } from "react-router-dom";
+import { getUserById } from "../api/userAPI";
+import { CircularProgress } from "@mui/material";
 
-
+const localUser = JSON.parse(localStorage.getItem("user")); 
 const Profile= () => {
   // State for active tab in profile
-  const {id} = useParams()
-  const user = JSON.parse(localStorage.getItem("user"))
+  const { id } = useParams()
+  const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("posts");
   const [posts, setPosts] = useState([])
-  const fetchPost = async () => {
+  const [user, setUser] = useState({})
+  const fetch = async () => {
+    const userF = await getUserById(id|| localUser._id)
+    setUser(userF)
+    setIsLoading(true)
     const res = await getPostByAuthorId({authorId:id|| user._id, userId:id|| user._id}) 
     setPosts(res)
-
+    setIsLoading(false)
   }
   useEffect(() => {
-    fetchPost()
+    fetch()
   },[])
   
   // Mock data based on the Facebook profile image
@@ -53,7 +59,7 @@ const Profile= () => {
       <div className="profile-info-container">
         <div className="profile-photo-container">
           <div className="profile-photo">
-            <img src={user.picture} alt="Profile" style={{width:'100%', height:'100%'}}/>
+            <img src={user?.picture} style={{width:'100%', height:'100%'}}/>
             <div className="edit-profile-photo">
               <i className="fas fa-camera"></i>
             </div>
@@ -61,7 +67,7 @@ const Profile= () => {
         </div>
         
         <div className="profile-details">
-          <h1 className="profile-name">{profileData.name}</h1>
+          <h1 className="profile-name">{user.name}</h1>
           <p className="friends-count">{profileData.friends}</p>
           
           {/* Friend thumbnails */}
@@ -189,12 +195,17 @@ const Profile= () => {
           {/* Empty state */}
 
           <div className="posts-container">
-        {posts.map(post => {
-          
-          return (
-            <Post post={post}/>
-          );
-        })}
+        {
+          isLoading ?
+            <CircularProgress/>
+            : <>
+              {
+                posts.map(post => {
+                  return <Post post={post} />
+                })
+              }
+          </>
+        }
       </div>
         </div>
 

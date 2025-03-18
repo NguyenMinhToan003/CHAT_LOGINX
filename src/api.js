@@ -36,12 +36,14 @@ export const getAllMessage = async (roomId,userId) => {
 	return response?.data;
 }
 // sent message
-export const createMessage = async (roomId, userId, message) => {
-	const response = await axiosInstance.post(`/message/create`, {
+export const createMessage = async (roomId, userId, message, followMessageId) => {
+	const data = {
 		roomId: roomId,
 		sender: userId,
 		content: message
-	})
+	}
+	if(followMessageId) data.followMessageId = followMessageId
+	const response = await axiosInstance.post(`/message/create`, data)
 	return response?.data;
 }
 //////////! user
