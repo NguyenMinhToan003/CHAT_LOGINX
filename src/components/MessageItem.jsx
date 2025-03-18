@@ -101,6 +101,8 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
             
           </Typography>
         </Box>
+        {
+          message?.status ==='read' && (
         <Box className='more'
           sx={{
             opacity: 0,
@@ -119,6 +121,8 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
             <ClearIcon  />
           </IconButton>
         </Box>
+          )
+        }
       </Box>
     </Box>
   </>
