@@ -23,7 +23,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import MessageItem from '../components/MessageItem';
 import { deleteMessage } from '../api/messageAPI';
-
+import CircularProgress from "@mui/material/CircularProgress"
 const RoomChatId = () => {
   const navigate = useNavigate();
   const { socket } = useSocket();
@@ -33,6 +33,7 @@ const RoomChatId = () => {
   if (!user) {
     window.location.href = '/';
   }
+  const [isLoading, setIsLoading] = useState(false);
   const [toggleShowInfoRoom, setToggleShowInfoRoom] = useState(false);
   const [room, setRoom] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -60,6 +61,7 @@ const RoomChatId = () => {
     }
     if (response.insertedId) {
       let data = {
+        status:'read',
         content: message,
         _id: response.insertedId,
         sender: {
@@ -116,6 +118,7 @@ const RoomChatId = () => {
   }
   const fetchRoom = async () => {
     try {
+      setIsLoading(true);
       const response = await getRoomChat(id);
       if (Array.isArray(response) && response.length > 0) {
         const room = response[0];
@@ -133,6 +136,7 @@ const RoomChatId = () => {
         }
         setCheckIsMember(room.members.some(m => m._id === user._id));
       }
+      setIsLoading(false);
     } catch (error) {
       console.error('Lỗi khi fetch room chat:', error);
     }
@@ -145,7 +149,7 @@ const RoomChatId = () => {
     navigate('/roomchats');
   }
   useEffect(() => {
-    if(!socket) return;
+    if (!socket) return;
     fetchRoom();
   }, [id, socket]);
 
@@ -169,7 +173,17 @@ const RoomChatId = () => {
 
   return <>
     <audio ref={audioRef} src={audio} />
-    <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', gap: 1 }}>
+    {
+      isLoading ? <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100vh'
+      }}>
+        <CircularProgress /> loading ...
+      </Box> : <>
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', gap: 1 }}>
       <Box sx={{
         padding: 1,
         backgroundColor: 'background.default',
@@ -528,6 +542,9 @@ const RoomChatId = () => {
         </Box>
       </Box>
     </Box>
+      </>
+        
+    }
   </>
 };
 
