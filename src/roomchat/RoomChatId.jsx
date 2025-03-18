@@ -18,17 +18,22 @@ import Button from '@mui/material/Button'
 import InputBase from '@mui/material/InputBase'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { joinRoom, leaveRoom } from '../api/roomAPI';
+import EditCalendarOutlinedIcon from '@mui/icons-material/EditCalendarOutlined';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import MessageItem from '../components/MessageItem';
+import { deleteMessage } from '../api/messageAPI';
 
 const RoomChatId = () => {
   const navigate = useNavigate();
   const { socket } = useSocket();
   const { id } = useParams();
+  const inputRef = useRef(null);
   const user = JSON.parse(localStorage.getItem('user'));
   if (!user) {
     window.location.href = '/';
   }
   const [toggleShowInfoRoom, setToggleShowInfoRoom] = useState(false);
-
   const [room, setRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
@@ -36,13 +41,25 @@ const RoomChatId = () => {
   const messagesEndRef = useRef(null);
   const [checkIsMember, setCheckIsMember] = useState(false);
 
-  const handleChangeMessage = (e) => setMessage(e.target.value);
+  const [repMessage, setRepMessage] = useState(null);
 
+  const handleChangeMessage = (e) => setMessage(e.target.value);
+  const handlSetRepMessage = (message) => {
+    setRepMessage(message);
+    inputRef.current.focus();
+  }
   const handleSentMessage = async () => {
     if (!message.trim()) return;
-    const response = await createMessage(id, user?._id, message);
+    let response;
+    if (repMessage===null) {
+      response = await createMessage(id, user?._id, message);
+    }
+    else {
+      response = await createMessage(id, user?._id, message, repMessage._id);
+      setRepMessage(null);
+    }
     if (response.insertedId) {
-      socket.emit('message', {
+      let data = {
         content: message,
         _id: response.insertedId,
         sender: {
@@ -51,7 +68,14 @@ const RoomChatId = () => {
           picture: user?.picture,
         },  
         roomId: id,
-      });
+      }
+      if (repMessage) {
+        data.followedMessage = {
+          _id: repMessage._id,
+          content: repMessage.content,
+        };
+      }
+      socket.emit('message',data);
       setMessage('');
     }
   };
@@ -74,6 +98,13 @@ const RoomChatId = () => {
     }
   }
 
+  const handleDeleteMessage = async (id) => {
+    console.log('id', id);
+    const response = await deleteMessage(id, user._id);
+    await fetchRoom()
+  }
+  const handleDeleteRoom = async () => {
+  }
   const handlLeaveRoom = async () => {
     const response = await leaveRoom({ roomId: id, userId: user._id });
     if (response.code === 0) {
@@ -107,6 +138,12 @@ const RoomChatId = () => {
     }
   };
 
+  const handleCancel = () => {
+    if (socket) {
+      socket.emit('leave-room', { roomId: id, user: user._id });
+    }
+    navigate('/roomchats');
+  }
   useEffect(() => {
     if(!socket) return;
     fetchRoom();
@@ -165,14 +202,16 @@ const RoomChatId = () => {
               }}
             >
               <Tooltip title='back'>
-                <IconButton color='error' onClick={()=>navigate('/roomchats')} >
+                <IconButton color='error' onClick={handleCancel} >
                   <ArrowBackIcon />
                 </IconButton>
               </Tooltip>
               <Button startIcon={<Avatar sx={{ width: 36, height: 36 }}
                 src={room?.info?.avartar} />}>
                 <Typography sx={{ color: 'text.main' }}>
-                  {room?.info?.name}
+                  {
+                    room?.info?.name.length>10 ? room?.info?.name.slice(0,10)+'...' : room?.info?.name
+                  }
                 </Typography>
               </Button>
             </Box>
@@ -189,68 +228,16 @@ const RoomChatId = () => {
             height: '100%', 
             padding: 1 
           }}>
-            {messages.length>0 && messages?.map((data, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  justifyContent: data.sender._id === user._id ? 'row-reverse' : 'row',
-                  alignItems: 'start',
-                  maxWidth: '100%',
-                  flexDirection: data.sender._id === user._id ? 'row-reverse' : 'row',
-                  gap: 1,
-                  padding: '5px',
-                  ':hover .more': { opacity: 1, visibility: 'visible' }
-                }}
-              >
-                {data.sender._id !== user._id && (
-                  <Avatar
-                    src={data.sender.picture}
-                    sx={{ width: 36, height: 36 }}
-                  />
-                )}
-                <Box sx={{
-                  maxWidth: '70%',
-                  backgroundColor: data.sender._id === user._id
-                    ? 'messages.bg_primary'
-                    : 'messages.bg_secondary',
-                  borderRadius: 5,
-                  padding: '0.75rem 1.25rem',
-                  height: 'fit-content',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 0.5
-                }}>
-                  {data.sender._id !== user._id && (
-                    <Typography
-                      sx={{
-                        color: 'black',
-                        fontWeight: 500,
-                        fontSize: '1.0625rem',
-                        lineHeight: '1.625rem',
-                        whiteSpace: 'pre-wrap',
-                        overflowWrap: 'break-word'
-                      }}
-                    >
-                      {data.sender.name}
-                    </Typography>
-                  )}
-                  <Typography
-                    sx={{
-                      color: data.sender._id === user._id
-                        ? 'messages.text_primary'
-                        : 'messages.text_secondary',
-                      fontWeight: 500,
-                      fontSize: '1.0625rem',
-                      lineHeight: '1.625rem',
-                      whiteSpace: 'pre-wrap',
-                      overflowWrap: 'break-word'
-                    }}
-                  >
-                    {data.content}
-                  </Typography>
-                </Box>
-              </Box>
+            {messages.length > 0 && messages?.map((data, index) => (
+              <>
+                <MessageItem
+                  removeMessage={handleDeleteMessage}
+                  setRepMessage={handlSetRepMessage}
+                  message={data}
+                  user={user}
+                  key={index}
+                />
+              </>
             ))}
             {
               !checkIsMember && (
@@ -278,7 +265,34 @@ const RoomChatId = () => {
           <Divider />
           {
             checkIsMember && (
-              <Box sx={{
+              <Box>
+                {
+                  repMessage && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 1,
+                        padding: 1,
+                        color: 'white',
+                      }}
+                    >
+                      <Box>
+                        <Typography sx={{ color: 'text.primary', fontWeight: 'bold' }}>
+                        Đang trả lời {repMessage.sender.name}
+                      </Typography>
+                      <Typography sx={{ color: 'text.secondary' }}>
+                        {repMessage.content}
+                      </Typography>
+                      </Box>
+                      <IconButton onClick={() => setRepMessage(null)}>
+                        <ArrowBackIcon />
+                      </IconButton>
+                    </Box>
+                  )
+                }
+          <Box sx={{
             height: 60,
             display: 'flex',
             alignItems: 'center',
@@ -301,7 +315,8 @@ const RoomChatId = () => {
               onChange={(event) => handleChangeMessage(event)}
               onKeyPress={handleKeyPress}
               component='textarea'
-              placeholder='Aa'
+                    placeholder='Aa'
+              ref={inputRef}
               sx={{
                 backgroundColor: 'background.default',
                 border: 'none',
@@ -320,6 +335,7 @@ const RoomChatId = () => {
               </IconButton>
             </Tooltip>
           </Box>
+            </Box>
             )
           }
         </Box>
@@ -339,8 +355,7 @@ const RoomChatId = () => {
         gap: 2,
       }}>
         <Box sx={{
-          display: toggleShowInfoRoom ? 'flex' : 'none',
-          
+          display: toggleShowInfoRoom ? 'flex' : 'none', 
           transition: 'display 1.5s ease-in-out',
           flexDirection: 'column',
           alignItems: 'center',
@@ -380,36 +395,67 @@ const RoomChatId = () => {
           </Typography>
         </Box>
 
+        <Box sx={{display: toggleShowInfoRoom ? 'block' : 'none',
+          transition: 'display 1.5s ease-in-out',
+          backgroundColor: 'background.paper',
+          borderRadius: 2,
+        }}>
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: 'background.default',
+            padding: 1,
+            borderRadius: 1
+          }}>
+            
+            <Tooltip title='Thêm thành viên'>
+               <IconButton color='primary'>
+              <AddOutlinedIcon/>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Chỉnh sửa thông tin'>
+              <IconButton color='success'
+                disabled={room?.info?.admins?.some(m => m._id === user._id) ? false : true}
+              >
+              <EditCalendarOutlinedIcon/>
+              </IconButton>
+            </Tooltip>
+
+             <Tooltip title='Thoát nhóm'>
+              <IconButton color='warning' onClick={handlLeaveRoom}>
+              <ExitToAppIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title='Xóa nhóm'>
+              <IconButton color='error'
+                onClick={handleDeleteRoom}
+                disabled={room?.info?.admins?.some(m => m._id === user._id) ? false : true}
+              >
+              <DeleteOutlineOutlinedIcon/>
+              </IconButton>
+            </Tooltip>
+              
+           
+          </Box>
+        </Box>
         <Box sx={{
           display: toggleShowInfoRoom ? 'block' : 'none',
           transition: 'display 1.5s ease-in-out',
           flex: 1,
           backgroundColor: 'background.paper',
           borderRadius: 2,
-          padding: 2,
-
-          overflowY: 'auto'
+                      overflowY: 'auto',
         }}>
-          <Box sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <Button variant='outlined' sx={{ color: 'text.primary', borderColor: 'text.primary' }}>
-              Thêm thành viên
-            </Button>
-            <Tooltip title='Thoát nhóm'>
-              <IconButton color='error' onClick={handlLeaveRoom}>
-              <ExitToAppIcon />
-              </IconButton>
-            </Tooltip>
-          </Box>
+          
           <Typography 
               sx={{ 
                 color: 'text.primary',
                 fontSize: '1rem',
                 fontWeight: 'medium',
-                mb: 2
+              my: 2
+                
               }}
             >
               Thành viên ({room?.members?.length || 0})
@@ -417,7 +463,7 @@ const RoomChatId = () => {
           <Box sx={{ 
             display: 'flex',
             flexDirection: 'column',
-            gap: 1.5 
+            gap: 1.5 ,
           }}>
             {room?.members?.map((member, index) => (
               <Box
@@ -426,7 +472,8 @@ const RoomChatId = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 1,
-                  padding: 1,
+                  paddingY: 1,
+                  paddingRight: 1,
                   borderRadius: 1,
                   '&:hover': {
                     backgroundColor: 'action.hover'

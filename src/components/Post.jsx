@@ -1,21 +1,27 @@
-import { useEffect, useState } from "react";
-import CommentModal from "./comment/Comment";
-import { reactPost } from "../api/postAPI";
-import { convertTime } from "../utils/convertTime";
+import { useEffect, useState } from 'react';
+import CommentModal from './comment/Comment';
+import { reactPost } from '../api/postAPI';
+import { convertTime } from '../utils/convertTime';
+import { useNavigate } from 'react-router-dom';
 
 const Post = ({ post }) => {
+  const navigate = useNavigate();
   const [postData, setPostData] = useState(post);
   const [countReaction, setCountReaction] =
-    useState(postData?.interactions?.likes + postData?.interactions?.hahas + postData?.interactions?.hearts || null);
-  const user = JSON.parse(localStorage.getItem("user"));
+    useState(
+      postData?.interactions?.likes
+      + postData?.interactions?.hahas
+      + postData?.interactions?.hearts
+      + postData?.interactions?.wows
+      + postData?.interactions?.sads
+      + postData?.interactions?.angrys
+      || 0);
+  const user = JSON.parse(localStorage.getItem('user'));
   const [activeCommentPost, setActiveCommentPost] = useState(null);
   const [activeReactionPost, setActiveReactionPost] = useState(null);
   const [postReactions, setPostReactions] = useState({});
   const getActiveReaction = (postData) => {
-    if (postData?.interactions?.isLiked) return "like";
-    if (postData?.interactions?.isHaha) return "haha";
-    if (postData?.interactions?.isHeart) return "heart";
-    return null;
+    return postData.interactions?.userAction || null;
   };
 
   useEffect(() => {
@@ -61,7 +67,7 @@ const handleReaction = async (postId, reaction) => {
       }));
     }
   } catch (error) {
-    console.error("Lỗi khi gửi reaction:", error);
+    console.error('Lỗi khi gửi reaction:', error);
   }
 };
 
@@ -97,14 +103,14 @@ const getReactionDisplay = (postId) => {
   const activeReaction = postReactions[postId]; // Ưu tiên lấy từ state cập nhật mới nhất
 
   if (!activeReaction) {
-    return { icon: "far fa-thumbs-up", text: "Thích", className: "" };
+    return { icon: 'far fa-thumbs-up', text: 'Thích', className: '' };
   }
 
   const reaction = reactions.find((r) => r.name === activeReaction);
   return {
-    icon: reaction ? reaction.icon : "far fa-thumbs-up",
-    text: reaction ? reaction.label : "Thích",
-    className: reaction ? `active-${reaction.name}` : "",
+    icon: reaction ? reaction.icon : 'far fa-thumbs-up',
+    text: reaction ? reaction.label : 'Thích',
+    className: reaction ? `active-${reaction.name}` : '',
   };
 };
 
@@ -113,73 +119,73 @@ const getReactionDisplay = (postId) => {
 
   const reactionDisplay = getReactionDisplay(postData?._id);
   return <>
-    <div key={postData._id} className="post">
-              <div className="post-header">
-                <div className="post-user">
-                  <div className="avatar">
+    <div key={postData._id} className='post'>
+              <div className='post-header'>
+                <div className='post-user'>
+          <div className='avatar'
+            onClick={() => navigate(`/index/profile/${postData.author._id}`)}>
                     <img src={postData.author.picture} />
                   </div>
-                  <div className="user-info">
-                    <div className="username-container">
-                      <span className="username">{postData.author.name}</span>
-                      <span className="follow-text">Theo dõi</span>
+                  <div className='user-info'>
+                    <div className='username-container'>
+                      <span className='username'>{postData.author.name}</span>
+                      <span className='follow-text'>Theo dõi</span>
                     </div>
-            <div className="post-metadata">
-                      <span className="post-time">{convertTime(post.createdAt)}</span>
-                      
+                    <div className='post-metadata'>
+                      <span className='post-time'>{convertTime(post.createdAt)}</span>
                     </div>
                   </div>
                 </div>
-                <div className="post-options">
-                  <button className="options-button"><i className="fas fa-ellipsis-h"></i></button>
-                  <button className="close-button"><i className="fas fa-times"></i></button>
+                <div className='post-options'>
+                  <button className='options-button'><i className='fas fa-ellipsis-h'></i></button>
+                  <button className='close-button'><i className='fas fa-times'></i></button>
                 </div>
               </div>
 
-              <div className="post-content">
+              <div className='post-content'>
                 <p>{postData.content}</p>
               </div>
 
               {postData.assets.length>0 && (
-                <div className="post-image">
-                  <img src={postData.assets[0].url} alt="Post" />
+                <div className='post-image'>
+                  <img src={postData.assets[0].url} alt='Post' />
                 </div>
               )}
 
-              <div className="post-stats">
-        <div className="reaction-icons">
+              <div className='post-stats'>
+        <div className='reaction-icons'>
           <span className='reaction-count likes-count'>{
             countReaction
               }</span>
                   {postData?.interactions?.likes > 0 && (
-                    <span className="reaction like-reaction" style={{ backgroundColor: '#1877F2',color: 'white' }}>
-                      <i className="fas fa-thumbs-up"></i>
+                    <span className='reaction like-reaction' style={{ backgroundColor: '#1877F2',color: 'white' }}>
+                      <i className='fas fa-thumbs-up'></i>
                     </span>
                   )}
                   {postData?.interactions?.hahas > 0 && (
-                    <span className="reaction haha-reaction" style={{ backgroundColor: '#F7B125',color: 'white' }}>
-                      <i className="fas fa-laugh-squint"></i>
+                    <span className='reaction haha-reaction' style={{ backgroundColor: '#F7B125',color: 'white' }}>
+                      <i className='fas fa-laugh-squint'></i>
                     </span>
                   )}
                   {postData?.interactions?.hearts > 0 && (
-                    <span className="reaction love-reaction" style={{ backgroundColor: '#F33E58',color: 'white' }}>
-                      <i className="fas fa-heart"></i>
+                    <span className='reaction love-reaction' style={{ backgroundColor: '#F33E58',color: 'white' }}>
+                      <i className='fas fa-heart'></i>
                     </span>
                   )}
-                  <span className="likes-count">
+                  <span className='likes-count'>
                     {postData?.interactions?.likes >= 1000
                       ? `${Math.floor(postData?.interactions?.likes / 1000)}K`
                       : postData?.interaction?.likes}
                   </span>
                 </div>
 
-                <div className="engagement-stats">
-                  <span className="comments-count">{postData.comments >= 1000 ? `${Math.floor(postData.coundComment / 100) / 10}K` : postData.coundComment} bình luận</span>
+                <div className='engagement-stats'>
+                  <span className='comments-count'>{postData.comments >= 1000 ? `${Math.floor(postData.coundComment / 100) / 10}K` : postData.coundComment} bình luận</span>
                 </div>
               </div>
 
-              <div className="post-actions">
-                <div className="action-wrapper">
+              <div className='post-actions'>
+                <div className='action-wrapper'>
                   <button
                     className={`action-btn like-btn ${reactionDisplay.className}`}
                     onClick={() => toggleReactions(postData._id)}
@@ -192,18 +198,18 @@ const getReactionDisplay = (postId) => {
                   {/* Reactions popup */}
                   {activeReactionPost === postData._id && (
                     <div
-                      className="reactions-popup"
+                      className='reactions-popup'
                       onMouseLeave={() => setActiveReactionPost(null)}
                     >
                       {reactions.map((reaction) => (
                         <button
                           key={reaction.name}
-                          className="reaction-btn"
+                          className='reaction-btn'
                           title={reaction.label}
                           onClick={() => handleReaction(postData._id, reaction.name)}
                         >
                           <div
-                            className="reaction-icon"
+                            className='reaction-icon'
                             style={{ backgroundColor: reaction.color }}
                           >
                             <i className={reaction.icon}></i>
@@ -214,14 +220,14 @@ const getReactionDisplay = (postId) => {
                   )}
                 </div>
                 <button
-                  className="action-btn comment-btn"
+                  className='action-btn comment-btn'
                   onClick={() => toggleComments(postData._id)}
                 >
-                  <i className="far fa-comment"></i>
+                  <i className='far fa-comment'></i>
                   <span>Bình luận</span>
                 </button>
-                <button className="action-btn share-btn">
-                  <i className="far fa-share-square"></i>
+                <button className='action-btn share-btn'>
+                  <i className='far fa-share-square'></i>
                   <span>Chia sẻ</span>
                 </button>
               </div>

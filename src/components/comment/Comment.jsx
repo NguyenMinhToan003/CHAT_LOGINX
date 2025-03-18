@@ -131,7 +131,7 @@ const toggleReplies = async (commentId) => {
             <div className="post-header">
               <div className="post-user">
                 <div className="avatar">
-                  <img src={postData.assets[0].url} />
+                  <img src={postData?.author?.picture} />
                 </div>
                 <div className="user-info">
                   <div className="username-container">
@@ -195,7 +195,7 @@ const toggleReplies = async (commentId) => {
                     {replyingTo === comment._id && (
                       <div className="reply-input">
                         <div className="avatar">
-                           <div style={{width:40 , height:40 , borderRadius:'100%', background:'green'}}></div>
+                           <img src={user.picture} />
                         </div>
                         <div className="reply-form">
                           <input 
