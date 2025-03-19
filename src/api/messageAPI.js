@@ -7,3 +7,7 @@ export const deleteMessage = async(messageId, userId) => {
   })
   return response.data
 }
+export const createMessageImage = async(data) => {
+  const response = await axiosInstance.post('/message/create', data)
+  return response.data
+}
