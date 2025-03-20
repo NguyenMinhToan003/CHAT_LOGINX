@@ -6,7 +6,7 @@ import { emojiMap } from "../utils/checkIcon";
 const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
 
   const content = message.content;
-
+  const isCheckEmoji = emojiMap.find(emoji=>emoji.emoji === content);
   return (
     <Box sx={{ padding: '0.5rem 0' }}>
       {message.followedMessage && message.status === 'read' && (
@@ -21,9 +21,8 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
         >
           <Box
             sx={{
-              maxWidth: '70%',
+              maxWidth: '50%',
               backgroundColor: '#f0f0f0f0',
-              padding: '0.75rem 1.25rem',
               color: 'gray',
               height: 'fit-content',
               display: 'flex',
@@ -31,6 +30,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
               position: 'relative',
               border: '1px solid green',
               borderRadius: 2,
+              padding: isCheckEmoji?'1rem 2rem':'0.75rem 1.25rem',
             }}
           >
             <Typography
@@ -42,11 +42,28 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                 textOverflow: 'ellipsis',
                 lineHeight: '1.2rem',
                 maxHeight: '4.8rem',
-                fontSize: '0.875rem',
+                fontSize: isCheckEmoji? '2rem':'1.0625rem',
               }}
             >
               {message?.followedMessage?.content}
             </Typography>
+            {message?.followedMessage?.images?.length > 0 && (
+            <Box sx={{ display: 'flex', flexWrap:'wrap', gap: 1, width:'100%', justifyContent: 'center', alignItems: 'center' }}>
+              {message?.followedMessage?.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image.url}
+                  alt={`Image ${index}`}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '200px',
+                    borderRadius: '8px',
+                    objectFit: 'contain',
+                  }}
+                />
+              ))}
+            </Box>
+          )}
             <RedoIcon />
           </Box>
         </Box>
@@ -74,13 +91,13 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
           onClick={() => setRepMessage(message)}
           sx={{
             zIndex: 1,
-            maxWidth: '70%',
+            maxWidth: '50%',
             backgroundColor:
               message?.sender?._id === user._id
                 ? 'messages.bg_primary'
                 : 'messages.bg_secondary',
             borderRadius: 3,
-            padding: '0.75rem 1.25rem',
+            padding: isCheckEmoji?'1rem 2rem':'0.75rem 1.25rem',
             height: 'fit-content',
             display: 'flex',
             flexDirection: 'column',
@@ -113,7 +130,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                   : 'messages.text_secondary',
               fontStyle: message?.status === 'delete' ? 'italic' : 'normal',
               fontWeight: 500,
-              fontSize: '1.0625rem',
+              fontSize: isCheckEmoji? '2rem':'1.0625rem',
               lineHeight: '1.625rem',
               whiteSpace: 'pre-wrap',
               overflowWrap: 'break-word',
@@ -124,7 +141,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
           </Typography>
 
                             {message?.images && message.images.length > 0 && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, marginTop: 1 }}>
+            <Box sx={{ display: 'flex', flexWrap:'wrap', gap: 1, width:'100%', justifyContent: 'center', alignItems: 'center' }}>
               {message.images.map((image, index) => (
                 <img
                   key={index}

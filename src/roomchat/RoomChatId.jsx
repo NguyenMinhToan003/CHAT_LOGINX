@@ -10,7 +10,6 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import AddReactionIcon from '@mui/icons-material/AddReaction';
-import SendIcon from '@mui/icons-material/Send';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
@@ -52,8 +51,18 @@ const RoomChatId = () => {
 
   const handleChangeMessage = (e) => setMessage(e.target.value);
   const handlSetRepMessage = (message) => {
-    setRepMessage(message);
-    inputRef.current.focus();
+    console.log('message rep', {
+      _id: message._id,
+      content: message.content,
+      sender: message.sender,
+      images: message.images,
+    });
+    setRepMessage((prev) => (prev === message ? null : {
+      _id: message._id,
+      content: message.content,
+      sender: message.sender,
+      images: message.images,
+    }));
   };
 
   const handleSentMessageImage = async (e) => {
@@ -108,12 +117,16 @@ const RoomChatId = () => {
   const handleSentMessageText = async () => {
     if (!message.trim()) return;
     let response;
+    console.log('repMessage', repMessage);
     if (repMessage === null) {
       response = await createMessage(id, user?._id, message);
     } else {
       response = await createMessage(id, user?._id, message, repMessage._id);
       setRepMessage(null);
     }
+
+    
+
     if (response.insertedId) {
       let data = {
         status: 'read',
@@ -126,13 +139,9 @@ const RoomChatId = () => {
         },
         roomId: id,
         images: [],
+        followedMessage: repMessage,
       };
-      if (repMessage) {
-        data.followedMessage = {
-          _id: repMessage._id,
-          content: repMessage.content,
-        };
-      }
+      
       socket.emit('message', data);
       setMessage('');
     }
@@ -158,7 +167,6 @@ const RoomChatId = () => {
   };
 
   const handleDeleteMessage = async (id) => {
-    console.log('id', id);
     const response = await deleteMessage(id, user._id);
     await fetchRoom();
   };
@@ -407,34 +415,42 @@ const RoomChatId = () => {
                         </IconButton>
                       </Tooltip>
 
-                      {showEmojiPicker && (
+                      
                         <Box
                           sx={{
                             position: 'absolute',
                             bottom: '100%',
                             left: 0,
-                            backgroundColor: 'secondary.main',
+                            backgroundColor: 'gray',
                             borderRadius: 2,
                             boxShadow: 3,
-                            padding: 1,
+                            padding: 2,
                             display: 'flex',
-                            gap: 1,
-                              zIndex: 10,
-                              flexWrap: 'wrap',
-                        width: 170,
+                            visibility: showEmojiPicker ? 'visible' : 'hidden',
+                            opacity: showEmojiPicker ? 1 : 0,
+                            height: 170,
+                            overflowY: 'auto',
+                            overflowX: 'hidden',
+                            width: showEmojiPicker ? 360 : 0,
+                            zIndex: 10,
+                            flexWrap: 'wrap',
+                            transition: 'width 0.5s, height 0.5s, opacity 0.5s, visibility 0.5s',
                           }}
-                        >
+                          >
                           {emojiList.map((item) => (
                             <Tooltip key={item.name} title={item.name}>
                               <IconButton
                                 onClick={() => handleSentMessageIcon(item.emoji)}
                                 sx={{
+                                  width: 'fit-content',
+                                  height: 'fit-content',
                                   fontSize: '1.5rem',
-                                  padding: '4px',
-                                  backgroundColor: item.background,
+                                  padding: 1,
+                                  backgroundColor: 'transparent',
                                   
                                   '&:hover': {
-                                    transform: 'scale(1.2)',
+                                    backgroundColor: item.background,
+                                    transform: 'scale(1.5) rotate(360deg)',
                                     transition: 'transform 0.2s ease',
                                   },
                                 }}
@@ -444,7 +460,6 @@ const RoomChatId = () => {
                             </Tooltip>
                           ))}
                         </Box>
-                      )}
                     </Box>
 
                     <Tooltip title="Attach file">
@@ -462,7 +477,6 @@ const RoomChatId = () => {
                       value={message}
                       onChange={(event) => handleChangeMessage(event)}
                       onKeyPress={handleKeyPress}
-                      component="textarea"
                       placeholder="Aa"
                       ref={inputRef}
                       sx={{
@@ -482,11 +496,7 @@ const RoomChatId = () => {
                         <ThumbUpAltIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Send">
-                      <IconButton onClick={handleSentMessageText}>
-                        <SendIcon />
-                      </IconButton>
-                    </Tooltip>
+                    
                   </Box>
                 </Box>
               )}
