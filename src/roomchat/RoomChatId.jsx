@@ -430,7 +430,7 @@ const RoomChatId = () => {
                             display: 'flex',
                             visibility: showEmojiPicker ? 'visible' : 'hidden',
                             opacity: showEmojiPicker ? 1 : 0,
-                            maxHeight: 550,
+                            height: showEmojiPicker ? 400 : 0,
                             overflowY: 'auto',
                             overflowX: 'hidden',
                             width: showEmojiPicker ? 360 : 0,
@@ -618,7 +618,7 @@ const RoomChatId = () => {
               sx={{
                 display: toggleShowInfoRoom ? 'block' : 'none',
                 transition: 'display 1.5s ease-in-out',
-                flex: 1,
+                flex:1,
                 backgroundColor: 'background.paper',
                 borderRadius: 2,
                 overflowY: 'auto',
