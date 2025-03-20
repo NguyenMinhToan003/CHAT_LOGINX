@@ -6,9 +6,10 @@ import { emojiMap } from "../utils/checkIcon";
 const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
 
   const content = message.content;
-  const isCheckEmoji = emojiMap.find(emoji=>emoji.emoji === content);
+  const isCheckEmoji = emojiMap.find(emoji => emoji.emoji === content);
+  const isCheckEmojiFollowed = emojiMap.find(emoji => emoji.emoji === message?.followedMessage?.content);
   return (
-    <Box sx={{ padding: '0.5rem 0' }}>
+    <Box sx={{ padding: '0.5rem 0' }} id={message._id}>
       {message.followedMessage && message.status === 'read' && (
         <Box
           sx={{
@@ -19,8 +20,9 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
             flexDirection: message?.sender?._id === user._id ? 'row-reverse' : 'row',
           }}
         >
-          <Box
-            sx={{
+          <a
+            href={`#${message.followedMessage._id}`}
+            style={{
               maxWidth: '50%',
               backgroundColor: '#f0f0f0f0',
               color: 'gray',
@@ -30,7 +32,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
               position: 'relative',
               border: '1px solid green',
               borderRadius: 2,
-              padding: isCheckEmoji?'1rem 2rem':'0.75rem 1.25rem',
+              padding: isCheckEmojiFollowed?'1rem 2rem':'0.75rem 1.25rem',
             }}
           >
             <Typography
@@ -42,7 +44,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                 textOverflow: 'ellipsis',
                 lineHeight: '1.2rem',
                 maxHeight: '4.8rem',
-                fontSize: isCheckEmoji? '2rem':'1.0625rem',
+                fontSize: isCheckEmojiFollowed? '1.5rem':'0.8625rem',
               }}
             >
               {message?.followedMessage?.content}
@@ -65,7 +67,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
             </Box>
           )}
             <RedoIcon />
-          </Box>
+          </a>
         </Box>
       )}
 
@@ -88,7 +90,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
           />
         )}
         <Box
-          onClick={() => setRepMessage(message)}
+          onClick={() => message?.status !=='delete' && setRepMessage(message)}
           sx={{
             zIndex: 1,
             maxWidth: '50%',

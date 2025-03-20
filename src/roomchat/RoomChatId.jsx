@@ -51,12 +51,6 @@ const RoomChatId = () => {
 
   const handleChangeMessage = (e) => setMessage(e.target.value);
   const handlSetRepMessage = (message) => {
-    console.log('message rep', {
-      _id: message._id,
-      content: message.content,
-      sender: message.sender,
-      images: message.images,
-    });
     setRepMessage((prev) => (prev === message ? null : {
       _id: message._id,
       content: message.content,
@@ -95,7 +89,14 @@ const RoomChatId = () => {
   };
 
   const handleSentMessageIcon = async (emoji) => {
-    const response = await createMessage(id, user?._id, emoji);
+    let response
+    if (repMessage!==null) {
+      response = await createMessage(id, user?._id, emoji, repMessage._id);
+      setRepMessage(null);
+    }
+    else {
+      response = await createMessage(id, user?._id, emoji);
+    }
     if (response.insertedId) {
       let data = {
         status: 'read',
@@ -108,6 +109,7 @@ const RoomChatId = () => {
         },
         roomId: id,
         images: [],
+        followedMessage: repMessage,
       };
       socket.emit('message', data);
     }
@@ -202,7 +204,6 @@ const RoomChatId = () => {
         setCheckIsMember(room.members.some((m) => m._id === user._id));
       }
       setIsLoading(false);
-      scrollToBottom();
     } catch (error) {
       console.error('Lỗi khi fetch room chat:', error);
     }
@@ -328,6 +329,7 @@ const RoomChatId = () => {
                 {messages.length > 0 &&
                   messages?.map((data, index) => (
                     <MessageItem
+                     
                       removeMessage={handleDeleteMessage}
                       setRepMessage={handlSetRepMessage}
                       message={data}
