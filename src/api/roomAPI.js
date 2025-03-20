@@ -10,3 +10,11 @@ export const leaveRoom = async ({ roomId, userId }) => {
   const response = await axiosInstance.post('/roomchat/leave', { roomId, userId })
   return response.data
 }
+export const findOrCreateRoomPrivate = async (userSearchId, userOrtherId) => {
+  const response = await axiosInstance.post('/roomchat/find-or-create-room-private',
+    { 
+      userSearchId,
+      userOrtherId
+     })
+  return response.data
+}
