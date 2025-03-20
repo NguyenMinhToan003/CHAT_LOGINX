@@ -9,6 +9,7 @@ import Login from '../auth/Login'
 import Index from "../index/Index";
 import Profile from '../profile/Profile'
 import Main from "../index/Main";
+import RoomChatPrivate from "../roomchat/RoomChatPrivate";
 
 
 const AppRouter = () => {
@@ -22,7 +23,7 @@ const AppRouter = () => {
         <Route path='/roomchats/:id' element={<RoomChatId />} />
         <Route path='/video-call/:id' element={<VideoCall />} />
         <Route path='/login' element={<Login />} />
-      
+        <Route path='/chat-user/:id' element={<RoomChatPrivate />} />
         <Route path='/index' element={<Main />} >
           <Route index  element={<Index />} />
           <Route path='profile/:id' element={<Profile />} />

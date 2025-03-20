@@ -31,4 +31,9 @@ export const emojiMap = [
   { emoji: '😵', name: 'Dizzy', color: '#9e9e9e', background: '#e0e0e0' }, // Xám
   { emoji: '🤡', name: 'Clown', color: '#ff9800', background: '#ffe0b2' }, // Cam đậm hơn
   { emoji: '👑', name: 'King', color: '#ffca28', background: '#fff9c4' }, // Vàng đậm hơn
+  // 4 emoji mới được thêm
+  { emoji: '✨', name: 'Sparkle', color: '#ffeb3b', background: '#fff9c4' }, // Vàng sáng hơn
+  { emoji: '🚀', name: 'Rocket', color: '#2196f3', background: '#bbdefb' }, // Xanh dương đậm hơn
+  { emoji: '🍕', name: 'Pizza', color: '#ff9800', background: '#ffe0b2' }, // Cam đậm hơn
+  { emoji: '🐱', name: 'Cat', color: '#4caf50', background: '#c8e6c9' } // Xanh lá đậm hơn
 ];
