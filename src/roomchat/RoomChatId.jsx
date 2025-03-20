@@ -421,14 +421,16 @@ const RoomChatId = () => {
                             position: 'absolute',
                             bottom: '100%',
                             left: 0,
-                            backgroundColor: 'gray',
+                            backgroundColor: '#263238',
                             borderRadius: 2,
                             boxShadow: 3,
-                            padding: 2,
+                            padding: 3,
+                            justifyContent: 'center',
+                            alignItems: 'center',
                             display: 'flex',
                             visibility: showEmojiPicker ? 'visible' : 'hidden',
                             opacity: showEmojiPicker ? 1 : 0,
-                            height: 170,
+                            maxHeight: 550,
                             overflowY: 'auto',
                             overflowX: 'hidden',
                             width: showEmojiPicker ? 360 : 0,
@@ -436,7 +438,7 @@ const RoomChatId = () => {
                             flexWrap: 'wrap',
                             transition: 'width 0.5s, height 0.5s, opacity 0.5s, visibility 0.5s',
                           }}
-                          >
+                        >
                           {emojiList.map((item) => (
                             <Tooltip key={item.name} title={item.name}>
                               <IconButton
@@ -447,10 +449,9 @@ const RoomChatId = () => {
                                   fontSize: '1.5rem',
                                   padding: 1,
                                   backgroundColor: 'transparent',
-                                  
                                   '&:hover': {
                                     backgroundColor: item.background,
-                                    transform: 'scale(1.5) rotate(360deg)',
+                                    transform: 'scale(1.4) rotate(360deg)',
                                     transition: 'transform 0.2s ease',
                                   },
                                 }}
