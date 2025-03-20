@@ -64,12 +64,14 @@ const RoomChatId = () => {
     if (!files.length) return;
     let formData = new FormData();
     files.forEach((file) => {
-      console.log('file', file);
       formData.append('files', file);
     });
     formData.append('roomId', id);
     formData.append('sender', user._id);
     formData.append('content', 'image');
+    if (repMessage) {
+      formData.append('followMessageId', repMessage._id);
+    }
     const response = await createMessageImage(formData);
     if (response.insertedId) {
       let data = {
@@ -83,8 +85,10 @@ const RoomChatId = () => {
         },
         roomId: id,
         images: response.images,
+        followedMessage: repMessage,
       };
       socket.emit('message', data);
+      setRepMessage(null);
     }
   };
 
