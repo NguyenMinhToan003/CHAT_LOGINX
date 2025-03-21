@@ -1,4 +1,4 @@
-import { Avatar, Box, IconButton, Typography } from "@mui/material";
+import { Avatar, Box, IconButton, ImageList, ImageListItem, Typography } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
 import RedoIcon from '@mui/icons-material/Redo';
 import { emojiMap } from "../utils/checkIcon";
@@ -9,7 +9,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
   const isCheckEmoji = emojiMap.find(emoji => emoji.emoji === content);
   const isCheckEmojiFollowed = emojiMap.find(emoji => emoji.emoji === message?.followedMessage?.content);
   return (
-    <Box sx={{ padding: '0.5rem 0' }} id={message._id}>
+    <Box sx={{ padding: '0.5rem 0' }} id={message._id} key={key}>
       {message.followedMessage && message.status === 'read' && (
         <Box
           sx={{
@@ -50,9 +50,17 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
               {message?.followedMessage?.content}
             </Typography>
             {message?.followedMessage?.images?.length > 0 && (
-            <Box sx={{ display: 'flex', flexWrap:'wrap', gap: 1, width:'100%', justifyContent: 'center', alignItems: 'center' }}>
-              {message?.followedMessage?.images.map((image, index) => (
-                <img
+            <ImageList  sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+                {message?.followedMessage?.images.map((image, index) => {
+                  image?.type === 'video' ?
+                <video
+                  key={index}
+                  src={image.url}
+                  controls
+                    style={{ maxWidth: '100%', borderRadius: 5 }}
+                  />
+                  :
+                  <img
                   key={index}
                   src={image.url}
                   alt={`Image ${index}`}
@@ -63,8 +71,8 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                     objectFit: 'contain',
                   }}
                 />
-              ))}
-            </Box>
+                })}
+            </ImageList>
           )}
             <RedoIcon />
           </a>
@@ -145,7 +153,15 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                             {message?.images && message.images.length > 0 && (
             <Box sx={{ display: 'flex', flexWrap:'wrap', gap: 1, width:'100%', justifyContent: 'center', alignItems: 'center' }}>
               {message.images.map((image, index) => (
-                <img
+                image?.type === 'video' ?
+                <video
+                  key={index}
+                  src={image.url}
+                  controls
+                    style={{ maxWidth: '100%', borderRadius: 5 }}
+                  />
+                  :
+                  <img
                   key={index}
                   src={image.url}
                   alt={`Image ${index}`}
