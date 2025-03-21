@@ -25,11 +25,13 @@ import { createMessageImage, deleteMessage } from '../api/messageAPI';
 import CircularProgress from '@mui/material/CircularProgress';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import { emojiMap } from '../utils/checkIcon';
+import AddMemberForm from '../components/AddMemberForm';
 
 // Danh sách biểu tượng để chọn
 const emojiList = emojiMap
 
 const RoomChatId = () => {
+  const [openAddMemberForm, setOpenAddMemberForm] = useState(false);
   const navigate = useNavigate();
   const { socket } = useSocket();
   const { id } = useParams();
@@ -217,7 +219,7 @@ const RoomChatId = () => {
     if (socket) {
       socket.emit('leave-room', { roomId: id, user: user._id });
     }
-    navigate('/roomchats');
+    navigate(-1)
   };
 
   useEffect(() => {
@@ -246,6 +248,11 @@ const RoomChatId = () => {
   return (
     <>
       <audio ref={audioRef} src={audio} />
+      <AddMemberForm
+        room={room}
+      open={openAddMemberForm}
+      onClose={() => setOpenAddMemberForm(false)}
+    />
       {isLoading ? (
         <Box
           sx={{
@@ -436,12 +443,11 @@ const RoomChatId = () => {
                             display: 'flex',
                             visibility: showEmojiPicker ? 'visible' : 'hidden',
                             opacity: showEmojiPicker ? 1 : 0,
-                            height: showEmojiPicker ? 400 : 0,
+                            height:  400,
                             overflow: 'hidden',
-                            width: showEmojiPicker ? 360 : 0,
+                            width: 360,
                             zIndex: 10,
                             flexWrap: 'wrap',
-                            transition: 'width 0.5s, height 0.5s, opacity 0.5s, visibility 0.5s',
                           }}
                         >
                           {emojiList.map((item) => (
@@ -585,7 +591,7 @@ const RoomChatId = () => {
                 }}
               >
                 <Tooltip title="Thêm thành viên">
-                  <IconButton color="primary">
+                  <IconButton color="primary" onClick={() => setOpenAddMemberForm(true)}>
                     <AddOutlinedIcon />
                   </IconButton>
                 </Tooltip>
@@ -648,6 +654,7 @@ const RoomChatId = () => {
               >
                 {room?.members?.map((member, index) => (
                   <Box
+                    onClick={() => {navigate(`/chat-user/${member._id}`)}}
                     key={index}
                     sx={{
                       display: 'flex',
