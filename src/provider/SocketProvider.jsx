@@ -1,10 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client';
 
 const SocketContext = createContext();
 
-// const URL = "http://localhost:8123";
+// const URL = 'http://localhost:8123';
 const URL = import.meta.env.VITE_SERVER_HOST
 
 
@@ -26,22 +26,21 @@ export const SocketProvider = ({ user, children }) => {
     }
 
     const newSocket = io(URL, {
-      transports: ["websocket"],
-      reconnection: true, // Tự động kết nối lại nếu mất kết nối
-      reconnectionAttempts: 5, // Số lần thử kết nối lại
+      transports: ['websocket'],
+      reconnection: true, 
+      reconnectionAttempts: 5, 
     });
 
-    // Chỉ đặt socket khi đã kết nối thành công
-    newSocket.on("connect", () => {
+
+    newSocket.on('connect', () => {
       setSocket(newSocket);
-      newSocket.emit("addNewUser", user);
+      newSocket.emit('addNewUser', user);
+      newSocket.emit('join-room',{roomId: user._id})
     });
 
-    newSocket.on("connect_error", (error) => {
-    });
 
-    newSocket.on("disconnect", () => {
-      setSocket(null); // Đặt lại socket về null khi ngắt kết nối
+    newSocket.on('disconnect', () => {
+      setSocket(null);
     });
 
     // Nhận danh sách người dùng online
@@ -53,10 +52,10 @@ export const SocketProvider = ({ user, children }) => {
       setOnlineUsers(users);
     };
 
-    newSocket.on("getListUsers", handleUpdateUsers);
+    newSocket.on('getListUsers', handleUpdateUsers);
 
     return () => {
-      newSocket.off("getListUsers", handleUpdateUsers);
+      newSocket.off('getListUsers', handleUpdateUsers);
       newSocket.disconnect();
     };
   }, [user]); // Chỉ chạy lại khi user thay đổi
@@ -77,14 +76,14 @@ export const SocketProvider = ({ user, children }) => {
       setOnCommingCall(data);
     };
 
-    socket.on("iscomming-call", handleIncomingCall);
-    socket.on("hangup-call", handleHangupCall);
-    socket.on("accept-call", handleAcceptCall);
+    socket.on('iscomming-call', handleIncomingCall);
+    socket.on('hangup-call', handleHangupCall);
+    socket.on('accept-call', handleAcceptCall);
 
     return () => {
-      socket.off("iscomming-call", handleIncomingCall);
-      socket.off("hangup-call", handleHangupCall);
-      socket.off("accept-call", handleAcceptCall);
+      socket.off('iscomming-call', handleIncomingCall);
+      socket.off('hangup-call', handleHangupCall);
+      socket.off('accept-call', handleAcceptCall);
     };
   }, [socket]); // Chạy lại khi socket thay đổi
 
@@ -100,11 +99,11 @@ export const SocketProvider = ({ user, children }) => {
       isRinging: true,
       roomId: roomId,
     };
-    socket.emit("call-video", callData);
-    window.open(`/video-call/${roomId}`, "_blank");
+    socket.emit('call-video', callData);
+    window.open(`/video-call/${roomId}`, '_blank');
   };
 
-  // Chấp nhận cuộc gọi
+
   const handleAcceptCall = () => {
     if (!socket || !socket.connected) {
       return;
@@ -115,16 +114,18 @@ export const SocketProvider = ({ user, children }) => {
       isCallAccepted: true,
     };
     setOnCommingCall(updateAcceptCall);
-    socket.emit("accept-call", updateAcceptCall);
-    window.open(`/video-call/${onCommingCall.roomId}`, "_blank");
+    socket.emit('accept-call', updateAcceptCall);
+    window.open(`/video-call/${onCommingCall.roomId}`, '_blank');
   };
 
   const handleHangupCall = () => {
     if (!socket || !socket.connected) {
       return;
     }
-    socket.emit("hangup-call", {
-      sender: { userId: user._id, name: user.name, picture: user.picture },
+    socket.emit('hangup-call', {
+      sender: {
+        userId: user._id, name: user.name, picture: user.picture
+      },
       receiver: onCommingCall.receiver,
     });
     setOnCommingCall((prev) => ({ ...prev, isRinging: false }));

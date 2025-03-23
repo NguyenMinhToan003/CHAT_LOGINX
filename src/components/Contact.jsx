@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { getFriends } from "../api/userAPI";
+import { useNavigate } from "react-router-dom";
 
 const Contacts = () => {
   const user = JSON.parse(localStorage.getItem("user"))
   const [contacts, setContacts] = useState([])
+  const navigate = useNavigate()
   const fetchContacts = async () => {
     const res = await getFriends(user._id)
     setContacts(res)
-    console.log(res)
   }
   useEffect(() => {
     fetchContacts()
@@ -24,7 +25,9 @@ const Contacts = () => {
       </div>
       <div className="contacts-list">
         {contacts.map(contact => (
-          <div key={contact._id} className="contact-item">
+          <div key={contact._id} className="contact-item" onClick={() => {
+            navigate(`/chat-user/${contact._id}`)
+          }}>
             <div className="contact-avatar">
               <img src={contact.picture} />
               {contact.online && <span className="online-status"></span>}

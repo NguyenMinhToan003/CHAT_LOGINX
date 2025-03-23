@@ -21,13 +21,14 @@ import { createMessageImage, deleteMessage } from '../api/messageAPI';
 import CircularProgress from '@mui/material/CircularProgress';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import { emojiMap } from '../utils/checkIcon';
+import VideocamIcon from '@mui/icons-material/Videocam'
 
 
 const emojiList = emojiMap
 
 const RoomChatPrivate = () => {
   const navigate = useNavigate();
-  const { socket } = useSocket();
+  const { socket ,handleCallVideo} = useSocket();
   const idUserOrder = useParams().id;
   const inputRef = useRef(null);
   const user = JSON.parse(localStorage.getItem('user'));
@@ -119,7 +120,6 @@ const RoomChatPrivate = () => {
   const handleSentMessageText = async () => {
     if (!message.trim()) return;
     let response;
-    console.log('repMessage', repMessage);
     if (repMessage === null) {
       response = await createMessage(id, user?._id, message);
     } else {
@@ -163,9 +163,18 @@ const RoomChatPrivate = () => {
 
 
   const handleDeleteMessage = async (id) => {
-    const response = await deleteMessage(id, user._id);
+    await deleteMessage(id, user._id);
     await fetchRoom();
   };
+
+  const handleVideoCallFunc = async () => {
+    handleCallVideo({
+      userId: idUserOrder,
+      name: room.info.name,
+      picture: room.info.avartar,
+      socketId: idUserOrder
+    })
+  }
 
 
 
@@ -214,7 +223,10 @@ const RoomChatPrivate = () => {
         audioRef.current.play();
       }
     };
-    socket.on('message', handleMessage);
+    socket.on('message', (data) => {
+      handleMessage(data)
+      
+    });
     return () => {
       socket.off('message', handleMessage);
     };
@@ -289,7 +301,13 @@ const RoomChatPrivate = () => {
                     </Typography>
                   </Button>
                 </Box>
-                <Tooltip title="menu">
+                  <Box>
+                    <Tooltip title="Call video">
+                      <IconButton color="primary">
+                        <VideocamIcon onClick={()=>handleVideoCallFunc()} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="menu">
                   <IconButton
                     color="primary"
                     onClick={() => setToggleShowInfoRoom(!toggleShowInfoRoom)}
@@ -297,6 +315,7 @@ const RoomChatPrivate = () => {
                     <MoreHorizIcon sx={{ color: 'text.primary' }} />
                   </IconButton>
                 </Tooltip>
+                </Box>
               </Box>
               <Divider />
               <Box
