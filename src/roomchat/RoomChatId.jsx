@@ -228,6 +228,7 @@ const RoomChatId = () => {
   }, [id, socket]);
 
   useEffect(() => {
+    
     scrollToBottom();
   }, [messages]);
 
@@ -419,7 +420,7 @@ const RoomChatId = () => {
                     }}
                   >
                     <Box
-                      sx={{ position: 'relative' }}
+                      sx={{ position: 'relative', }}
                       onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                     >
                       <Tooltip title="Add reaction">
@@ -432,7 +433,7 @@ const RoomChatId = () => {
                         <Box
                           sx={{
                             position: 'absolute',
-                            bottom: '100%',
+                            bottom: '120%',
                             left: 0,
                             backgroundColor: '#263238',
                             borderRadius: 2,
@@ -440,12 +441,12 @@ const RoomChatId = () => {
                             padding: 3,
                             justifyContent: 'center',
                             alignItems: 'center',
-                            display: 'flex',
-                            visibility: showEmojiPicker ? 'visible' : 'hidden',
-                            opacity: showEmojiPicker ? 1 : 0,
+                            display: showEmojiPicker?'flex':'none',
+
                             height:  400,
-                            overflow: 'hidden',
                             width: 360,
+                            transition: 'all 0.5s ease',
+                            overflow: 'hidden',
                             zIndex: 10,
                             flexWrap: 'wrap',
                           }}

@@ -1,7 +1,17 @@
-import { Avatar, Box, IconButton, ImageList, ImageListItem, Typography } from "@mui/material";
+
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+
 import ClearIcon from '@mui/icons-material/Clear';
 import RedoIcon from '@mui/icons-material/Redo';
 import { emojiMap } from "../utils/checkIcon";
+import { CardCover } from "@mui/joy";
+
 
 const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
 
@@ -53,24 +63,31 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
             <ImageList  sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
                 {message?.followedMessage?.images.map((image, index) => {
                   image?.type === 'video' ?
-                <video
-                  key={index}
-                  src={image.url}
-                  controls
-                    style={{ maxWidth: '100%', borderRadius: 5 }}
-                  />
+                    <Card component="li" sx={{ minWidth: 300, flexGrow: 1 , maxHeight: 200, borderRadius: 5, overflow: 'hidden' }}>
+                    <CardCover>
+                      <video
+                        key={index}
+                        controls
+                      >
+                        <source src={image.url} type="video/mp4" />
+                      </video>
+              
+                      </CardCover>
+                      </Card>
                   :
-                  <img
-                  key={index}
-                  src={image.url}
-                  alt={`Image ${index}`}
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '200px',
-                    borderRadius: '8px',
-                    objectFit: 'contain',
-                  }}
-                />
+                    <ImageListItem key={index}>
+                      <img
+                        key={index}
+                        src={image.url}
+                        alt={`Image ${index}`}
+                        style={{
+                          maxWidth: '100%',
+                          maxHeight: '200px',
+                          borderRadius: '8px',
+                          objectFit: 'contain',
+                        }}
+                      />
+                    </ImageListItem>
                 })}
             </ImageList>
           )}
