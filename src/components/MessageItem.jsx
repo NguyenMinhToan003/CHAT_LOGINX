@@ -60,36 +60,36 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
               {message?.followedMessage?.content}
             </Typography>
             {message?.followedMessage?.images?.length > 0 && (
-            <ImageList  sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+            <Box >
                 {message?.followedMessage?.images.map((image, index) => {
-                  image?.type === 'video' ?
-                    <Card component="li" sx={{ minWidth: 300, flexGrow: 1 , maxHeight: 200, borderRadius: 5, overflow: 'hidden' }}>
-                    <CardCover>
-                      <video
-                        key={index}
-                        controls
-                      >
-                        <source src={image.url} type="video/mp4" />
-                      </video>
+                  image?.type === 'video' ? <video
+                  key={index}
+                  src={image.url}
+                  controls
+                    style={{ maxWidth: '100%', borderRadius: 5 }}
+                />
               
-                      </CardCover>
-                      </Card>
-                  :
-                    <ImageListItem key={index}>
-                      <img
-                        key={index}
-                        src={image.url}
-                        alt={`Image ${index}`}
-                        style={{
-                          maxWidth: '100%',
-                          maxHeight: '200px',
-                          borderRadius: '8px',
-                          objectFit: 'contain',
-                        }}
-                      />
-                    </ImageListItem>
+                 : image?.type === 'image' ?
+                    <img
+                    key={index}
+                    src={image.url}
+                    alt={`Image ${index}`}
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '200px',
+                      borderRadius: '8px',
+                      objectFit: 'contain',
+                    }}
+                    />
+                    // underline link
+                    : image?.type === 'raw' ?
+                      <a
+                        style={{ color: 'gray',textDecoration: 'underline', display: 'block'} }
+                        href={image.url} key={index} target="_blank" rel="noreferrer" >
+                      {image.public_id}
+                    </a> : 'Lỗi hình ảnh'
                 })}
-            </ImageList>
+            </Box>
           )}
             <RedoIcon />
           </a>
@@ -167,28 +167,35 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
             {content}
           </Typography>
 
-                            {message?.images && message.images.length > 0 && (
+            {message?.images && message.images.length > 0 && (
             <Box sx={{ display: 'flex', flexWrap:'wrap', gap: 1, width:'100%', justifyContent: 'center', alignItems: 'center' }}>
               {message.images.map((image, index) => (
-                image?.type === 'video' ?
-                <video
+                image?.type === 'video' ? <video
                   key={index}
                   src={image.url}
                   controls
                     style={{ maxWidth: '100%', borderRadius: 5 }}
-                  />
-                  :
-                  <img
-                  key={index}
-                  src={image.url}
-                  alt={`Image ${index}`}
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '200px',
-                    borderRadius: '8px',
-                    objectFit: 'contain',
-                  }}
                 />
+              
+                 : image?.type === 'image' ?
+                    <img
+                    key={index}
+                    src={image.url}
+                    alt={`Image ${index}`}
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '200px',
+                      borderRadius: '8px',
+                      objectFit: 'contain',
+                    }}
+                    />
+                    // underline link
+                    : image?.type === 'raw' ?
+                      <a
+                        style={{ color: 'gray',textDecoration: 'underline'}}
+                        href={image.url} key={index} target="_blank" rel="noreferrer" >
+                      {image.public_id}
+                    </a> : null
               ))}
             </Box>
           )}

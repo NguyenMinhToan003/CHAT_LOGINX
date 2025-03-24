@@ -291,7 +291,7 @@ const RoomChatPrivate = () => {
                   </Tooltip>
                   <Button
                     startIcon={
-                      <Avatar sx={{ width: 36, height: 36 }} src={room?.info?.avartar} />
+                      <Avatar sx={{ width: 36, height: 36 }} src={room?.info?.avartar?.url} />
                     }
                   >
                     <Typography sx={{ color: 'text.main' }}>
@@ -329,7 +329,6 @@ const RoomChatPrivate = () => {
                 {messages.length > 0 &&
                   messages?.map((data, index) => (
                     <MessageItem
-                     
                       removeMessage={handleDeleteMessage}
                       setRepMessage={handlSetRepMessage}
                       message={data}
@@ -510,7 +509,7 @@ const RoomChatPrivate = () => {
             >
                 <Avatar
                 onClick={() => navigate(`/index/profile/${idUserOrder}`)}
-                src={room?.info?.avartar}
+                src={room?.info?.avartar?.url}
                 sx={{
                   width: 80,
                   height: 80,

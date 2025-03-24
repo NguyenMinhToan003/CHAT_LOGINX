@@ -70,7 +70,6 @@ const RoomChatId = () => {
     });
     formData.append('roomId', id);
     formData.append('sender', user._id);
-    formData.append('content', 'image');
     if (repMessage) {
       formData.append('followMessageId', repMessage._id);
     }
@@ -78,7 +77,6 @@ const RoomChatId = () => {
     if (response.insertedId) {
       let data = {
         status: 'read',
-        content: 'image',
         _id: response.insertedId,
         sender: {
           _id: user._id,
@@ -310,7 +308,7 @@ const RoomChatId = () => {
                   </Tooltip>
                   <Button
                     startIcon={
-                      <Avatar sx={{ width: 36, height: 36 }} src={room?.info?.avartar} />
+                      <Avatar sx={{ width: 36, height: 36 }} src={room?.info?.avartar?.url} />
                     }
                   >
                     <Typography sx={{ color: 'text.main' }}>
@@ -541,7 +539,7 @@ const RoomChatId = () => {
               }}
             >
               <Avatar
-                src={room?.info?.avartar}
+                src={room?.info?.avartar?.url}
                 sx={{
                   width: 80,
                   height: 80,
@@ -670,7 +668,7 @@ const RoomChatId = () => {
                     }}
                   >
                     <Avatar
-                      src={member.picture}
+                      src={member.picture?.url}
                       sx={{
                         width: 36,
                         height: 36,
