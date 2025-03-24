@@ -125,7 +125,7 @@ const RoomChatId = () => {
   const handleSentMessageText = async () => {
     if (!message.trim()) return;
     let response;
-    console.log('repMessage', repMessage);
+
     if (repMessage === null) {
       response = await createMessage(id, user?._id, message);
     } else {

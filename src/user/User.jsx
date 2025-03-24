@@ -75,7 +75,7 @@ const User = () => {
                     }}
                   >
                     <img
-                      src={onlineUser.picture}
+                      src={onlineUser.picture?.url ? onlineUser.picture.url : onlineUser.picture}
                       alt='avatar'
                       className='avatar'
                     />
@@ -106,7 +106,7 @@ const User = () => {
                     <td className='table-cell'>{user.name}</td>
                     <td className='table-cell'>
                       <img
-                        src={user.picture}
+                        src={user?.picture?.url ? user.picture.url : user.picture}
                         alt='avatar'
                         className='table-avatar'
                       />

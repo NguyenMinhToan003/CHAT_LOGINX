@@ -28,9 +28,9 @@ const AddMemberForm = ({ open, onClose, room }) => {
     try {
       setLoading(true);
       const friendsResponse = await getFriends(user._id);
-      console.log('Friends:', friendsResponse);
+
       const usersResponse = await getAllUser();
-      console.log('Users:', usersResponse);
+
       setFriends(Array.isArray(friendsResponse) ? friendsResponse : []);
       setUsers(Array.isArray(usersResponse) ? usersResponse : []);
     } catch (error) {

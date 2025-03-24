@@ -10,6 +10,7 @@ import Index from "../index/Index";
 import Profile from '../profile/Profile'
 import Main from "../index/Main";
 import RoomChatPrivate from "../roomchat/RoomChatPrivate";
+import StatusAddSocial from "../StatusAddSocial/StatusAddSocial";
 
 
 const AppRouter = () => {
@@ -27,9 +28,9 @@ const AppRouter = () => {
         <Route path='/index' element={<Main />} >
           <Route index  element={<Index />} />
           <Route path='profile/:id' element={<Profile />} />
-          <Route path='profile' element={<Profile />} />
+        <Route path='profile' element={<Profile />} />
         </Route>
-      
+        <Route path='/addSocial/:code' element={<StatusAddSocial />} />
       </Routes>
 
   );

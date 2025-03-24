@@ -29,7 +29,7 @@ const CommentModal = ({ postId, postData, onClose }) => {
   const fetchComments = async () => {
     const res = await getComments(postId);
     setComments(res);
-    console.log(res)
+
   }
   // Prevent scrolling when modal is open
   useEffect(() => {
