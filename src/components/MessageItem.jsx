@@ -1,152 +1,192 @@
-
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-
 import ClearIcon from '@mui/icons-material/Clear';
 import RedoIcon from '@mui/icons-material/Redo';
 import { emojiMap } from "../utils/checkIcon";
-import { CardCover } from "@mui/joy";
-
 
 const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
-
   const content = message.content;
   const isCheckEmoji = emojiMap.find(emoji => emoji.emoji === content);
   const isCheckEmojiFollowed = emojiMap.find(emoji => emoji.emoji === message?.followedMessage?.content);
+
   return (
-    <Box sx={{ padding: '0.5rem 0' }} id={message._id} key={key}>
+    <Box sx={{ padding: { xs: '0.3rem 0', sm: '0.5rem 0' } }} id={message._id} key={key}>
       {message.followedMessage && message.status === 'read' && (
         <Box
           sx={{
             display: 'flex',
-            justifyContent: message?.sender?._id === user._id ? 'row-reverse' : 'row',
+            justifyContent: message?.sender?._id === user._id ? 'flex-end' : 'flex-start',
             alignItems: 'start',
             maxWidth: '100%',
-            flexDirection: message?.sender?._id === user._id ? 'row-reverse' : 'row',
           }}
         >
-          <a
+          <Box
+            component="a"
             href={`#${message.followedMessage._id}`}
-            style={{
-              maxWidth: '50%',
-              backgroundColor: '#f0f0f0f0',
-              color: 'gray',
-              height: 'fit-content',
+            sx={{
+              maxWidth: { xs: '60%', sm: '40%' },
+              backgroundColor: '#f5f5f5',
+              borderLeft: '3px solid #4caf50',
+              borderRadius: '4px',
+              padding: isCheckEmojiFollowed ? { xs: '0.4rem 0.8rem', sm: '0.6rem 1rem' } : { xs: '0.3rem 0.6rem', sm: '0.5rem 1rem' },
+              marginBottom: '0.3rem',
               display: 'flex',
               flexDirection: 'column',
-              position: 'relative',
-              border: '1px solid green',
-              borderRadius: 2,
-              padding: isCheckEmojiFollowed?'1rem 2rem':'0.75rem 1.25rem',
+              gap: '0.2rem',
+              textDecoration: 'none',
+              color: 'inherit',
+              boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
             }}
           >
             <Typography
               sx={{
+                color: 'gray',
+                fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                fontWeight: 500,
+                lineHeight: '1.1rem',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {message?.followedMessage?.sender?.name}
+            </Typography>
+            <Typography
+              sx={{
                 display: '-webkit-box',
-                WebkitLineClamp: 4,
+                WebkitLineClamp: 2,
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                lineHeight: '1.2rem',
-                maxHeight: '4.8rem',
-                fontSize: isCheckEmojiFollowed? '1.5rem':'0.8625rem',
+                lineHeight: '1.1rem',
+                maxHeight: '2.2rem',
+                fontSize: isCheckEmojiFollowed ? { xs: '1rem', sm: '1.2rem' } : { xs: '0.75rem', sm: '0.85rem' },
+                color: '#555',
               }}
             >
               {message?.followedMessage?.content}
             </Typography>
             {message?.followedMessage?.images?.length > 0 && (
-            <Box >
-                {message?.followedMessage?.images.map((image, index) => {
-                  image?.type === 'video' ? <video
-                  key={index}
-                  src={image.url}
-                  controls
-                    style={{ maxWidth: '100%', borderRadius: 5 }}
-                />
-              
-                 : image?.type === 'image' ?
-                    <img
-                    key={index}
-                    src={image.url}
-                    alt={`Image ${index}`}
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: '200px',
-                      borderRadius: '8px',
-                      objectFit: 'contain',
-                    }}
+              <Box sx={{ mt: '0.3rem' }}>
+                {message?.followedMessage?.images.map((image, index) => (
+                  image?.type === 'video' ? (
+                    <video
+                      key={index}
+                      src={image.url}
+                      controls
+                      style={{ maxWidth: '100%', borderRadius: '4px', maxHeight: '100px' }}
                     />
-                    // underline link
-                    : image?.type === 'raw' ?
-                      <a
-                        style={{ color: 'gray',textDecoration: 'underline', display: 'block'} }
-                        href={image.url} key={index} target="_blank" rel="noreferrer" >
+                  ) : image?.type === 'image' ? (
+                    <img
+                      key={index}
+                      src={image.url}
+                      alt={`Image ${index}`}
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: { xs: '80px', sm: '120px' },
+                        borderRadius: '4px',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  ) : image?.type === 'raw' ? (
+                    <Typography
+                      component="a"
+                      href={image.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      sx={{
+                        color: 'gray',
+                        textDecoration: 'underline',
+                        fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2, // Giới hạn 2 dòng
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        lineHeight: '1rem',
+                        maxHeight: '2rem',
+                      }}
+                    >
                       {image.public_id}
-                    </a> : 'Lỗi hình ảnh'
-                })}
-            </Box>
-          )}
-            <RedoIcon />
-          </a>
+                    </Typography>
+                  ) : 'Lỗi hình ảnh'
+                ))}
+              </Box>
+            )}
+            <RedoIcon sx={{ fontSize: { xs: '1rem', sm: '1.2rem' }, color: '#4caf50', alignSelf: 'flex-end' }} />
+          </Box>
         </Box>
       )}
 
       <Box
-        key={key}
         sx={{
           display: 'flex',
-          justifyContent: message?.sender?._id === user._id ? 'row-reverse' : 'row',
+          justifyContent: message?.sender?._id === user._id ? 'flex-end' : 'flex-start',
+
           alignItems: 'start',
           maxWidth: '100%',
-          flexDirection: message?.sender?._id === user._id ? 'row-reverse' : 'row',
-          gap: 1,
+          gap: { xs: 0.5, sm: 1 },
           ':hover .more': { opacity: 1, visibility: 'visible' },
         }}
       >
         {message?.sender?._id !== user._id && (
           <Avatar
             src={message?.sender?.picture}
-            sx={{ width: 36, height: 36 }}
+            sx={{ width: { xs: 30, sm: 36 }, height: { xs: 30, sm: 36 }, mt: '0.2rem' }}
           />
         )}
+        {message?.status === 'read' && message?.sender?._id === user?._id && (
+          <Box
+            className="more"
+            sx={{
+              opacity: 0,
+              visibility: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'opacity 0.3s ease',
+            }}
+          >
+            <IconButton onClick={() => removeMessage(message._id)} sx={{ padding: '4px' }}>
+              <ClearIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+            </IconButton>
+          </Box>
+        )}
         <Box
-          onClick={() => message?.status !=='delete' && setRepMessage(message)}
+          onClick={() => message?.status !== 'delete' && setRepMessage(message)}
           sx={{
-            zIndex: 1,
-            maxWidth: '50%',
+            maxWidth: { xs: '70%', sm: '50%' },
             backgroundColor:
               message?.sender?._id === user._id
                 ? 'messages.bg_primary'
                 : 'messages.bg_secondary',
-            borderRadius: 3,
-            padding: isCheckEmoji?'1rem 2rem':'0.75rem 1.25rem',
-            height: 'fit-content',
+            borderRadius: '8px',
+            padding: isCheckEmoji ? { xs: '0.5rem 1rem', sm: '0.75rem 1.5rem' } : { xs: '0.5rem 1rem', sm: '0.75rem 1.25rem' },
             display: 'flex',
             flexDirection: 'column',
-            gap: 0.5,
+            gap: '0.3rem',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
           }}
         >
+          
           {message?.sender?._id !== user._id && message.status === 'read' && (
             <Typography
               sx={{
-                color: 'black',
+                color: '#333',
                 fontWeight: 500,
-                fontSize: 14,
-                lineHeight: '1.625rem',
-                whiteSpace: 'pre-wrap',
-                overflowWrap: 'break-word',
+                fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                lineHeight: '1.2rem',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
             >
               {message?.sender?.name}
             </Typography>
           )}
           <Typography
-            
             sx={{
               cursor: 'pointer',
               color:
@@ -157,8 +197,8 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                   : 'messages.text_secondary',
               fontStyle: message?.status === 'delete' ? 'italic' : 'normal',
               fontWeight: 500,
-              fontSize: isCheckEmoji? '2rem':'1.0625rem',
-              lineHeight: '1.625rem',
+              fontSize: isCheckEmoji ? { xs: '1.5rem', sm: '2rem' } : { xs: '0.9rem', sm: '1rem' },
+              lineHeight: '1.4rem',
               whiteSpace: 'pre-wrap',
               overflowWrap: 'break-word',
               wordBreak: 'break-word',
@@ -167,62 +207,58 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
             {content}
           </Typography>
 
-            {message?.images && message.images.length > 0 && (
-            <Box sx={{ display: 'flex', flexWrap:'wrap', gap: 1, width:'100%', justifyContent: 'center', alignItems: 'center' }}>
+          {message?.images && message.images.length > 0 && (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, width: '100%' }}>
               {message.images.map((image, index) => (
-                image?.type === 'video' ? <video
-                  key={index}
-                  src={image.url}
-                  controls
-                    style={{ maxWidth: '100%', borderRadius: 5 }}
-                />
-              
-                 : image?.type === 'image' ?
-                    <img
+                image?.type === 'video' ? (
+                  <video
+                    key={index}
+                    src={image.url}
+                    controls
+                    style={{ maxWidth: '100%', borderRadius: '4px', maxHeight: '150px' }}
+                  />
+                ) : image?.type === 'image' ? (
+                  <img
                     key={index}
                     src={image.url}
                     alt={`Image ${index}`}
                     style={{
                       maxWidth: '100%',
-                      maxHeight: '200px',
-                      borderRadius: '8px',
-                      objectFit: 'contain',
+                      maxHeight: { xs: '100px', sm: '150px' },
+                      borderRadius: '4px',
+                      objectFit: 'cover',
                     }}
-                    />
-                    // underline link
-                    : image?.type === 'raw' ?
-                      <a
-                        style={{ color: 'gray',textDecoration: 'underline'}}
-                        href={image.url} key={index} target="_blank" rel="noreferrer" >
-                      {image.public_id}
-                    </a> : null
+                  />
+                ) : image?.type === 'raw' ? (
+                  <Typography
+                    component="a"
+                    href={image.url}
+
+                    sx={{
+                      color: 'gray',
+                      textDecoration: 'underline',
+                      fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2, // Giới hạn 2 dòng
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      lineHeight: '1rem',
+                      maxHeight: '2rem',
+                    }}
+                  >
+                    {image.public_id}
+                  </Typography>
+                ) : null
               ))}
             </Box>
           )}
+          
         </Box>
 
-        {message?.status === 'read' && message?.sender?._id === user?._id && (
-          <Box
-            className="more"
-            sx={{
-              opacity: 0,
-              visibility: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'opacity 0.3s ease',
-            }}
-          >
-            <IconButton onClick={() => removeMessage(message._id)}>
-              <ClearIcon />
-            </IconButton>
-          </Box>
-        )}
+        
       </Box>
-      
-      </Box>
-
+    </Box>
   );
 };
 
