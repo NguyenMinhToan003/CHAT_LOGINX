@@ -5,14 +5,8 @@ const axiosInstance = axios.create({
 });
 
 //////////! room
-export const createRoomChat = async (type,name,avartar = null,admins,member) => {
-	const response = await axiosInstance.post(`/roomchat/create`, {
-		type: type,
-		name: name,
-		avartar: avartar,
-		admins: admins,
-		members: member
-	})
+export const createRoomChat = async (data) => {
+	const response = await axiosInstance.post(`/roomchat/create`, data)
 	return response?.data;
 }
 
@@ -22,8 +16,8 @@ export const getRoomChat = async (id) => {
 	return response?.data;
 }
 // lay danh sach thong tin phong chat
-export const getRoomChatByUserId = async (userId) => {
-	const response = await axiosInstance.get(`/roomchat/get-list-room-info-by-userId?userId=${userId}`)
+export const getRoomChatByUserId = async (userId,type) => {
+	const response = await axiosInstance.get(`/roomchat/get-list-room-info-by-userId?userId=${userId}&type=${type}`)
 	return response?.data;
 }
 //////////! message 

@@ -14,9 +14,10 @@ import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import CircularProgress from '@mui/material/CircularProgress';
 import { getAllUser, getFriends, searchUser } from '../api/userAPI';
+import { joinRoom } from '../api/roomAPI';
 
 
-const AddMemberForm = ({ open, onClose, room }) => {
+const AddMemberForm = ({ open, onClose, room, setIsChange }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   const [friends, setFriends] = useState([]);
   const [users, setUsers] = useState([]);
@@ -72,6 +73,13 @@ const AddMemberForm = ({ open, onClose, room }) => {
 
   };
 
+  const handleJoinRoom = async() => {
+    const memberIds = addMembers.map(i=>i._id)
+    const res = await joinRoom ({roomId:room._id,members:memberIds})
+    setIsChange(true)
+    handleClose()
+  };
+
   useEffect(() => {
     if (open) {
       fetchFriendsAndUsers();
@@ -89,7 +97,7 @@ const AddMemberForm = ({ open, onClose, room }) => {
           backgroundColor: 'secondary.main',
           borderRadius: 3,
           padding: 2,
-          minHeight: '400px',
+          height: 600,
         },
       }}
     >
@@ -147,7 +155,7 @@ const AddMemberForm = ({ open, onClose, room }) => {
                           '&:hover': { backgroundColor: 'action.hover' },
                         }}
                       >
-                        <Avatar src={friend.picture} sx={{ width: 36, height: 36 }} />
+                        <Avatar src={friend?.picture?.url} sx={{ width: 36, height: 36 }} />
                         <Typography sx={{ color: 'text.primary', flexGrow: 1 }}>
                           {friend.name}
                         </Typography>
@@ -187,7 +195,7 @@ const AddMemberForm = ({ open, onClose, room }) => {
                   <Typography sx={{ color: 'text.secondary', fontWeight: 'medium', mb: 1 }}>
                     Người dùng ({users.length})
                   </Typography>
-                  <Box sx={{ maxHeight: '150px', overflowY: 'auto' }}>
+                  <Box sx={{ minHeight: 150, overflowY: 'auto' }}>
                     {users
                       .filter((u) => !friends.some((f) => f._id === u._id))
                       .map((member) => (
@@ -201,7 +209,7 @@ const AddMemberForm = ({ open, onClose, room }) => {
                             '&:hover': { backgroundColor: 'action.hover' },
                           }}
                         >
-                          <Avatar src={member.picture} sx={{ width: 36, height: 36 }} />
+                          <Avatar src={member?.picture?.url} sx={{ width: 36, height: 36 }} />
                           <Typography sx={{ color: 'text.primary', flexGrow: 1 }}>
                             {member.name}
                           </Typography>
@@ -250,7 +258,7 @@ const AddMemberForm = ({ open, onClose, room }) => {
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
             {addMembers.map((member) => (
-              <Avatar key={member._id} src={member.picture} sx={{ width: 36, height: 36 }} />
+              <Avatar key={member._id} src={member?.picture?.url} sx={{ width: 36, height: 36 }} />
             ))}
           </Box>
         </Box>
@@ -259,6 +267,9 @@ const AddMemberForm = ({ open, onClose, room }) => {
       <DialogActions sx={{ padding: 2 }}>
         <Button onClick={handleClose} sx={{ color: 'text.secondary' }}>
           Hủy
+        </Button>
+        <Button onClick={handleJoinRoom} variant='contained'>
+          Thêm
         </Button>
       </DialogActions>
     </Dialog>

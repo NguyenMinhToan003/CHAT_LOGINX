@@ -16,9 +16,7 @@ const Sidebar = () => {
         <NavLink to="/reels">
           <li><i className="fas fa-compass"></i> <span>Khám phá</span></li>
         </NavLink>
-        <NavLink to="/inbox">
-          <li><i className="fas fa-envelope"></i> <span>Tin nhắn</span></li>
-        </NavLink>
+
         <NavLink to="/roomchats">
           <li><i className="fas fa-envelope"></i> <span>Tin nhắn</span></li>
         </NavLink>

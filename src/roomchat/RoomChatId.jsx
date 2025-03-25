@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import InputBase from '@mui/material/InputBase';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { joinRoom, leaveRoom } from '../api/roomAPI';
+import { delateRoom, joinRoom, leaveRoom } from '../api/roomAPI';
 import EditCalendarOutlinedIcon from '@mui/icons-material/EditCalendarOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -50,6 +50,7 @@ const RoomChatId = () => {
   const [checkIsMember, setCheckIsMember] = useState(false);
   const [repMessage, setRepMessage] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [isChange,setIsChange] = useState(false)
 
   const handleChangeMessage = (e) => setMessage(e.target.value);
   const handlSetRepMessage = (message) => {
@@ -172,12 +173,17 @@ const RoomChatId = () => {
     }
   };
 
+  const handleDeleteRoom = async () => {
+    const response = await delateRoom({roomId:id,userId:  user._id});
+
+  };
+
   const handleDeleteMessage = async (id) => {
     const response = await deleteMessage(id, user._id);
     await fetchRoom();
   };
 
-  const handleDeleteRoom = async () => {};
+  
 
   const handlLeaveRoom = async () => {
     const response = await leaveRoom({ roomId: id, userId: user._id });
@@ -243,11 +249,18 @@ const RoomChatId = () => {
       socket.off('message', handleMessage);
     };
   }, [socket]);
+  useEffect(() => {
+    if (isChange) {
+      fetchRoom()
+      setIsChange(false)
+    }
+  }, [isChange]);
 
   return (
     <>
       <audio ref={audioRef} src={audio} />
       <AddMemberForm
+      setIsChange = {setIsChange}
         room={room}
       open={openAddMemberForm}
       onClose={() => setOpenAddMemberForm(false)}
@@ -668,7 +681,7 @@ const RoomChatId = () => {
                     }}
                   >
                     <Avatar
-                      src={member.picture?.url}
+                      src={member.picture?.url?member.picture?.url:member.picture}
                       sx={{
                         width: 36,
                         height: 36,

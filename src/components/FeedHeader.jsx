@@ -3,17 +3,13 @@ import axios from "axios";
 
 const FeedHeader = () => {
   const [postContent, setPostContent] = useState("");
-  const [postTitle, setPostTitle] = useState("hello");
   const [postImages, setPostImages] = useState([]);
   const [mockPosts, setMockPosts] = useState([]);
   const [showPostForm, setShowPostForm] = useState(false);
   const fileInputRef = useRef(null);
   
   // Safely get user from localStorage
-  const user = JSON.parse(localStorage.getItem('user')) || {
-    name: "User",
-    picture: "https://via.placeholder.com/50"
-  };
+  const user = JSON.parse(localStorage.getItem('user')) 
 
   const openPostForm = () => setShowPostForm(true);
   const closePostForm = () => {
@@ -63,7 +59,6 @@ const FeedHeader = () => {
     try {
       // Tạo FormData với đúng tham số mà server yêu cầu
       const formData = new FormData();
-      formData.append('title', postTitle);
       formData.append('content', postContent);
       
       // Lấy authorId từ thông tin user (giả sử có lưu trong localStorage)
