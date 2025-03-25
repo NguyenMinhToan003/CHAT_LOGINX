@@ -18,3 +18,17 @@ export const reactPost = async ({ postId, userId, type }) => {
   })
   return response.data
 }
+
+export const  deletePost=async ({postId,authorId})=>{
+
+  const response =await axiosInstance.post(`/post/delete`,{
+
+    postId,
+    authorId
+  })
+
+  return response.data
+
+  
+
+}

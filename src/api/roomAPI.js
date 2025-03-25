@@ -18,3 +18,13 @@ export const findOrCreateRoomPrivate = async (userSearchId, userOrtherId) => {
      })
   return response.data
 }
+
+export const delateRoom = async ({roomId,userId}) => {
+  const response = await axiosInstance.post('/roomchat/delete', { roomId, userId })
+  return response.data
+}
+
+export const updateRoom = async ({roomId,name,admins,userAction}) => {
+  const response = await axiosInstance.post('/roomchat/update-info', { roomId,name,admins,userAction })
+  return response.data
+}

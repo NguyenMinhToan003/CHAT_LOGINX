@@ -4,6 +4,7 @@ import { getAllUser } from '../api'
 import { FaGithub, FaTwitter } from 'react-icons/fa' 
 import './User.css'
 import { useSocket } from '../provider/SocketProvider'
+import { NavLink } from 'react-router-dom'
 
 const User = () => {
   const { onlineUsers, handleCallVideo } = useSocket()
@@ -47,20 +48,19 @@ const User = () => {
             <h4 className='title'>{user?.name || 'User'}</h4>
             <p className='subtitle'>User ID: {user._id}</p>
           </div>
-          <img src={user?.picture} alt='avatar' className='avatar' />
-          <a href='/roomchats' className='chat-button'>
-            Room Chat
-          </a>
+          <img src={user?.picture?.url} alt='avatar' className='avatar' />
+          <NavLink to='/roomchats' className='chat-button'>
+            <p style={{display:'block'}}>Room Chat</p>
+          </NavLink>
           <button className='logout-button' onClick={handleLogout}>
             Logout
           </button>
         </div>
       </header>
 
-      {/* Main Content */}
+
       <div className='main-content'>
-        {/* Video Section - Commented out */}
-        {/* Hidden Online Users Section */}
+
         <div className='users-section'>
           <h3 className='section-title'>Online Users</h3>
           <ul className='user-list'>

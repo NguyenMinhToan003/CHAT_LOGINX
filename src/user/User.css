@@ -36,10 +36,10 @@
 }
 
 .chat-button {
-  display: inline-block;
+  display: block;
   padding: 10px 25px;
   background-color: #000000;
-  color: #ffffff;
+  color: #ffffff !important;
   text-decoration: none;
   border-radius: 5px;
   font-weight: bold;
@@ -47,7 +47,8 @@
 }
 
 .chat-button:hover {
-  background-color: #333333;
+  background-color: #333333 !important;
+  color: '#ffffff' !important;
 }
 
 .logout-button {

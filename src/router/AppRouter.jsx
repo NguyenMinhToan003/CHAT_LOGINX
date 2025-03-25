@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 import Home from '../home/Home'
 import User from '../user/User'
@@ -14,7 +14,11 @@ import StatusAddSocial from "../StatusAddSocial/StatusAddSocial";
 
 
 const AppRouter = () => {
-  
+  const user = JSON.parse(localStorage.getItem('user'));
+  const routerNow = window.location.pathname;
+  if (!user && routerNow !== '/') {
+    window.location.href = '/';
+  }
   return (
 
       <Routes>
