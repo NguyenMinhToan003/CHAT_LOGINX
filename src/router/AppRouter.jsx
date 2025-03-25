@@ -14,11 +14,7 @@ import StatusAddSocial from "../StatusAddSocial/StatusAddSocial";
 
 
 const AppRouter = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const routerNow = window.location.pathname;
-  if (!user && routerNow !== '/') {
-    window.location.href = '/';
-  }
+
   return (
 
       <Routes>
