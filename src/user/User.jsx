@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+
 import { useEffect, useState } from 'react'
 import { getAllUser } from '../api'
 import { FaGithub, FaTwitter, FaGoogle } from 'react-icons/fa' 
@@ -77,7 +77,7 @@ const User = () => {
                     }}
                   >
                     <img
-                      src={onlineUser.picture?.url ? onlineUser.picture.url : onlineUser.picture}
+                      src={onlineUser.picture?.url}
                       alt='avatar'
                       className='avatar'
                     />
@@ -108,7 +108,7 @@ const User = () => {
                     <td className='table-cell'>{user.name}</td>
                     <td className='table-cell'>
                       <img
-                        src={user?.picture?.url ? user.picture.url : user.picture}
+                        src={user?.picture?.url}
                         alt='avatar'
                         className='table-avatar'
                       />

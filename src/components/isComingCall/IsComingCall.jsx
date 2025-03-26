@@ -28,14 +28,14 @@ const IsCommingCall = ({ handleAcceptCall, handleHangup, onCommingCall }) => {
             
           <div className='caller-info'>
             <div className='caller-avatar'>
-              <img src={onCommingCall?.sender.picture} alt='caller' />
+              <img src={onCommingCall?.sender.picture?.url} alt='caller' />
               <div className='calling-indicator'>
                 <span></span>
                 <span></span>
                 <span></span>
               </div>
             </div>
-            <p className='caller-name'>{onCommingCall?.sender.name}</p>
+            <p className='caller-name'>{onCommingCall?.sender?.name}</p>
             <p className='call-status'>đang gọi cho bạn</p>
           </div>
           

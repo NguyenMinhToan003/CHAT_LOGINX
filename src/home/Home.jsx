@@ -1,6 +1,6 @@
-import { FaGithub } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-import { FaGoogle } from "react-icons/fa";
+import { FaGithub } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
+import { FaGoogle } from 'react-icons/fa';
 import './Home.css'; 
 
 const Home = () => {
@@ -31,18 +31,18 @@ const Home = () => {
   }
   return (
    
-    <div className="login-container">
+    <div className='login-container'>
       
-      <div className="social-login">
+      <div className='social-login'>
         
-        <div className="button-group">
-          <button className="social-btn github-btn" onClick={loginWithGithub}>
+        <div className='button-group'>
+          <button className='social-btn github-btn' onClick={loginWithGithub}>
             <FaGithub/>
           </button>
-          <button className="social-btn twitter-btn" onClick={loginWithX}>
+          <button className='social-btn twitter-btn' onClick={loginWithX}>
             <FaXTwitter />
           </button>
-          <button className="social-btn google-btn" onClick={loginWithGoogle}>
+          <button className='social-btn google-btn' onClick={loginWithGoogle}>
             <FaGoogle />
           </button>
         </div>

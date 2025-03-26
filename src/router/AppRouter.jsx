@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Home from '../home/Home'
 import User from '../user/User'
@@ -11,7 +11,7 @@ import Profile from '../profile/Profile'
 import Main from "../index/Main";
 import RoomChatPrivate from "../roomchat/RoomChatPrivate";
 import StatusAddSocial from "../StatusAddSocial/StatusAddSocial";
-
+import NotFound from "./NotFound";
 
 const AppRouter = () => {
 
@@ -30,7 +30,8 @@ const AppRouter = () => {
           <Route path='profile/:id' element={<Profile />} />
         <Route path='profile' element={<Profile />} />
         </Route>
-        <Route path='/addSocial/:code' element={<StatusAddSocial />} />
+      <Route path='/addSocial/:code' element={<StatusAddSocial />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
 
   );

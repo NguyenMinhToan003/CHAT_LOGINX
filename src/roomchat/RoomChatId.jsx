@@ -1,80 +1,83 @@
-import { useEffect, useRef, useState } from 'react';
-import { createMessage, getAllMessage, getRoomChat } from '../api';
-import { useNavigate, useParams } from 'react-router-dom';
-import audio from '../../public/sound/message-notification.mp3';
-import { useSocket } from '../provider/SocketProvider';
-import Box from '@mui/material/Box';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import AddReactionIcon from '@mui/icons-material/AddReaction';
-import Avatar from '@mui/material/Avatar';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import InputBase from '@mui/material/InputBase';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { delateRoom, joinRoom, leaveRoom } from '../api/roomAPI';
-import EditCalendarOutlinedIcon from '@mui/icons-material/EditCalendarOutlined';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import MessageItem from '../components/MessageItem';
-import { createMessageImage, deleteMessage } from '../api/messageAPI';
-import CircularProgress from '@mui/material/CircularProgress';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import { emojiMap } from '../utils/checkIcon';
-import AddMemberForm from '../components/AddMemberForm';
+import { useEffect, useRef, useState } from 'react'
+import { createMessage, getAllMessage, getRoomChat } from '../api'
+import { useNavigate, useParams } from 'react-router-dom'
+import audio from '../../public/sound/message-notification.mp3'
+import { useSocket } from '../provider/SocketProvider'
+import Box from '@mui/material/Box'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import Tooltip from '@mui/material/Tooltip'
+import IconButton from '@mui/material/IconButton'
+import AttachFileIcon from '@mui/icons-material/AttachFile'
+import AddReactionIcon from '@mui/icons-material/AddReaction'
+import Avatar from '@mui/material/Avatar'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import InputBase from '@mui/material/InputBase'
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'
+import { delateRoom, joinRoom, leaveRoom } from '../api/roomAPI'
+import EditCalendarOutlinedIcon from '@mui/icons-material/EditCalendarOutlined'
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import MessageItem from '../components/MessageItem'
+import { createMessageImage, deleteMessage } from '../api/messageAPI'
+import CircularProgress from '@mui/material/CircularProgress'
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
+import { emojiMap } from '../utils/checkIcon'
+import AddMemberForm from '../components/AddMemberForm'
+import './RoomChatId.css'
 
 // Danh sách biểu tượng để chọn
 const emojiList = emojiMap
 
 const RoomChatId = () => {
-  const [openAddMemberForm, setOpenAddMemberForm] = useState(false);
-  const navigate = useNavigate();
-  const { socket } = useSocket();
-  const { id } = useParams();
-  const inputRef = useRef(null);
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [openAddMemberForm, setOpenAddMemberForm] = useState(false)
+  const navigate = useNavigate()
+  const { socket } = useSocket()
+  const { id } = useParams()
+  const inputRef = useRef(null)
+  const user = JSON.parse(localStorage.getItem('user'))
   if (!user) {
-    window.location.href = '/';
+    window.location.href = '/'
   }
-  const [isLoading, setIsLoading] = useState(false);
-  const [toggleShowInfoRoom, setToggleShowInfoRoom] = useState(false);
-  const [room, setRoom] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState('');
-  const audioRef = useRef(null);
-  const messagesEndRef = useRef(null);
-  const [checkIsMember, setCheckIsMember] = useState(false);
-  const [repMessage, setRepMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
+  const [toggleShowInfoRoom, setToggleShowInfoRoom] = useState(false)
+  const [room, setRoom] = useState(null)
+  const [messages, setMessages] = useState([])
+  const [message, setMessage] = useState('')
+  const audioRef = useRef(null)
+  const messagesEndRef = useRef(null)
+  const [checkIsMember, setCheckIsMember] = useState(false)
+  const [repMessage, setRepMessage] = useState(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-  const [isChange,setIsChange] = useState(false)
+  const [isChange, setIsChange] = useState(false)
+  const [isSentMessage, setIsSentMessage] = useState(false)
 
-  const handleChangeMessage = (e) => setMessage(e.target.value);
+  const handleChangeMessage = (e) => setMessage(e.target.value)
   const handlSetRepMessage = (message) => {
     setRepMessage((prev) => (prev === message ? null : {
       _id: message._id,
       content: message.content,
       sender: message.sender,
       images: message.images,
-    }));
-  };
+    }))
+  }
 
   const handleSentMessageImage = async (e) => {
-    const files = Array.from(e.target.files);
-    if (!files.length) return;
-    let formData = new FormData();
+    setIsSentMessage(true)
+    const files = Array.from(e.target.files)
+    if (!files.length) return
+    let formData = new FormData()
     files.forEach((file) => {
-      formData.append('files', file);
-    });
-    formData.append('roomId', id);
-    formData.append('sender', user._id);
+      formData.append('files', file)
+    })
+    formData.append('roomId', id)
+    formData.append('sender', user._id)
     if (repMessage) {
-      formData.append('followMessageId', repMessage._id);
+      formData.append('followMessageId', repMessage._id)
     }
-    const response = await createMessageImage(formData);
+    const response = await createMessageImage(formData)
     if (response.insertedId) {
       let data = {
         status: 'read',
@@ -87,20 +90,22 @@ const RoomChatId = () => {
         roomId: id,
         images: response.images,
         followedMessage: repMessage,
-      };
-      socket.emit('message', data);
-      setRepMessage(null);
+      }
+      socket.emit('message', data)
+      setRepMessage(null)
+      setIsSentMessage(false)
     }
-  };
+  }
 
   const handleSentMessageIcon = async (emoji) => {
+    setIsSentMessage(true)
     let response
     if (repMessage!==null) {
-      response = await createMessage(id, user?._id, emoji, repMessage._id);
-      setRepMessage(null);
+      response = await createMessage(id, user?._id, emoji, repMessage._id)
+      setRepMessage(null)
     }
     else {
-      response = await createMessage(id, user?._id, emoji);
+      response = await createMessage(id, user?._id, emoji)
     }
     if (response.insertedId) {
       let data = {
@@ -115,25 +120,24 @@ const RoomChatId = () => {
         roomId: id,
         images: [],
         followedMessage: repMessage,
-      };
-      socket.emit('message', data);
+      }
+      socket.emit('message', data)
+      setIsSentMessage(false)
     }
-    setShowEmojiPicker(false);
-  };
+    setShowEmojiPicker(false)
+  }
 
   const handleSentMessageText = async () => {
-    if (!message.trim()) return;
-    let response;
+    setIsSentMessage(true)
+    if (!message.trim()) return
+    let response
 
     if (repMessage === null) {
-      response = await createMessage(id, user?._id, message);
+      response = await createMessage(id, user?._id, message)
     } else {
-      response = await createMessage(id, user?._id, message, repMessage._id);
-      setRepMessage(null);
+      response = await createMessage(id, user?._id, message, repMessage._id)
+      setRepMessage(null)
     }
-
-    
-
     if (response.insertedId) {
       let data = {
         status: 'read',
@@ -147,114 +151,119 @@ const RoomChatId = () => {
         roomId: id,
         images: [],
         followedMessage: repMessage,
-      };
+      }
       
-      socket.emit('message', data);
-      setMessage('');
+      socket.emit('message', data)
+      setMessage('')
+      setIsSentMessage(false)
     }
-  };
+  }
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSentMessageText();
+      e.preventDefault()
+      handleSentMessageText()
     }
-  };
+  }
 
   const handleJoinRoom = async () => {
-    const response = await joinRoom({ roomId: id, members: [user._id] });
+    const response = await joinRoom({ roomId: id, members: [user._id] })
     if (response) {
-      setCheckIsMember(true);
-      fetchRoom();
+      setCheckIsMember(true)
+      fetchRoom()
     }
-  };
+  }
 
   const handleDeleteRoom = async () => {
-    const response = await delateRoom({roomId:id,userId:  user._id});
-
-  };
+    const response = await delateRoom({ roomId: id, userId: user._id })
+    if (response) {
+      navigate('/roomchats')
+    }
+  }
 
   const handleDeleteMessage = async (id) => {
-    const response = await deleteMessage(id, user._id);
-    await fetchRoom();
-  };
+    const response = await deleteMessage(id, user._id)
+    if (response) {
+      await fetchRoom()
+    }
+  }
 
   
 
   const handlLeaveRoom = async () => {
-    const response = await leaveRoom({ roomId: id, userId: user._id });
+    const response = await leaveRoom({ roomId: id, userId: user._id })
     if (response.code === 0) {
-      navigate('/roomchats');
+      navigate('/roomchats')
     } else {
-      alert(response.message);
+      alert(response.message)
     }
-  };
+  }
 
   const fetchRoom = async () => {
     try {
-      setIsLoading(true);
-      const response = await getRoomChat(id);
+      setIsLoading(true)
+      const response = await getRoomChat(id)
       
         const room = response
-        const admins = room.info.admins;
-        const members = room.members;
-        const newMembers = members.filter((m) => !admins.some((a) => a._id === m._id));
-        const sortMembers = [...admins, ...newMembers];
-        room.members = sortMembers;
-        setRoom(room);
-        const resMess = await getAllMessage(id, user._id);
+        const admins = room.info.admins
+        const members = room.members
+        const newMembers = members.filter((m) => !admins.some((a) => a._id === m._id))
+        const sortMembers = [...admins, ...newMembers]
+        room.members = sortMembers
+        setRoom(room)
+        const resMess = await getAllMessage(id, user._id)
         if (Array.isArray(resMess)) {
-          setMessages(resMess);
-          socket.emit('join-room', { roomId: id, user: user._id });
+          setMessages(resMess)
+          socket.emit('join-room', { roomId: id, user: user._id })
         }
-        setCheckIsMember(room.members.some((m) => m._id === user._id));
+        setCheckIsMember(room.members.some((m) => m._id === user._id))
       
-      setIsLoading(false);
+      setIsLoading(false)
     } catch (error) {
-      console.error('Lỗi khi fetch room chat:', error);
+      console.error('Lỗi khi fetch room chat:', error)
     }
-  };
+  }
 
   const handleCancel = () => {
     if (socket) {
-      socket.emit('leave-room', { roomId: id, user: user._id });
+      socket.emit('leave-room', { roomId: id, user: user._id })
     }
     navigate(-1)
-  };
+  }
 
   useEffect(() => {
-    if (!socket) return;
-    fetchRoom();
-  }, [id, socket]);
+    if (!socket) return
+    fetchRoom()
+  }, [id, socket])
 
   useEffect(() => {
     
-    scrollToBottom();
-  }, [messages]);
+    scrollToBottom()
+  }, [messages])
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket) return
     const handleMessage = (data) => {
-      setMessages((prev) => [...prev, data]);
+      setMessages((prev) => [...prev, data])
       if (audioRef.current && data.sender._id !== user._id) {
-        audioRef.current.play();
+        audioRef.current.play()
       }
-    };
-    socket.on('message', handleMessage);
+    }
+    socket.on('message', handleMessage)
     return () => {
-      socket.off('message', handleMessage);
-    };
-  }, [socket]);
+      socket.off('message', handleMessage)
+    }
+  }, [socket])
   useEffect(() => {
     if (isChange) {
       fetchRoom()
       setIsChange(false)
     }
-  }, [isChange]);
+  }, [isChange])
 
   return (
     <>
@@ -360,6 +369,9 @@ const RoomChatId = () => {
                       key={index}
                     />
                   ))}
+                  {
+                    isSentMessage && <Typography sx={{color: 'text.secondary', textAlign: 'center'}}>Đang gửi...</Typography>
+                  }
                 {!checkIsMember && (
                   <Box
                     sx={{
@@ -439,8 +451,6 @@ const RoomChatId = () => {
                           <AddReactionIcon />
                         </IconButton>
                       </Tooltip>
-
-                      
                         <Box
                           sx={{
                             position: 'absolute',
@@ -729,7 +739,7 @@ const RoomChatId = () => {
         </Box>
       )}
     </>
-  );
-};
+  )
+}
 
-export default RoomChatId;
+export default RoomChatId

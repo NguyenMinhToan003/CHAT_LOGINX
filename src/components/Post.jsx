@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import CommentModal from './comment/Comment';
-import { reactPost } from '../api/postAPI';
-import { convertTime } from '../utils/convertTime';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import CommentModal from './comment/Comment'
+import { reactPost } from '../api/postAPI'
+import { convertTime } from '../utils/convertTime'
+import { useNavigate } from 'react-router-dom'
 
 
-import { deletePost } from '../api/postAPI';
+import { deletePost } from '../api/postAPI'
 
 const Post = ({ post, onDelete, onUpdate }) => {
-  const navigate = useNavigate();
-  const [postData, setPostData] = useState(post);
+  const navigate = useNavigate()
+  const [postData, setPostData] = useState(post)
   const [countReaction, setCountReaction] =
     useState(
       postData?.interactions?.likes
@@ -18,62 +18,63 @@ const Post = ({ post, onDelete, onUpdate }) => {
       + postData?.interactions?.wows
       + postData?.interactions?.sads
       + postData?.interactions?.angrys
-      || 0);
-  const user = JSON.parse(localStorage.getItem('user'));
-  const [activeCommentPost, setActiveCommentPost] = useState(null);
-  const [activeReactionPost, setActiveReactionPost] = useState(null);
-  const [postReactions, setPostReactions] = useState({});
-  const [showOptionsMenu, setShowOptionsMenu] = useState(false);
+      || 0)
+  const user = JSON.parse(localStorage.getItem('user'))
+  const [activeCommentPost, setActiveCommentPost] = useState(null)
+  const [activeReactionPost, setActiveReactionPost] = useState(null)
+  const [postReactions, setPostReactions] = useState({})
+  const [showOptionsMenu, setShowOptionsMenu] = useState(false)
+ 
   
   const getActiveReaction = (postData) => {
-    return postData.interactions?.userAction || null;
-  };
+    return postData.interactions?.userAction || null
+  }
 
   useEffect(() => {
-    const activeReaction = getActiveReaction(postData);
-    console.log(activeReaction);
+    const activeReaction = getActiveReaction(postData)
+    console.log(activeReaction)
     if (activeReaction) {
-      setPostReactions((prev) => ({ ...prev, [postData._id]: activeReaction }));
+      setPostReactions((prev) => ({ ...prev, [postData._id]: activeReaction }))
     }
-  }, [postData]);
+  }, [postData])
 
   // Toggle comment section for a specific postData
   const toggleComments = (postId) => {
     if (activeCommentPost === postId) {
-      setActiveCommentPost(null);
+      setActiveCommentPost(null)
     } else {
-      setActiveCommentPost(postId);
+      setActiveCommentPost(postId)
     }
-  };
+  }
   
   const toggleReactions = (postId) => {
     if (activeReactionPost === postId) {
-      setActiveReactionPost(null);
+      setActiveReactionPost(null)
     } else {
-      setActiveReactionPost(postId);
+      setActiveReactionPost(postId)
     }
-  };
+  }
 
   // Toggle options menu
   const toggleOptionsMenu = (e) => {
-    e.stopPropagation(); // Prevent event from bubbling up
-    setShowOptionsMenu(!showOptionsMenu);
-  };
+    e.stopPropagation() // Prevent event from bubbling up
+    setShowOptionsMenu(!showOptionsMenu)
+  }
 
   // Close options menu when clicking elsewhere
   useEffect(() => {
     const handleClickOutside = () => {
-      setShowOptionsMenu(false);
-    };
+      setShowOptionsMenu(false)
+    }
 
     if (showOptionsMenu) {
-      document.addEventListener('click', handleClickOutside);
+      document.addEventListener('click', handleClickOutside)
     }
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [showOptionsMenu]);
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [showOptionsMenu])
 
   
  
@@ -81,38 +82,39 @@ const Post = ({ post, onDelete, onUpdate }) => {
 
   // Handle update post
   const handleUpdatePost = (e) => {
-    e.stopPropagation();
+    e.stopPropagation()
     if (onUpdate && typeof onUpdate === 'function') {
-      onUpdate(postData);
+      onUpdate(postData)
     }
-    setShowOptionsMenu(false);
-  };
+    setShowOptionsMenu(false)
+  }
 
   // Handle reaction selection
   const handleReaction = async (postId, reaction) => {
-    setActiveReactionPost(null);
+    setActiveReactionPost(null)
 
     // Cập nhật UI ngay lập tức
-    setPostReactions((prev) => ({ ...prev, [postId]: reaction }));
-
+    setPostReactions((prev) => ({ ...prev, [postId]: reaction }))
     try {
-      const response = await reactPost({ postId, userId: user._id, type: reaction });
+      const response = await reactPost({ postId, userId: user._id, type: reaction })
 
+      setCountReaction(prev => prev + 1)
       if (response?.data) {
         setPostData((prev) => ({
           ...prev,
           interactions: response.data.interactions,
-        }));
+        }))
+
       }
     } catch (error) {
-      console.error('Lỗi khi gửi reaction:', error);
+      console.error('Lỗi khi gửi reaction:', error)
     }
-  };
+  }
 
   // Close the comment section
   const handleCloseComments = () => {
-    setActiveCommentPost(null);
-  };
+    setActiveCommentPost(null)
+  }
 
   // Reactions data
   const reactions = [
@@ -122,56 +124,56 @@ const Post = ({ post, onDelete, onUpdate }) => {
     { name: 'wow', icon: 'fas fa-surprise', color: '#F7B125', label: 'Wow' },
     { name: 'sad', icon: 'fas fa-sad-tear', color: '#F7B125', label: 'Buồn' },
     { name: 'angry', icon: 'fas fa-angry', color: '#E4605A', label: 'Phẫn nộ' }
-  ];
+  ]
 
   // Get reaction icon and text based on active reaction
   const getReactionDisplay = (postId) => {
-    const activeReaction = postReactions[postId]; // Ưu tiên lấy từ state cập nhật mới nhất
+    const activeReaction = postReactions[postId] // Ưu tiên lấy từ state cập nhật mới nhất
 
     if (!activeReaction) {
-      return { icon: 'far fa-thumbs-up', text: 'Thích', className: '' };
+      return { icon: 'far fa-thumbs-up', text: 'Thích', className: '' }
     }
 
-    const reaction = reactions.find((r) => r.name === activeReaction);
+    const reaction = reactions.find((r) => r.name === activeReaction)
     return {
       icon: reaction ? reaction.icon : 'far fa-thumbs-up',
       text: reaction ? reaction.label : 'Thích',
       className: reaction ? `active-${reaction.name}` : '',
-    };
-  };
+    }
+  }
 
-  const reactionDisplay = getReactionDisplay(postData?._id);
+  const reactionDisplay = getReactionDisplay(postData?._id)
   
   // Check if current user is the post author
-  const isAuthor = user && postData && user._id === postData.author._id;
+  const isAuthor = user && postData && user._id === postData.author._id
 
 
   //xóa baiviet
 
   const handleDeletePost=async(e)=>{
-    e.stopPropagation();
-    if(!window.confirm("Bạn có chắc chắn muốn xóa không?")) return;
+    e.stopPropagation()
+    if(!window.confirm("Bạn có chắc chắn muốn xóa không?")) return
     try {
 
-      await deletePost({postId:postData._id,authorId:user._id});
+      await deletePost({postId:postData._id,authorId:user._id})
       if(onDelete && typeof onDelete=="function"){
 
-        onDelete(postData._id);
+        onDelete(postData._id)
 
       }
       
     } catch (error) {
       
-      console.error("lỗi khi xóa bài viết:",error);
+      console.error("lỗi khi xóa bài viết:",error)
     }
 
-    setShowOptionsMenu(false);
+    setShowOptionsMenu(false)
 
 
-  };
+  }
 
   return <>
-    <div key={postData._id} className='post'>
+    <div key={postData._id} className='post' id='header'>
       <div className='post-header'>
         <div className='post-user'>
           <div className='avatar'
@@ -323,4 +325,4 @@ const Post = ({ post, onDelete, onUpdate }) => {
   </>
 }
 
-export default Post;
+export default Post
