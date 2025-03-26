@@ -7,24 +7,24 @@ const Sidebar = () => {
     <nav className="sidebar">
       <h1 className="logo">STU</h1>
       <ul className="menu">
-        <NavLink to="/index" exact>
+        <NavLink to="/index#header" exact>
           <li className="active"><i className="fas fa-home"></i> <span>Trang chủ</span></li>
         </NavLink>
-        <NavLink to="/explore">
+        <NavLink to="/explore#header">
           <li><i className="fas fa-search"></i> <span>Tìm kiếm</span></li>
         </NavLink>
-        <NavLink to="/reels">
+        <NavLink to="/reels#header">
           <li><i className="fas fa-compass"></i> <span>Khám phá</span></li>
         </NavLink>
 
-        <NavLink to="/roomchats">
+        <NavLink to="/roomchats#header">
           <li><i className="fas fa-envelope"></i> <span>Tin nhắn</span></li>
         </NavLink>
-        <NavLink to="/bookmarks">
+        <NavLink to="/bookmarks#header">
           <li><i className="fas fa-heart"></i> <span>Thông báo</span> <span className="notification-dot"></span></li>
         </NavLink>
 
-        <NavLink to="/index/profile">
+        <NavLink to="/index/profile#header">
           <li><i className="fas fa-user"></i> <span>Trang cá nhân</span></li>
         </NavLink>
       </ul>

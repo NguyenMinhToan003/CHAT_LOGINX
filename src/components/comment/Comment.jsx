@@ -131,7 +131,7 @@ const toggleReplies = async (commentId) => {
             <div className="post-header">
               <div className="post-user">
                 <div className="avatar">
-                  <img src={postData?.author?.picture} />
+                  <img src={postData?.author?.picture?.url} />
                 </div>
                 <div className="user-info">
                   <div className="username-container">
@@ -167,7 +167,7 @@ const toggleReplies = async (commentId) => {
               {comments.map(comment => (
                 <div key={comment._id} className="comment-item">
                   <div className="comment-avatar">
-                    <img src={comment.author.picture} />
+                    <img src={comment.author.picture?.url} />
                   </div>
                   <div className="comment-content">
                     <div className="comment-bubble">
@@ -195,7 +195,7 @@ const toggleReplies = async (commentId) => {
                     {replyingTo === comment._id && (
                       <div className="reply-input">
                         <div className="avatar">
-                           <img src={user.picture} />
+                           <img src={user.picture?.url} />
                         </div>
                         <div className="reply-form">
                           <input 
@@ -227,7 +227,7 @@ const toggleReplies = async (commentId) => {
     {showReplies[comment._id].map(reply => (
       <div key={reply._id} className="reply-item">
         <div className="reply-avatar">
-          <img src={reply.author.picture} />
+          <img src={reply.author.picture?.url} />
         </div>
         <div className="reply-content">
           <div className="reply-bubble">
@@ -249,7 +249,7 @@ const toggleReplies = async (commentId) => {
         
         <div className="comment-input-main">
           <div className="avatar">
-            <img src={user.picture} />
+            <img src={user.picture?.url} />
           </div>
           <form className="comment-form" onSubmit={handleCommentSubmit}>
             <input 

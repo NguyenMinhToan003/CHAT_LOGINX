@@ -8,7 +8,6 @@ const Feeds = () => {
   const user = JSON.parse(localStorage.getItem("user"))
   const [ischange,setIsChange]=useState(false)
   const [posts, setPosts] = useState([])
-
   const [isLoading, setIsLoading] = useState(false)
 
   const fetchPost = async () => {

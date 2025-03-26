@@ -1,10 +1,9 @@
 import { useState, useRef } from "react";
 import axios from "axios";
 
-const FeedHeader = () => {
+const FeedHeader = ({setIsChange}) => {
   const [postContent, setPostContent] = useState("");
   const [postImages, setPostImages] = useState([]);
-  const [mockPosts, setMockPosts] = useState([]);
   const [showPostForm, setShowPostForm] = useState(false);
   const fileInputRef = useRef(null);
   
@@ -72,11 +71,7 @@ const FeedHeader = () => {
       
       // Gửi đến backend
       await createPost(formData);
-      
-      // Cập nhật UI ngay lập tức trong khi chờ phản hồi từ server
-     
-      
-      setMockPosts([newPost, ...mockPosts]);
+      setIsChange(true);
       closePostForm();
     } catch (error) {
       console.error("Error creating post:", error);
@@ -107,7 +102,7 @@ const FeedHeader = () => {
         {!showPostForm ? (
           <div className="post-creation-input" onClick={openPostForm}>
             <div className="avatar">
-              <img src={user.picture} alt="User avatar" />
+              <img src={user.picture?.url} alt="User avatar" />
             </div>
             <div className="post-input">
               <input 
@@ -130,7 +125,7 @@ const FeedHeader = () => {
               
               <div className="user-section">
                 <div className="avatar">
-                  <img src={user.picture} alt="User avatar" />
+                  <img src={user.picture?.url} alt="User avatar" />
                 </div>
                 <div className="user-info">
                   <div className="user-name">{user.name}</div>
@@ -216,51 +211,7 @@ const FeedHeader = () => {
         )}
       </div>
       
-      <div className="post-feed">
-        {mockPosts.map(post => (
-          <div key={post._id} className="post">
-            <div className="post-header">
-              <div className="post-user">
-                <div className="avatar">
-                  <img src={post.author.picture} alt="User" />
-                </div>
-                <div className="user-info">
-                  <span className="username">{post.author.name}</span>
-                  <span className="post-time">{formatTime(post.createdAt)}</span>
-                </div>
-              </div>
-              <div className="post-options">
-                <button className="options-button"><i className="fas fa-ellipsis-h"></i></button>
-              </div>
-            </div>
-
-            <div className="post-content">
-              <p>{post.content}</p>
-            </div>
-
-            {post.assets.length > 0 && (
-              <div className="post-image">
-                <img src={post.assets[0].url} alt="Post" />
-              </div>
-            )}
-
-            <div className="post-actions">
-              <button className="action-btn like-btn">
-                <i className="far fa-thumbs-up"></i>
-                <span>Thích</span>
-              </button>
-              <button className="action-btn comment-btn">
-                <i className="far fa-comment"></i>
-                <span>Bình luận</span>
-              </button>
-              <button className="action-btn share-btn">
-                <i className="far fa-share-square"></i>
-                <span>Chia sẻ</span>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      
     </>
   );
 };
