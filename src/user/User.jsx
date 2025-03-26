@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { useEffect, useState } from 'react'
 import { getAllUser } from '../api'
-import { FaGithub, FaTwitter } from 'react-icons/fa' 
+import { FaGithub, FaTwitter, FaGoogle } from 'react-icons/fa' 
 import './User.css'
 import { useSocket } from '../provider/SocketProvider'
 import { NavLink } from 'react-router-dom'
@@ -32,6 +32,8 @@ const User = () => {
         return <FaGithub className='icon' />
       case 'twitter':
         return <FaTwitter className='icon' />
+      case 'google':
+        return <FaGoogle className='icon' />
       default:
         return null
     }
