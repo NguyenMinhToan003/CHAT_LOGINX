@@ -6,7 +6,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import RedoIcon from '@mui/icons-material/Redo';
 import { emojiMap } from "../utils/checkIcon";
 import { useNavigate } from 'react-router-dom';
-
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
   const navigate = useNavigate();
   const content = message.content;
@@ -77,8 +77,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                     <video
                       key={index}
                       src={image.url}
-                      controls
-                      style={{ maxWidth: '150px', borderRadius: '4px', maxHeight: '100px' }}
+                      style={{ maxWidth: 300, borderRadius: '4px', maxHeight: 300 }}
                     />
                   ) : image?.type === 'image' ? (
                     <img
@@ -103,7 +102,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                         textDecoration: 'underline',
                         fontSize: { xs: '0.7rem', sm: '0.8rem' },
                         display: '-webkit-box',
-                        WebkitLineClamp: 2, // Giới hạn 2 dòng
+                        WebkitLineClamp: 2, 
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -111,7 +110,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                         maxHeight: '2rem',
                       }}
                     >
-                      {image.url}
+                          <InsertDriveFileIcon sx={{marginRight:1}} />{image.name}
                     </Typography>
                   ) : 'Lỗi hình ảnh'
                 ))}
@@ -216,7 +215,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                     key={index}
                     src={image.url}
                     controls
-                    style={{ maxWidth: '150px', borderRadius: '4px', maxHeight: '150px' }}
+                    style={{ maxWidth: 450, borderRadius: '4px', maxHeight: 450 }}
                   />
                 ) : image?.type === 'image' ? (
                   <img
@@ -243,7 +242,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                       textOverflow: 'ellipsis',
                     }}
                   >
-                    {image?.name || image.url}
+                        <InsertDriveFileIcon sx={{marginRight:1}} />{image?.name || image.url}
                   </Typography>
                 ) : null
               ))}
