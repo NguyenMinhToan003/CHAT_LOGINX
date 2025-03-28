@@ -27,6 +27,7 @@ import VideocamIcon from '@mui/icons-material/Videocam'
 const emojiList = emojiMap
 
 const RoomChatPrivate = () => {
+  const {onlineUsers} = useSocket()
   const navigate = useNavigate()
   const { socket ,handleCallVideo} = useSocket()
   const idUserOrder = useParams().id
@@ -45,6 +46,7 @@ const RoomChatPrivate = () => {
   const messagesEndRef = useRef(null)
   const [repMessage, setRepMessage] = useState(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [isSentMessage, setIsSentMessage] = useState(false)
 
   const handleChangeMessage = (e) => setMessage(e.target.value)
   const handlSetRepMessage = (message) => {
@@ -57,6 +59,7 @@ const RoomChatPrivate = () => {
   }
 
   const handleSentMessageImage = async (e) => {
+    setIsSentMessage(true)
     const files = Array.from(e.target.files)
     if (!files.length) return
     let formData = new FormData()
@@ -65,7 +68,6 @@ const RoomChatPrivate = () => {
     })
     formData.append('roomId', id)
     formData.append('sender', user._id)
-    formData.append('content', 'image')
     if (repMessage) {
       formData.append('followMessageId', repMessage._id)
     }
@@ -73,7 +75,6 @@ const RoomChatPrivate = () => {
     if (response.insertedId) {
       let data = {
         status: 'read',
-        content: 'image',
         _id: response.insertedId,
         sender: {
           _id: user._id,
@@ -86,10 +87,12 @@ const RoomChatPrivate = () => {
       }
       socket.emit('message', data)
       setRepMessage(null)
+      setIsSentMessage(false)
     }
   }
 
   const handleSentMessageIcon = async (emoji) => {
+    setIsSentMessage(true)
     let response
     if (repMessage!==null) {
       response = await createMessage(id, user?._id, emoji, repMessage._id)
@@ -115,9 +118,11 @@ const RoomChatPrivate = () => {
       socket.emit('message', data)
     }
     setShowEmojiPicker(false)
+    setIsSentMessage(false)
   }
 
   const handleSentMessageText = async () => {
+    setIsSentMessage(true)
     if (!message.trim()) return
     let response
     if (repMessage === null) {
@@ -146,6 +151,7 @@ const RoomChatPrivate = () => {
       
       socket.emit('message', data)
       setMessage('')
+      setIsSentMessage(false)
     }
   }
 
@@ -176,6 +182,7 @@ const RoomChatPrivate = () => {
 
   const fetchRoom = async () => {
     try {
+
       setIsLoading(true)
       let response = await findOrCreateRoomPrivate(user._id, idUserOrder)
       if (response?.insertedId) {
@@ -183,6 +190,8 @@ const RoomChatPrivate = () => {
       }
       setId(response._id)
       const room = response
+      const isOnline = onlineUsers.some((user) => user.userId === idUserOrder)
+      room.info.isOnline = isOnline
       setRoom(room)
       const resMess = await getAllMessage(response._id, user._id)
       if (Array.isArray(resMess)) {
@@ -209,7 +218,7 @@ const RoomChatPrivate = () => {
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages])
+  }, [messages,isSentMessage])
 
   useEffect(() => {
     if (!socket) return
@@ -333,7 +342,18 @@ const RoomChatPrivate = () => {
                     />
                   ))}
                 
-                <div ref={messagesEndRef} />
+  <Box ref={messagesEndRef} >
+                    {
+                      <Box sx={{
+                        display: isSentMessage ? 'flex' : 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 1, padding: 1,
+                        transition: 'all 0.5s ease',
+                      }}>
+                        <Typography sx={{ color: 'text.secondary', width: 'fit-content', background: 'secondary.main', paddingX: 2 }}>
+                          Đang gửi...
+                        </Typography>
+                      </Box>
+                    }
+                </Box>
               </Box>
 
                 <Box>
@@ -352,8 +372,10 @@ const RoomChatPrivate = () => {
                         <Typography sx={{ color: 'text.primary', fontWeight: 'bold' }}>
                           Đang trả lời {repMessage.sender.name}
                         </Typography>
-                        <Typography
-                          sx={{
+                                                <Typography
+                            sx={{
+                            borderLeft: '3px solid #4caf50',
+                            paddingLeft: 1,
                             color: 'text.secondary',
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
@@ -361,11 +383,18 @@ const RoomChatPrivate = () => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             lineHeight: '1.2rem',
-                            maxHeight: '2.4rem',
                             fontSize: '0.875rem',
                           }}
                         >
-                          {repMessage.content}
+                            {
+                              repMessage.images.length > 0 ? repMessage.images.map((image, index) => {
+                                if (image.type === 'image')
+                                  return <img key={index} src={image.url} alt="" style={{ width: 50, height: 50, borderRadius: 5, marginRight: 5 }} />
+                                else if (image.type === 'video')
+                                  return <video key={index} src={image.url} alt="" style={{ width: 50, height: 50, borderRadius: 5, marginRight: 5 }} controls />
+                                else return <a key={index} href={image.url} download style={{ width: 50, height: 50, borderRadius: 5, marginRight: 5 }}>{image.url}</a>
+                              }) : repMessage.content
+                          }
                         </Typography>
                       </Box>
                       <IconButton onClick={() => setRepMessage(null)}>
@@ -555,7 +584,17 @@ const RoomChatPrivate = () => {
                   borderRadius: 1,
                 }}
               >
-                
+                  {
+                    room?.info.isOnline ? (
+                      <Typography sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                        Đang hoạt động
+                      </Typography>
+                    ) : (
+                      <Typography sx={{ color: 'error.main', fontWeight: 'bold' }}>
+                        Không hoạt động
+                      </Typography>
+                    )
+                }
               </Box>
             </Box>
 

@@ -5,8 +5,10 @@ import Typography from '@mui/material/Typography';
 import ClearIcon from '@mui/icons-material/Clear';
 import RedoIcon from '@mui/icons-material/Redo';
 import { emojiMap } from "../utils/checkIcon";
+import { useNavigate } from 'react-router-dom';
 
 const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
+  const navigate = useNavigate();
   const content = message.content;
   const isCheckEmoji = emojiMap.find(emoji => emoji.emoji === content);
   const isCheckEmojiFollowed = emojiMap.find(emoji => emoji.emoji === message?.followedMessage?.content);
@@ -76,7 +78,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                       key={index}
                       src={image.url}
                       controls
-                      style={{ maxWidth: '100%', borderRadius: '4px', maxHeight: '100px' }}
+                      style={{ maxWidth: '150px', borderRadius: '4px', maxHeight: '100px' }}
                     />
                   ) : image?.type === 'image' ? (
                     <img
@@ -84,7 +86,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                       src={image.url}
                       alt={`Image ${index}`}
                       style={{
-                        maxWidth: '100%',
+                        maxWidth: '150px',
                         maxHeight: { xs: '80px', sm: '120px' },
                         borderRadius: '4px',
                         objectFit: 'cover',
@@ -109,7 +111,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                         maxHeight: '2rem',
                       }}
                     >
-                      {image.public_id}
+                      {image.url}
                     </Typography>
                   ) : 'Lỗi hình ảnh'
                 ))}
@@ -157,6 +159,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
         <Box
           onClick={() => message?.status !== 'delete' && setRepMessage(message)}
           sx={{
+            cursor: message?.status==='read' ? 'pointer' : 'default',
             maxWidth: { xs: '70%', sm: '50%' },
             backgroundColor:
               message?.sender?._id === user._id
@@ -170,7 +173,6 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
             boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
           }}
         >
-          
           {message?.sender?._id !== user._id && message.status === 'read' && (
             <Typography
               sx={{
@@ -206,7 +208,6 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
           >
             {content}
           </Typography>
-
           {message?.images && message.images.length > 0 && (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, width: '100%' }}>
               {message.images.map((image, index) => (
@@ -215,7 +216,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                     key={index}
                     src={image.url}
                     controls
-                    style={{ maxWidth: '100%', borderRadius: '4px', maxHeight: '150px' }}
+                    style={{ maxWidth: '150px', borderRadius: '4px', maxHeight: '150px' }}
                   />
                 ) : image?.type === 'image' ? (
                   <img
@@ -223,7 +224,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                     src={image.url}
                     alt={`Image ${index}`}
                     style={{
-                      maxWidth: '100%',
+                      maxWidth: '150px',
                       maxHeight: { xs: '100px', sm: '150px' },
                       borderRadius: '4px',
                       objectFit: 'cover',
@@ -231,29 +232,56 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                   />
                 ) : image?.type === 'raw' ? (
                   <Typography
-                    component="a"
+                        component="a"
+                        target="_blank"
+                        rel="noreferrer"
                     href={image.url}
-
                     sx={{
                       color: 'gray',
                       textDecoration: 'underline',
                       fontSize: { xs: '0.8rem', sm: '0.9rem' },
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2, // Giới hạn 2 dòng
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      lineHeight: '1rem',
-                      maxHeight: '2rem',
                     }}
                   >
-                    {image.public_id}
+                    {image?.name || image.url}
                   </Typography>
                 ) : null
               ))}
             </Box>
           )}
-          
+          {
+            message?.embedPost?.author && (
+              <Box
+                sx={{ maxWidth: { xs: 550, sm: 400 },  backgroundColor: '#f0f0f0', borderRadius: '10px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
+              >
+                <Box>
+                  <Box sx={{
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    backgroundColor: '#e0e0e0', padding: '0.5rem', borderRadius: '10px 10px 0 0'
+                  }}>
+                    <Avatar src={message?.embedPost?.author?.picture?.url}
+                      onClick={() => navigate(`/index/profile/${message?.embedPost?.author?._id}`)}
+                      sx={{ width: 40, height: 40, }} />
+                    <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}
+                      onClick={() => navigate(`/index/profile/${message?.embedPost?.author?._id}`)}
+                      sx={{cursor: 'pointer', ':hover': { textDecoration: 'underline' }}}
+                    >
+                      {message?.embedPost?.author?.name}
+                    </Typography>
+                  </Box>
+                  <img src={message?.embedPost?.assets[0]?.url} style={{ width: '100%', borderRadius: '4px'}} />
+                  <Typography
+                    onClick={()=>navigate(`/post/${message?.embedPost?._id}`)}
+                    sx={{
+                    padding: '0.5rem',
+                    fontSize: { xs: '0.8rem', sm: '0.9rem' }, color: '#333',
+                    ':hover': { textDecoration: 'underline' },
+                  }}>
+                    {message?.embedPost?.content}
+                  </Typography>
+                </Box>
+              </Box>
+          )}
         </Box>
 
         
