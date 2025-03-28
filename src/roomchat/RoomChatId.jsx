@@ -27,11 +27,12 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import { emojiMap } from '../utils/checkIcon'
 import AddMemberForm from '../components/AddMemberForm'
 import './RoomChatId.css'
-
 // Danh sách biểu tượng để chọn
+
 const emojiList = emojiMap
 
 const RoomChatId = () => {
+
   const [openAddMemberForm, setOpenAddMemberForm] = useState(false)
   const navigate = useNavigate()
   const { socket } = useSocket()
@@ -243,7 +244,7 @@ const RoomChatId = () => {
   useEffect(() => {
     
     scrollToBottom()
-  }, [messages])
+  }, [messages,isSentMessage])
 
   useEffect(() => {
     if (!socket) return
@@ -311,7 +312,6 @@ const RoomChatId = () => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   height: 60,
-                  padding: 1,
                 }}
               >
                 <Box
@@ -369,9 +369,7 @@ const RoomChatId = () => {
                       key={index}
                     />
                   ))}
-                  {
-                    isSentMessage && <Typography sx={{color: 'text.secondary', textAlign: 'center'}}>Đang gửi...</Typography>
-                  }
+                  
                 {!checkIsMember && (
                   <Box
                     sx={{
@@ -390,15 +388,28 @@ const RoomChatId = () => {
                       Tham gia
                     </Button>
                   </Box>
-                )}
-                <div ref={messagesEndRef} />
+                  )}
+                  
+                  <Box ref={messagesEndRef} >
+                    {
+
+                      <Box sx={{
+                        display: isSentMessage ? 'flex' : 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 1, padding: 1,
+                        transition: 'all 0.5s ease',
+                      }}>
+                        <Typography sx={{ color: 'text.secondary', width: 'fit-content', background: 'secondary.main', paddingX: 2 }}>
+                          Đang gửi...
+                        </Typography>
+                      </Box>
+                    }
+                </Box>
               </Box>
 
               {checkIsMember && (
                 <Box>
                   {repMessage && (
                     <Box
-                      sx={{
+                        sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
@@ -412,7 +423,9 @@ const RoomChatId = () => {
                           Đang trả lời {repMessage.sender.name}
                         </Typography>
                         <Typography
-                          sx={{
+                            sx={{
+                            borderLeft: '3px solid #4caf50',
+                            paddingLeft: 1,
                             color: 'text.secondary',
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
@@ -420,11 +433,18 @@ const RoomChatId = () => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             lineHeight: '1.2rem',
-                            maxHeight: '2.4rem',
                             fontSize: '0.875rem',
                           }}
                         >
-                          {repMessage.content}
+                            {
+                              repMessage.images.length > 0 ? repMessage.images.map((image, index) => {
+                                if (image.type === 'image')
+                                  return <img key={index} src={image.url} alt="" style={{ width: 50, height: 50, borderRadius: 5, marginRight: 5 }} />
+                                else if (image.type === 'video')
+                                  return <video key={index} src={image.url} alt="" style={{ width: 50, height: 50, borderRadius: 5, marginRight: 5 }} controls />
+                                else return <a key={index} href={image.url} download style={{ width: 50, height: 50, borderRadius: 5, marginRight: 5 }}>{image.url}</a>
+                              }) : repMessage.content
+                          }
                         </Typography>
                       </Box>
                       <IconButton onClick={() => setRepMessage(null)}>
@@ -463,7 +483,6 @@ const RoomChatId = () => {
                             justifyContent: 'center',
                             alignItems: 'center',
                             display: showEmojiPicker?'flex':'none',
-
                             height:  400,
                             width: 360,
                             transition: 'all 0.5s ease',

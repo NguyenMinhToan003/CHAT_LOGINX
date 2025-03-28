@@ -337,7 +337,7 @@ body {
 
 /* Ensure content doesn't get hidden behind the mobile navbar */
 @media (max-width: 768px) {
-  body {
+  .body {
     padding-bottom: 60px;
   }
 }
