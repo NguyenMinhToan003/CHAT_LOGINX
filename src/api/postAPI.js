@@ -1,7 +1,7 @@
 import { axiosInstance } from "./index"
 
 export const getPosts = async (userId) => {
-  const response = await axiosInstance.get(`/post/get-posts-friend?userId=${userId}`)
+  const response = await axiosInstance.get(`/post/get-posts-index-show?userId=${userId}`)
   return response.data
 }
 

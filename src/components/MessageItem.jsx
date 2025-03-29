@@ -85,7 +85,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                       src={image.url}
                       alt={`Image ${index}`}
                       style={{
-                        maxWidth: '150px',
+                        maxWidth: 150,
                         maxHeight: { xs: '80px', sm: '120px' },
                         borderRadius: '4px',
                         objectFit: 'cover',
@@ -223,8 +223,8 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                     src={image.url}
                     alt={`Image ${index}`}
                     style={{
-                      maxWidth: '150px',
-                      maxHeight: { xs: '100px', sm: '150px' },
+                      maxWidth: 150,
+                      maxHeight: { xs: 100, sm: 150 },
                       borderRadius: '4px',
                       objectFit: 'cover',
                     }}
@@ -251,6 +251,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
           {
             message?.embedPost?.author && (
               <Box
+                 onClick={()=>navigate(`/post/${message?.embedPost?._id}`)}
                 sx={{ maxWidth: { xs: 550, sm: 400 },  backgroundColor: '#f0f0f0', borderRadius: '10px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}
               >
                 <Box>
@@ -259,10 +260,10 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                     backgroundColor: '#e0e0e0', padding: '0.5rem', borderRadius: '10px 10px 0 0'
                   }}>
                     <Avatar src={message?.embedPost?.author?.picture?.url}
-                      onClick={() => navigate(`/index/profile/${message?.embedPost?.author?._id}`)}
+                      
                       sx={{ width: 40, height: 40, }} />
                     <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}
-                      onClick={() => navigate(`/index/profile/${message?.embedPost?.author?._id}`)}
+                      
                       sx={{cursor: 'pointer', ':hover': { textDecoration: 'underline' }}}
                     >
                       {message?.embedPost?.author?.name}
@@ -270,7 +271,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                   </Box>
                   <img src={message?.embedPost?.assets[0]?.url} style={{ width: '100%', borderRadius: '4px'}} />
                   <Typography
-                    onClick={()=>navigate(`/post/${message?.embedPost?._id}`)}
+                   
                     sx={{
                     padding: '0.5rem',
                     fontSize: { xs: '0.8rem', sm: '0.9rem' }, color: '#333',

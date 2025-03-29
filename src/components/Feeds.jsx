@@ -13,8 +13,6 @@ const Feeds = () => {
   const fetchPost = async () => {
     setIsLoading(true)
     let res = await getPosts(user._id)
-    const postAuthor = await getPostByAuthorId({authorId:user._id, userId:user._id})
-    res = [...res, ...postAuthor]
     setPosts(res)
     setIsLoading(false)
   }
