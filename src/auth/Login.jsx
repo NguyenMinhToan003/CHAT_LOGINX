@@ -23,7 +23,7 @@ const Login = () => {
       try {
         const user = await verifyToken(token);
         localStorage.setItem('user', JSON.stringify(user));
-        navigate('/user'); // Chuyển hướng nếu xác thực thành công
+        window.location.href = '/index'; // Chuyển hướng về trang chính sau khi xác thực thành công
       } catch (err) {
         setError("Xác thực thất bại! Vui lòng thử lại.");
       } finally {
