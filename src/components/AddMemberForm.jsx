@@ -29,11 +29,20 @@ const AddMemberForm = ({ open, onClose, room, setIsChange }) => {
     try {
       setLoading(true);
       const friendsResponse = await getFriends(user._id);
-
       const usersResponse = await getAllUser();
 
-      setFriends(Array.isArray(friendsResponse) ? friendsResponse : []);
-      setUsers(Array.isArray(usersResponse) ? usersResponse : []);
+      const filteredFriends = friendsResponse.filter(
+        (friend) => !room.members.some((member) => member._id === friend._id)
+      );
+
+      const filteredUsers = usersResponse.filter(
+        (user) => 
+          !room.members.some((member) => member._id === user._id) && 
+          !filteredFriends.some((friend) => friend._id === user._id)
+      );
+
+      setFriends(filteredFriends);
+      setUsers(filteredUsers);
     } catch (error) {
       console.error('Error fetching friends or users:', error);
       setFriends([]);
@@ -49,7 +58,12 @@ const AddMemberForm = ({ open, onClose, room, setIsChange }) => {
       try {
         setLoading(true);
         const response = await searchUser(value);
-        setUsers(Array.isArray(response) ? response : []);
+        // Lọc ra những người dùng chưa có trong nhóm
+        const filteredSearchUsers = response.filter(
+          (user) => !room.members.some((member) => member._id === user._id)
+        );
+        setUsers(Array.isArray(filteredSearchUsers) ? filteredSearchUsers : []);
+
       } catch (error) {
         console.error('Error searching users:', error);
         setUsers([]);

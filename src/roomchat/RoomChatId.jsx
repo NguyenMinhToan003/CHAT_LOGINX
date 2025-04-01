@@ -27,11 +27,13 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import { emojiMap } from '../utils/checkIcon'
 import AddMemberForm from '../components/AddMemberForm'
 import './RoomChatId.css'
+import EditGroupForm from '../components/EditGroupForm'
 // Danh sách biểu tượng để chọn
 
 const emojiList = emojiMap
 
 const RoomChatId = () => {
+  const [openEditGroupForm, setOpenEditGroupForm] = useState(false)
 
   const [openAddMemberForm, setOpenAddMemberForm] = useState(false)
   const navigate = useNavigate()
@@ -636,12 +638,20 @@ const RoomChatId = () => {
                     <AddOutlinedIcon />
                   </IconButton>
                 </Tooltip>
+                <EditGroupForm
+                  room={room}
+                  open={openEditGroupForm}
+                  onClose={() => setOpenEditGroupForm(false)}
+                  setIsChange={setIsChange}
+                />
+
                 <Tooltip title="Chỉnh sửa thông tin">
                   <IconButton
                     color="success"
                     disabled={
                       room?.info?.admins?.some((m) => m._id === user._id) ? false : true
                     }
+                    onClick={() => setOpenEditGroupForm(true)}
                   >
                     <EditCalendarOutlinedIcon />
                   </IconButton>

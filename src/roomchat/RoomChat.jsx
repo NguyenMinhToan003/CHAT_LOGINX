@@ -20,6 +20,9 @@ const RoomChat = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSearchTerm, setPopupSearchTerm] = useState('');
   const [showPopup, setShowPopup] = useState(false);
+  // Thêm state cho chức năng tìm kiếm nhóm
+  const [roomSearchTerm, setRoomSearchTerm] = useState('');
+  
 
   const fetchUsers = async () => {
     try {
@@ -84,9 +87,15 @@ const RoomChat = () => {
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const popupFilteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(popupSearchTerm.toLowerCase())
+  // Thêm logic lọc phòng chat dựa trên từ khóa tìm kiếm
+  const filteredRoomChats = roomChats.filter((roomChat) =>
+    roomChat.info.name.toLowerCase().includes(roomSearchTerm.toLowerCase())
   );
+
+  const popupFilteredUsers = users
+  .filter(user => user._id !== userLocal._id) // Loại bỏ bản thân
+  .filter(user => user.name.toLowerCase().includes(popupSearchTerm.toLowerCase()));
+
 
   const resetPopup = () => {
     setRoomType('group');
@@ -104,7 +113,7 @@ const RoomChat = () => {
   };
 
   const handleCancel = () => {
-    navigate(-1);
+    navigate("/index");
   };
 
   return (
@@ -162,25 +171,33 @@ const RoomChat = () => {
         <div className="rooms-panel">
           <div className="panel-header">
             <h2 className="panel-title">Phòng chat của bạn</h2>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: '#000000',
-                color: '#ffffff',
-                '&:hover': {
-                  backgroundColor: '#333333',
+            {/* Thêm ô tìm kiếm phòng chat */}
+            <div className="search-create-container">
+              <input
+                type="text"
+                placeholder="Tìm kiếm phòng chat..."
+                value={roomSearchTerm}
+                onChange={(e) => setRoomSearchTerm(e.target.value)}
+                className="search-input"
+              />
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: '#000000',
                   color: '#ffffff',
-                },
-              }}
-              onClick={openPopup}
-            >
-              Tạo phòng chat
-            </Button>
-          </div>
+                  '&:hover': { backgroundColor: '#333333', color: '#ffffff' },
+                }}
+                onClick={openPopup}
+              >
+                Tạo phòng chat
+              </Button>
+            </div>
+            </div>
+
 
           <div className="room-list">
-            {roomChats.length > 0 ? (
-              roomChats.map((roomChat) => (
+            {filteredRoomChats.length > 0 ? (
+              filteredRoomChats.map((roomChat) => (
                 <div
                   key={roomChat._id}
                   onClick={() => navigate(`/roomchats/${roomChat._id}`)}
@@ -200,7 +217,7 @@ const RoomChat = () => {
                 </div>
               ))
             ) : (
-              <p className="no-rooms-message">Bạn chưa có phòng chat nào</p>
+              <p className="no-rooms-message">Không tìm thấy phòng chat nào</p>
             )}
           </div>
         </div>
@@ -281,7 +298,7 @@ const RoomChat = () => {
                 </div>
 
                 <div className="members-count">
-                  <span>Đã chọn {member.length} thành viên</span>
+                  <span>Đã chọn {member.length - 1} thành viên</span>
                 </div>
               </div>
             </div>
