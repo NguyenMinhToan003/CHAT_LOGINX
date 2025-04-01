@@ -5,7 +5,7 @@ import ProfileHeader from './ProfileHeader';
 import ProfileNav from './ProfileNav';
 import ProfileLeftColumn from './ProfileLeftColumn';
 import ProfileRightColumn from './ProfileRightColumn';
-import { getUserById, getPostByAuthorId } from '../api/userApi';
+import { getUserById, getPostByAuthorId } from '../api/userAPI';
 
 const Profile = () => {
   const { id } = useParams();
