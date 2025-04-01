@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getUserById, updateProfilePicture } from '../api/userApi';
+import { getUserById, updateProfilePicture } from '../api/userAPI';
 
 const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => {
   const [coverPhoto, setCoverPhoto] = useState('https://png.pngtree.com/thumb_back/fh260/background/20240310/pngtree-beautiful-cartoon-landscape-background-with-sunset-green-grass-field-and-trees-image_15639145.jpg');
