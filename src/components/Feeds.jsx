@@ -4,6 +4,7 @@ import Post from "./Post";
 import { getPostByAuthorId, getPosts } from "../api/postAPI";
 import { CircularProgress } from "@mui/material";
 
+
 const Feeds = () => {
   const user = JSON.parse(localStorage.getItem("user"))
   const [ischange,setIsChange]=useState(false)

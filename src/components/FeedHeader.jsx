@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import axios from "axios";
+import  '../profile/api.js';
 
 const FeedHeader = ({setIsChange}) => {
   const [postContent, setPostContent] = useState("");
@@ -94,6 +95,8 @@ const FeedHeader = ({setIsChange}) => {
     const diffDays = Math.floor(diffHours / 24);
     return `${diffDays} ngày trước`;
   };
+
+  const getProfilePicture = () => user?.picture?.url || profileData.profilePhoto;
 
   // JSX không thay đổi...
   return (
