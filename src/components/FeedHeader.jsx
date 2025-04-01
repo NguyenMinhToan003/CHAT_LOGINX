@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import axios from "axios";
-import  '../profile/api.js';
+
 
 const FeedHeader = ({setIsChange}) => {
   const [postContent, setPostContent] = useState("");

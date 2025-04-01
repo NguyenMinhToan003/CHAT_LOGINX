@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CommentModal from '../components/comment/Comment'; // Assuming you have a CommentModal component
 import { reactPost, deletePost } from '../api/postAPI';

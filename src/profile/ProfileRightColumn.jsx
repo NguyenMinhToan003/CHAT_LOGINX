@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import  { useState, useRef } from 'react';
 
 import PersonalInfo from './PersonalInfo';
 import PostCreationForm from './PostCreationForm';
 import PostComponent from './PostComponent';
-import { getPostByAuthorId } from '../api/postAPI';
 import Feed from '../components/Feeds';
-import { createPost} from './api';
+import {createPost} from '../api/postAPI';
 
 const ProfileRightColumn = ({ user, activeTab, posts, setPosts, isLoading, isOwnProfile }) => {
     const [showPostForm, setShowPostForm] = useState(false);

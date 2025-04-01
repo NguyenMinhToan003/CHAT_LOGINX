@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 
 const PersonalInfo = ({ user, setUser }) => {
   const [isEditingInfo, setIsEditingInfo] = useState(false);
