@@ -26,7 +26,7 @@ const Contacts = () => {
       <div className="contacts-list">
         {contacts.map(contact => (
           <div key={contact._id} className="contact-item" onClick={() => {
-            navigate(`/chat-user/${contact._id}`)
+            navigate(`/index/profile/${contact._id}`)
           }}>
             <div className="contact-avatar">
               <img src={contact.picture.url} />

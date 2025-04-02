@@ -28,13 +28,11 @@ import { emojiMap } from '../utils/checkIcon'
 import AddMemberForm from '../components/AddMemberForm'
 import './RoomChatId.css'
 import EditGroupForm from '../components/EditGroupForm'
-// Danh sách biểu tượng để chọn
 
 const emojiList = emojiMap
 
 const RoomChatId = () => {
   const [openEditGroupForm, setOpenEditGroupForm] = useState(false)
-
   const [openAddMemberForm, setOpenAddMemberForm] = useState(false)
   const navigate = useNavigate()
   const { socket } = useSocket()
@@ -210,13 +208,7 @@ const RoomChatId = () => {
     try {
       setIsLoading(true)
       const response = await getRoomChat(id)
-      
         const room = response
-        const admins = room.info.admins
-        const members = room.members
-        const newMembers = members.filter((m) => !admins.some((a) => a._id === m._id))
-        const sortMembers = [...admins, ...newMembers]
-        room.members = sortMembers
         setRoom(room)
         const resMess = await getAllMessage(id, user._id)
         if (Array.isArray(resMess)) {
@@ -224,7 +216,6 @@ const RoomChatId = () => {
           socket.emit('join-room', { roomId: id, user: user._id })
         }
         setCheckIsMember(room.members.some((m) => m._id === user._id))
-      
       setIsLoading(false)
     } catch (error) {
       console.error('Lỗi khi fetch room chat:', error)
@@ -332,13 +323,13 @@ const RoomChatId = () => {
                   </Tooltip>
                   <Button
                     startIcon={
-                      <Avatar sx={{ width: 36, height: 36 }} src={room?.info?.avartar?.url} />
+                      <Avatar sx={{ width: 36, height: 36 }} src={room?.avatar?.url} />
                     }
                   >
                     <Typography sx={{ color: 'text.main' }}>
-                      {room?.info?.name.length > 10
-                        ? room?.info?.name.slice(0, 10) + '...'
-                        : room?.info?.name}
+                      {room?.name.length > 10
+                        ? room?.name.slice(0, 10) + '...'
+                        : room?.name}
                     </Typography>
                   </Button>
                 </Box>
@@ -583,7 +574,7 @@ const RoomChatId = () => {
               }}
             >
               <Avatar
-                src={room?.info?.avartar?.url}
+                src={room?.avatar?.url}
                 sx={{
                   width: 80,
                   height: 80,
@@ -600,7 +591,7 @@ const RoomChatId = () => {
                   wordBreak: 'break-word',
                 }}
               >
-                {room?.info?.name}
+                {room?.name}
               </Typography>
               <Typography
                 sx={{
@@ -611,7 +602,7 @@ const RoomChatId = () => {
                   paddingX: 1,
                 }}
               >
-                {room?.info?.description || 'Không có mô tả'}
+                {room?.description || 'Không có mô tả'}
               </Typography>
             </Box>
 
@@ -649,7 +640,7 @@ const RoomChatId = () => {
                   <IconButton
                     color="success"
                     disabled={
-                      room?.info?.admins?.some((m) => m._id === user._id) ? false : true
+                      room?.admins?.some((m) => m._id === user._id) ? false : true
                     }
                     onClick={() => setOpenEditGroupForm(true)}
                   >
@@ -668,7 +659,7 @@ const RoomChatId = () => {
                     color="error"
                     onClick={handleDeleteRoom}
                     disabled={
-                      room?.info?.admins?.some((m) => m._id === user._id) ? false : true
+                      room?.admins?.some((m) => m._id === user._id) ? false : true
                     }
                   >
                     <DeleteOutlineOutlinedIcon />
@@ -724,7 +715,7 @@ const RoomChatId = () => {
                       sx={{
                         width: 36,
                         height: 36,
-                        border: room?.info?.admins?.some((m) => m._id === member._id)
+                        border: room?.admins?.some((m) => m._id === member._id)
                           ? '2px solid orange'
                           : 'none',
                       }}
@@ -749,12 +740,15 @@ const RoomChatId = () => {
                         </Typography>
                       )}
                     </Typography>
-                    {room?.info?.admins?.some((m) => m._id === member._id) && (
+                    {member?.role==='admin' && (
                       <Typography
                         sx={{
+                          padding: 0.5,
                           fontSize: '0.75rem',
-                          color: 'orange',
-                          fontWeight: 'medium',
+                          color: 'red',
+                          fontWeight: 'bold',
+                          border: '1px solid gray',
+                          borderRadius: 1,
                         }}
                       >
                         Admin
