@@ -174,15 +174,14 @@ const RoomChatPrivate = () => {
   const handleVideoCallFunc = async () => {
     handleCallVideo({
       userId: idUserOrder,
-      name: room.info.name,
-      picture: room.info.avartar,
+      name: room.name,
+      picture: room.avatar,
       socketId: idUserOrder
     })
   }
 
   const fetchRoom = async () => {
     try {
-
       setIsLoading(true)
       let response = await findOrCreateRoomPrivate(user._id, idUserOrder)
       if (response?.insertedId) {
@@ -191,7 +190,7 @@ const RoomChatPrivate = () => {
       setId(response._id)
       const room = response
       const isOnline = onlineUsers.some((user) => user.userId === idUserOrder)
-      room.info.isOnline = isOnline
+      room.isOnline = isOnline
       setRoom(room)
       const resMess = await getAllMessage(response._id, user._id)
       if (Array.isArray(resMess)) {
@@ -296,13 +295,13 @@ const RoomChatPrivate = () => {
                   </Tooltip>
                   <Button
                     startIcon={
-                      <Avatar sx={{ width: 36, height: 36 }} src={room?.info?.avartar?.url} />
+                      <Avatar sx={{ width: 36, height: 36 }} src={room?.avatar?.url} />
                     }
                   >
                     <Typography sx={{ color: 'text.main' }}>
-                      {room?.info?.name.length > 10
-                        ? room?.info?.name.slice(0, 10) + '...'
-                        : room?.info?.name}
+                      {room?.name.length > 10
+                        ? room?.name.slice(0, 10) + '...'
+                        : room?.name}
                     </Typography>
                   </Button>
                 </Box>
@@ -534,7 +533,7 @@ const RoomChatPrivate = () => {
             >
                 <Avatar
                 onClick={() => navigate(`/index/profile/${idUserOrder}`)}
-                src={room?.info?.avartar?.url}
+                src={room?.avatar?.url}
                 sx={{
                   width: 80,
                   height: 80,
@@ -551,7 +550,7 @@ const RoomChatPrivate = () => {
                   wordBreak: 'break-word',
                 }}
               >
-                {room?.info?.name}
+                {room?.name}
               </Typography>
               <Typography
                 sx={{
@@ -562,7 +561,7 @@ const RoomChatPrivate = () => {
                   paddingX: 1,
                 }}
               >
-                {room?.info?.description || 'Không có mô tả'}
+                {room?.detail || 'Không có mô tả'}
               </Typography>
             </Box>
 
@@ -585,7 +584,7 @@ const RoomChatPrivate = () => {
                 }}
               >
                   {
-                    room?.info.isOnline ? (
+                    room?.isOnline ? (
                       <Typography sx={{ color: 'success.main', fontWeight: 'bold' }}>
                         Đang hoạt động
                       </Typography>

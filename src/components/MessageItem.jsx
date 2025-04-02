@@ -134,7 +134,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
       >
         {message?.sender?._id !== user._id && (
           <Avatar
-            src={message?.sender?.picture}
+            src={message?.sender?.picture?.url}
             sx={{ width: { xs: 30, sm: 36 }, height: { xs: 30, sm: 36 }, mt: '0.2rem' }}
           />
         )}

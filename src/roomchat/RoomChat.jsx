@@ -20,7 +20,7 @@ const RoomChat = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [popupSearchTerm, setPopupSearchTerm] = useState('');
   const [showPopup, setShowPopup] = useState(false);
-  // Thêm state cho chức năng tìm kiếm nhóm
+
   const [roomSearchTerm, setRoomSearchTerm] = useState('');
   
 
@@ -89,7 +89,7 @@ const RoomChat = () => {
 
   // Thêm logic lọc phòng chat dựa trên từ khóa tìm kiếm
   const filteredRoomChats = roomChats.filter((roomChat) =>
-    roomChat.info.name.toLowerCase().includes(roomSearchTerm.toLowerCase())
+    roomChat.name.toLowerCase().includes(roomSearchTerm.toLowerCase())
   );
 
   const popupFilteredUsers = users
@@ -205,10 +205,10 @@ const RoomChat = () => {
                 >
                   <div className="room-card-content">
                     <div className="room-avatar">
-                      <Avatar src={roomChat?.info?.avartar?.url} />
+                      <Avatar src={roomChat?.avatar?.url} />
                     </div>
                     <div className="room-info">
-                      <h3 className="room-name">{roomChat.info.name}</h3>
+                      <h3 className="room-name">{roomChat.name}</h3>
                       <p className="room-type">
                         {roomChat.type === 'group' ? 'Nhóm' : 'Riêng tư'}
                       </p>
