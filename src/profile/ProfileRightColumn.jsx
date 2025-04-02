@@ -53,7 +53,7 @@ const ProfileRightColumn = ({ user, activeTab, posts, setPosts, isLoading, isOwn
         
         {activeTab === 'posts' && (
           <div className='posts-container'>
-            {isOwnProfile && <Feed />}
+            {isOwnProfile }
             {isLoading ? (
               <div className='loading-indicator'></div>
             ) : posts.length > 0 ? (
