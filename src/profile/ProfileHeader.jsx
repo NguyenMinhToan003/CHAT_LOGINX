@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => {
   const navigate = useNavigate()
-  const [coverPhoto, setCoverPhoto] = useState('https://png.pngtree.com/thumb_back/fh260/background/20240310/pngtree-beautiful-cartoon-landscape-background-with-sunset-green-grass-field-and-trees-image_15639145.jpg');
+  const [coverPhoto, setCoverPhoto] = useState('https://hoanghamobile.com/tin-tuc/wp-content/webp-express/webp-images/uploads/2024/10/tai-anh-phong-canh-dep-5.jpg.webp');
   const [isLoading, setIsLoading] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState(user?.name || '');
