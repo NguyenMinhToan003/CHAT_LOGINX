@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { getUserById, updateProfilePicture } from '../api/userAPI';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => {
+  const navigate = useNavigate()
   const [coverPhoto, setCoverPhoto] = useState('https://png.pngtree.com/thumb_back/fh260/background/20240310/pngtree-beautiful-cartoon-landscape-background-with-sunset-green-grass-field-and-trees-image_15639145.jpg');
   const [isLoading, setIsLoading] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
@@ -131,7 +133,7 @@ const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => 
                   <i className='fas fa-user-plus'></i> Thêm bạn bè
                 </button>
               )}
-              <button className='message-btn'>
+              <button onClick={()=>navigate(`/chat-user/${user._id}`)} className='message-btn'>
                 <i className='fas fa-comment'></i> Nhắn tin
               </button>
             </>

@@ -229,11 +229,7 @@ const PostComponent = ({ post, onDelete, onUpdate }) => {
               <i className="fas fa-heart"></i>
             </span>
           )}
-          <span className="likes-count">
-            {postData?.interactions?.likes >= 1000
-              ? `${Math.floor(postData?.interactions?.likes / 1000)}K`
-              : postData?.interactions?.likes || 0}
-          </span>
+         
         </div>
         <div className="engagement-stats">
           <span className="comments-count">
