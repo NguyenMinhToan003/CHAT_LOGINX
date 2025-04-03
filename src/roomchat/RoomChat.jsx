@@ -55,7 +55,7 @@ const RoomChat = () => {
       formdata.append('type', roomType);
       formdata.append('name', roomName);
       member.forEach((m) => formdata.append('members', m));
-      formdata.append('admins[0]', userLocal._id);
+      formdata.append('userId', userLocal._id);
       const response = await createRoomChat(formdata);
 
       if (response.insertedId) {
@@ -87,7 +87,7 @@ const RoomChat = () => {
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Thêm logic lọc phòng chat dựa trên từ khóa tìm kiếm
+  // logic lọc phòng chat dựa trên từ khóa tìm kiếm
   const filteredRoomChats = roomChats.filter((roomChat) =>
     roomChat.name.toLowerCase().includes(roomSearchTerm.toLowerCase())
   );
@@ -209,9 +209,7 @@ const RoomChat = () => {
                     </div>
                     <div className="room-info">
                       <h3 className="room-name">{roomChat.name}</h3>
-                      <p className="room-type">
-                        {roomChat.type === 'group' ? 'Nhóm' : 'Riêng tư'}
-                      </p>
+                      
                     </div>
                   </div>
                 </div>
@@ -235,18 +233,6 @@ const RoomChat = () => {
             </div>
 
             <div className="popup-content">
-              <div className="form-group">
-                <label className="form-label">Loại phòng</label>
-                <select
-                  value={roomType}
-                  onChange={(e) => setRoomType(e.target.value)}
-                  className="form-select"
-                >
-                  <option value="group">Nhóm</option>
-                  <option value="private">Riêng tư</option>
-                </select>
-              </div>
-
               <div className="form-group">
                 <label className="form-label">Tên phòng</label>
                 <input
