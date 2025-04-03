@@ -132,8 +132,6 @@ const RoomChatPrivate = () => {
       setRepMessage(null)
     }
 
-    
-
     if (response.insertedId) {
       let data = {
         status: 'read',
