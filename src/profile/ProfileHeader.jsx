@@ -57,8 +57,6 @@ const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => 
     // For now, we'll just toggle the state to show a different button
     setFriendRequestSent(true);
     // In a real implementation, you would call an API like:
-    // sendFriendRequest(currentUser._id, user._id)
-    console.log(`Send friend request from ${currentUser._id} to ${user._id}`);
   };
 
   return (

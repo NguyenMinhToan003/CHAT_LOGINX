@@ -32,7 +32,6 @@ const Post = ({ post, onDelete, onUpdate }) => {
 
   useEffect(() => {
     const activeReaction = getActiveReaction(postData)
-    console.log(activeReaction)
     if (activeReaction) {
       setPostReactions((prev) => ({ ...prev, [postData._id]: activeReaction }))
     }

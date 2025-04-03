@@ -32,7 +32,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
               backgroundColor: '#f5f5f5',
               borderLeft: '3px solid #4caf50',
               borderRadius: '4px',
-              padding: isCheckEmojiFollowed ? { xs: '0.4rem 0.8rem', sm: '0.6rem 1rem' } : { xs: '0.3rem 0.6rem', sm: '0.5rem 1rem' },
+              padding: isCheckEmojiFollowed ? { xs: '0.2rem 0.4rem', sm: '0.3rem 0.5rem' } : { xs: '0.3rem 0.6rem', sm: '0.5rem 1rem' },
               marginBottom: '0.3rem',
               display: 'flex',
               flexDirection: 'column',
@@ -150,7 +150,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
               transition: 'opacity 0.3s ease',
             }}
           >
-            <IconButton onClick={() => removeMessage(message._id)} sx={{ padding: '4px' }}>
+            <IconButton onClick={() => removeMessage(message._id)} sx={{ padding: 1 }}>
               <ClearIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
             </IconButton>
           </Box>
@@ -165,7 +165,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                 ? 'messages.bg_primary'
                 : 'messages.bg_secondary',
             borderRadius: '8px',
-            padding: isCheckEmoji ? { xs: '0.5rem 1rem', sm: '0.75rem 1.5rem' } : { xs: '0.5rem 1rem', sm: '0.75rem 1.25rem' },
+            padding: isCheckEmoji ? { xs: '0.25rem 1rem', sm: '0.5rem 0.75rem' } : { xs: '0.25rem 0.5rem', sm: '0.5rem 0.75rem' },
             display: 'flex',
             flexDirection: 'column',
             gap: '0.3rem',
@@ -208,7 +208,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
             {content}
           </Typography>
           {message?.images && message.images.length > 0 && (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, width: '100%' }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, width: 'fit-content' }}>
               {message.images.map((image, index) => (
                 image?.type === 'video' ? (
                   <video
@@ -222,9 +222,9 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                     key={index}
                     src={image.url}
                     alt={`Image ${index}`}
-                    style={{
-                      maxWidth: 150,
-                      maxHeight: { xs: 100, sm: 150 },
+                      style={{
+                      maxWidth: message?.images?.length ===1? 300 : 150,
+                      maxHeight: message?.images?.length ===1? 300 : 150,
                       borderRadius: '4px',
                       objectFit: 'cover',
                     }}
@@ -257,7 +257,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                 <Box>
                   <Box sx={{
                     display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    backgroundColor: '#e0e0e0', padding: '0.5rem', borderRadius: '10px 10px 0 0'
+                    backgroundColor: '#e0e0e0', padding: '0.25rem', borderRadius: '10px 10px 0 0'
                   }}>
                     <Avatar src={message?.embedPost?.author?.picture?.url}
                       
@@ -273,7 +273,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                   <Typography
                    
                     sx={{
-                    padding: '0.5rem',
+                    padding: '0.25rem',
                     fontSize: { xs: '0.8rem', sm: '0.9rem' }, color: '#333',
                     ':hover': { textDecoration: 'underline' },
                   }}>
