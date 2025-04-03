@@ -639,9 +639,6 @@ const RoomChatId = () => {
                 <Tooltip title="Chỉnh sửa thông tin">
                   <IconButton
                     color="success"
-                    disabled={
-                      room?.admins?.some((m) => m._id === user._id) ? false : true
-                    }
                     onClick={() => setOpenEditGroupForm(true)}
                   >
                     <EditCalendarOutlinedIcon />
@@ -659,7 +656,8 @@ const RoomChatId = () => {
                     color="error"
                     onClick={handleDeleteRoom}
                     disabled={
-                      room?.admins?.some((m) => m._id === user._id) ? false : true
+
+                      room?.members?.some((m) => (m._id===user._id&&m.role==='admin')) ? false : true
                     }
                   >
                     <DeleteOutlineOutlinedIcon />

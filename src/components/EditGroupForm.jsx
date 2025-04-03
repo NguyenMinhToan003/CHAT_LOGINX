@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -17,14 +17,22 @@ import CloseIcon from '@mui/icons-material/Close';
 import { updateRoom } from '../api/roomAPI';
 
 const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
-  const [name, setName] = useState(room?.info?.name || '');
-  const [description, setDescription] = useState(room?.info?.description || '');
+  const [name, setName] = useState('');
   const [avatarFile, setAvatarFile] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState(room?.info?.avartar?.url || '');
+  const [avatarPreview, setAvatarPreview] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   
   const user = JSON.parse(localStorage.getItem('user'));
+
+  // Update the form when the room data changes or the dialog opens
+  useEffect(() => {
+    if (room && open) {
+      setName(room.name || '');
+      setAvatarPreview(room.avatar?.url || '');
+      setError('');
+    }
+  }, [room, open]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -46,18 +54,17 @@ const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
       }
       
       const formData = new FormData();
-      formData.append('roomId', room.info._id);
+      formData.append('roomId', room._id);
       formData.append('name', name);
-      formData.append('description', description);
       formData.append('userAction', user._id);
       
       if (avatarFile) {
-        formData.append('avatar', avatarFile);
+        formData.append('files', avatarFile);
       }
       
       const response = await updateRoom(formData);
       
-      if (response && response.code === 0) {
+      if (response && response.acknowledged) {
         setIsChange(true);
         onClose();
       } else {
@@ -120,15 +127,6 @@ const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
             required
             error={!!error && !name.trim()}
             helperText={!name.trim() && error ? error : ''}
-          />
-          
-          <TextField
-            label="Mô tả"
-            fullWidth
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            multiline
-            rows={3}
           />
           
           {error && !(!name.trim() && error) && (
