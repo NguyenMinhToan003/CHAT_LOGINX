@@ -233,6 +233,8 @@ const RoomChat = () => {
             </div>
 
             <div className="popup-content">
+              
+
               <div className="form-group">
                 <label className="form-label">Tên phòng</label>
                 <input
