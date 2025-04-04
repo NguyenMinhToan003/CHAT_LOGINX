@@ -4,10 +4,9 @@ import { useSocket } from '../provider/SocketProvider';
 import { 
   createMessage, 
   getAllMessage, 
-  getRoomChat, 
-  createMessageImage, 
-  deleteMessage 
+  getRoomChat
 } from '../api';
+import { deleteMessage ,createMessageImage} from '../api/messageAPI';
 import { findOrCreateRoomPrivate } from '../api/roomAPI';
 import MessageItem from '../components/MessageItem';
 import GlobalLoading from '../components/GlobalLoading';

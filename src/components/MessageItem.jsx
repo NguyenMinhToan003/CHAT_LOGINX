@@ -262,9 +262,7 @@ const MessageItem = ({ message, key, user, setRepMessage, removeMessage }) => {
                     <Avatar src={message?.embedPost?.author?.picture?.url}
                       
                       sx={{ width: 40, height: 40, }} />
-                    <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}
-                      
-                      sx={{cursor: 'pointer', ':hover': { textDecoration: 'underline' }}}
+                    <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: '#333', cursor: 'pointer', ':hover': { textDecoration: 'underline' } }}
                     >
                       {message?.embedPost?.author?.name}
                     </Typography>
