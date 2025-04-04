@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createMessage, getAllMessage, getRoomChat } from '../api'
 import { useNavigate, useParams } from 'react-router-dom'
-import audio from '../../public/sound/message-notification.mp3'
+import audio from '../assets/sound/message-notification.mp3'
 import { useSocket } from '../provider/SocketProvider'
 import Box from '@mui/material/Box'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -22,7 +22,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import MessageItem from '../components/MessageItem'
 import { createMessageImage, deleteMessage } from '../api/messageAPI'
-import CircularProgress from '@mui/material/CircularProgress'
+import GlobalLoading from '../components/GlobalLoading'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import { emojiMap } from '../utils/checkIcon'
 import AddMemberForm from '../components/AddMemberForm'
@@ -211,8 +211,8 @@ const RoomChatId = () => {
         const room = response
         setRoom(room)
         const resMess = await getAllMessage(id, user._id)
-        if (Array.isArray(resMess)) {
-          setMessages(resMess)
+        if (Array.isArray(resMess.messages)) {
+          setMessages(resMess.messages)
           socket.emit('join-room', { roomId: id, user: user._id })
         }
         setCheckIsMember(room.members.some((m) => m._id === user._id))
@@ -268,19 +268,7 @@ const RoomChatId = () => {
       open={openAddMemberForm}
       onClose={() => setOpenAddMemberForm(false)}
     />
-      {isLoading ? (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            height: '100vh',
-          }}
-        >
-          <CircularProgress /> loading ...
-        </Box>
-      ) : (
+        <GlobalLoading loading={isLoading} />
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', gap: 1 }}>
           <Box
             sx={{
@@ -363,7 +351,7 @@ const RoomChatId = () => {
                     />
                   ))}
                   
-                {!checkIsMember && (
+                {!checkIsMember && !isLoading && (
                   <Box
                     sx={{
                       display: 'flex',
@@ -758,7 +746,6 @@ const RoomChatId = () => {
             </Box>
           </Box>
         </Box>
-      )}
     </>
   )
 }

@@ -22,10 +22,12 @@ export const getRoomChatByUserId = async (userId,type) => {
 }
 //////////! message 
 // lay tat ca cac tin nhan cua phong chat
-export const getAllMessage = async (roomId,userId) => {
+export const getAllMessage = async (roomId,userId,page, limit) => {
 	const response = await axiosInstance.post(`/message/get-message-in-room`, {
 		roomId: roomId,
-		userId: userId
+		userId: userId,
+		page: page,
+		limit: limit
 	})
 	return response?.data;
 }

@@ -3,7 +3,7 @@ import { MdCallEnd } from 'react-icons/md'
 import { useEffect, useRef } from 'react'
 import { IoVideocamOutline } from 'react-icons/io5'
 import './IsComingCall.css' 
-import audio from '../../../public/sound/zalo-calling.mp3'
+import audio from '../../assets/sound/zalo-calling.mp3'
 
 
 const IsCommingCall = ({ handleAcceptCall, handleHangup, onCommingCall }) => {

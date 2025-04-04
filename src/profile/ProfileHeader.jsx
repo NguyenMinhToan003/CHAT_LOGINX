@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { getUserById, updateProfilePicture } from '../api/userAPI';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
 
 const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => {
   const navigate = useNavigate()
@@ -66,6 +67,9 @@ const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => 
           <img src={coverPhoto} alt='Cover' style={{ objectFit: 'fill', width: '100%', height: '100%' }} />
           {isOwnProfile && (
             <>
+              <Button variant="contained" color="primary" onClick={() => navigate('/login')} className='logout-btn'>
+                Logout
+              </Button>
               <label className='edit-cover-photo-btn' htmlFor="cover-photo-input">
                 <i className='fas fa-camera'></i> Thêm ảnh bìa
               </label>

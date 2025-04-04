@@ -12,15 +12,22 @@ import Main from "../index/Main";
 import RoomChatPrivate from "../roomchat/RoomChatPrivate";
 import StatusAddSocial from "../StatusAddSocial/StatusAddSocial";
 import NotFound from "./NotFound";
+import Register from "../auth/Register";
 
 const AppRouter = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  
+  const notCheckUser = [
+    '/login',
+    '/register',
+  ]
+  if (!user && !notCheckUser.includes(window.location.pathname)) {
+    window.location.href = "/login"
+  }
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
-      
+      <Route path="/register" element={<Register />} />  
       {/* Các route yêu cầu user phải đăng nhập */}
       {user ? (
         <>

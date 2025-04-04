@@ -7,65 +7,51 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import { NavLink } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { verifyToken } from '../api'
+import { NavLink, useNavigate } from 'react-router-dom'
 import GlobalLoading from '../components/GlobalLoading'
-import { loginLocal } from '../api/auth'
+import { registerLocal } from '../api/auth'
+import { useState } from 'react'
 
 const host = `${import.meta.env.VITE_SERVER_HOST}/api`
 
-const Login = () => {
+const Register = () => {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
   const [password, setPassword] = useState('')
+  const [rePassword, setRePassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // trang thai dang nhap
-  const fetchUser = async () => {
-    const params = new URLSearchParams(location.search)
-    const token = params.get('token')
-    
-    if (!token) {
+
+  const handleRegister = async () => {
+    setLoading(true)
+    if(!email || !name || !password || !rePassword) {
+      setError('Vui lòng điền đầy đủ thông tin')
       setLoading(false)
       return
     }
-    
-    setLoading(true)
-    try {
-      const user = await verifyToken(token)
-      localStorage.setItem('user', JSON.stringify(user))
-      window.location.href = '/index'
-    } catch (err) {
-      setError("Xác thực thất bại! Vui lòng thử lại.")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchUser()
-  }, [location])
-
-  const handleLogin = async () => {
-    setLoading(true)
-    if (!email || !password) {
-      setError("Vui lòng nhập đầy đủ thông tin đăng nhập.")
+    if(password !== rePassword) {
+      setError('Mật khẩu không khớp')
       setLoading(false)
       return
     }
-    
     try {
-      const response = await loginLocal(email, password)
-      if (response._id) {
-        localStorage.setItem('user', JSON.stringify(response))
-        window.location.href = '/index'
-      } else {
-        setError("Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin đăng nhập.")
+      const response = await registerLocal(email, password, name)
+      if (response?.insertedId) {
+        setLoading(false)
+        setError(null)
+        navigate('/login')
       }
-    } catch (error) {
-      setError("Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin đăng nhập.")
-    } finally {
+      else if (response?.message) {
+        setError(response.message)
+      }
+    }
+    catch (error) {
+      setError('Đã xảy ra lỗi trong quá trình đăng ký')
+    }
+    finally {
       setLoading(false)
     }
   }
@@ -107,6 +93,8 @@ const Login = () => {
           color: '#333',
         }}
       >
+        
+
         <Grid
           item
           xs={12}
@@ -120,7 +108,7 @@ const Login = () => {
         >
           <Box sx={{ width: '100%', maxWidth: '28rem', px: { xs: 2, md: 0 } }}>
             <Typography
-              variant="h4"
+              variant='h4'
               sx={{
                 marginBottom: 2,
                 textAlign: { xs: 'center', md: 'left' },
@@ -128,10 +116,10 @@ const Login = () => {
                 color: '#333',
               }}
             >
-              Welcome 👋
+              Hãy bắt đầu với việc tạo tài khoản 👋
             </Typography>
             <Typography
-              variant="body1"
+              variant='body1'
               sx={{
                 textAlign: { xs: 'center', md: 'left' },
                 display: 'block',
@@ -142,16 +130,16 @@ const Login = () => {
             >
               {error
                 ? <span style={{ color: 'red' }}>{error}</span>
-                : 'Hôm nay là một ngày mới. Hãy đăng nhập để bắt đầu với cảm nghĩ của bạn.'
+                : null
               }
             </Typography>
             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4, marginTop: 2 }}>
-              <TextField
+               <TextField
                 fullWidth
-                id="email"
-                label="email"
-                type="email"
-                color="success"
+                id='email'
+                label='email'
+                type='email'
+                color='success'
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 sx={{
@@ -187,10 +175,49 @@ const Login = () => {
               />
               <TextField
                 fullWidth
-                id="password"
-                label="mật khẩu"
-                type="password"
-                color="success"
+                id='name'
+                label='tên người dùng'
+                type='text'
+                color='success'
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                    '& fieldset': {
+                      borderColor: '#1a3c4d',
+                      borderWidth: '2px',
+                      borderRadius: '12px',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#388e3c',
+                      borderWidth: '2px',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#388e3c',
+                      borderWidth: '2px',
+                      boxShadow: '0 0 8px rgba(56, 142, 60, 0.2)',
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#666',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: '#388e3c',
+                  },
+                  '& .MuiOutlinedInput-input': {
+                    padding: '14px 16px',
+                    color: '#333',
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                id='password'
+                label='mật khẩu'
+                type='password'
+                color='success'
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 sx={{
@@ -224,8 +251,47 @@ const Login = () => {
                   },
                 }}
               />
+              <TextField
+                fullWidth
+                id='repassword'
+                label='nhập lại mật khẩu'
+                type='password'
+                color='success'
+                value={rePassword}
+                onChange={(event) => setRePassword(event.target.value)}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                    '& fieldset': {
+                      borderColor: '#1a3c4d',
+                      borderWidth: '2px',
+                      borderRadius: '12px',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#388e3c',
+                      borderWidth: '2px',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#388e3c',
+                      borderWidth: '2px',
+                      boxShadow: '0 0 8px rgba(56, 142, 60, 0.2)',
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#666',
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: '#388e3c',
+                  },
+                  '& .MuiOutlinedInput-input': {
+                    padding: '14px 16px',
+                    color: '#333',
+                  },
+                }}
+              />
               <Button
-                onClick={handleLogin}
+                onClick={handleRegister}
                 sx={{
                   fontWeight: 'bold',
                   padding: '12px 24px',
@@ -237,13 +303,13 @@ const Login = () => {
                   color: '#fff',
                 }}
               >
-                Đăng nhập
+                Đăng ký ngay
               </Button>
               <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                <Typography variant="span" sx={{ color: '#555' }}>
-                  Bạn không có tài khoản?
+                <Typography variant='span' sx={{ color: '#555' }}>
+                  Đăng nhập ngay ?
                 </Typography>
-                <NavLink to="/register">
+                <NavLink to='/login'>
                   <Button
                     sx={{
                       display: 'flex',
@@ -261,8 +327,8 @@ const Login = () => {
                       },
                     }}
                   >
-                    <Typography variant="span" sx={{ color: '#1e88e5' }}>
-                      Đăng ký
+                    <Typography variant='span' sx={{ color: '#1e88e5' }}>
+                      Đăng nhập
                     </Typography>
                   </Button>
                 </NavLink>
@@ -270,7 +336,7 @@ const Login = () => {
             </Box>
           </Box>
         </Grid>
-        <Grid
+                <Grid
           item
           xs={12}
           md={6}
@@ -280,6 +346,7 @@ const Login = () => {
             alignItems: 'center',
           }}
         >
+          
           <Box
             sx={{
               display: 'flex',
@@ -292,6 +359,18 @@ const Login = () => {
               mb: { xs: 4, md: 0 },
             }}
           >
+            <Typography
+              variant='h4'
+              sx={{
+                marginBottom: 2,
+                textAlign: 'center',
+                fontWeight: 500,
+                color: '#333',
+              }}
+            >
+              Đăng ký tài khoản
+            </Typography>
+
             <Button
               onClick={() => loginWithGoogle()}
               sx={{
@@ -311,8 +390,8 @@ const Login = () => {
               }}
             >
               <IconGoogle />
-              <Typography variant="span" sx={{ color: '#333' }}>
-                Đăng nhập với Google
+              <Typography variant='span' sx={{ color: '#333' }}>
+                Đăng ký với Google
               </Typography>
             </Button>
             <Button
@@ -334,8 +413,8 @@ const Login = () => {
               }}
             >
               <IconGitHub />
-              <Typography variant="span" sx={{ color: '#333' }}>
-                Đăng nhập với GitHub
+              <Typography variant='span' sx={{ color: '#333' }}>
+                Đăng ký với GitHub
               </Typography>
             </Button>
             <Button
@@ -357,8 +436,8 @@ const Login = () => {
               }}
             >
               <IconX />
-              <Typography variant="span" sx={{ color: '#333' }}>
-                Đăng nhập với X
+              <Typography variant='span' sx={{ color: '#333' }}>
+                Đăng ký với X
               </Typography>
             </Button>
           </Box>
@@ -368,4 +447,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register
