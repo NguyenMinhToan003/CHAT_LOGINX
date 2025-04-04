@@ -12,8 +12,14 @@ import {
   IconButton,
   Divider,
   CircularProgress,
+  Paper,
+  Tooltip,
+  Fade,
+  Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { updateRoom } from '../api/roomAPI';
 
 const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
@@ -22,6 +28,7 @@ const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
   const [avatarPreview, setAvatarPreview] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
   
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -31,14 +38,20 @@ const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
       setName(room.name || '');
       setAvatarPreview(room.avatar?.url || '');
       setError('');
+      setShowSuccess(false);
     }
   }, [room, open]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Kích thước ảnh không được vượt quá 5MB');
+        return;
+      }
       setAvatarFile(file);
       setAvatarPreview(URL.createObjectURL(file));
+      setError('');
     }
   };
 
@@ -65,10 +78,13 @@ const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
       const response = await updateRoom(formData);
       
       if (response && response.acknowledged) {
+        setShowSuccess(true);
         setIsChange(true);
-        onClose();
+        setTimeout(() => {
+          onClose();
+        }, 1500);
       } else {
-        setError(response.message || 'Có lỗi xảy ra khi cập nhật nhóm');
+        setError(response?.message || 'Có lỗi xảy ra khi cập nhật nhóm');
       }
     } catch (error) {
       console.error('Lỗi khi cập nhật thông tin nhóm:', error);
@@ -81,28 +97,65 @@ const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
   return (
     <Dialog 
       open={open} 
-      onClose={onClose}
+      onClose={isLoading ? null : onClose}
       maxWidth="sm"
       fullWidth
+      PaperProps={{
+        elevation: 8,
+        sx: { borderRadius: 2, overflow: 'hidden' }
+      }}
+      TransitionComponent={Fade}
+      transitionDuration={300}
     >
-      <DialogTitle>
+      <DialogTitle sx={{ bgcolor: 'primary.main', color: 'white' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6">Chỉnh sửa thông tin nhóm</Typography>
-          <IconButton onClick={onClose}>
+          <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <EditIcon fontSize="small" />
+            Chỉnh sửa thông tin nhóm
+          </Typography>
+          <IconButton onClick={onClose} disabled={isLoading} sx={{ color: 'white' }}>
             <CloseIcon />
           </IconButton>
         </Box>
       </DialogTitle>
-      <Divider />
       
-      <DialogContent>
+      <DialogContent sx={{ pt: 3, pb: 1 }}>
+        {showSuccess && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            Cập nhật thông tin nhóm thành công!
+          </Alert>
+        )}
+        
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, py: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: 1 }}>
-            <Avatar
-              src={avatarPreview}
-              sx={{ width: 100, height: 100, cursor: 'pointer' }}
+            <Paper elevation={3} sx={{ 
+              borderRadius: '50%', 
+              position: 'relative',
+              overflow: 'hidden',
+              width: 120, 
+              height: 120,
+            }}>
+              <Avatar
+                src={avatarPreview}
+                sx={{ width: '100%', height: '100%' }}
+              />
+              <Box sx={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                display: 'flex',
+                justifyContent: 'center',
+                py: 0.5,
+                cursor: 'pointer',
+              }}
               onClick={() => document.getElementById('avatar-upload').click()}
-            />
+              >
+                <PhotoCameraIcon sx={{ color: 'white' }} />
+              </Box>
+            </Paper>
+            
             <input
               id="avatar-upload"
               type="file"
@@ -110,13 +163,18 @@ const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
               style={{ display: 'none' }}
               onChange={handleAvatarChange}
             />
-            <Button 
-              variant="outlined" 
-              size="small"
-              onClick={() => document.getElementById('avatar-upload').click()}
-            >
-              Thay đổi ảnh
-            </Button>
+            
+            <Tooltip title="Nhấn để thay đổi ảnh nhóm">
+              <Button 
+                variant="outlined" 
+                size="small"
+                color="secondary"
+                onClick={() => document.getElementById('avatar-upload').click()}
+                startIcon={<PhotoCameraIcon />}
+              >
+                Thay đổi ảnh
+              </Button>
+            </Tooltip>
           </Box>
           
           <TextField
@@ -127,16 +185,27 @@ const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
             required
             error={!!error && !name.trim()}
             helperText={!name.trim() && error ? error : ''}
+            autoComplete="off"
+            variant="outlined"
+            InputProps={{
+              sx: { borderRadius: 1.5 }
+            }}
           />
           
           {error && !(!name.trim() && error) && (
-            <Typography color="error">{error}</Typography>
+            <Alert severity="error">{error}</Alert>
           )}
         </Box>
       </DialogContent>
       
-      <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button onClick={onClose} color="error" variant="outlined">
+      <DialogActions sx={{ px: 3, pb: 3, pt: 1, justifyContent: 'space-between' }}>
+        <Button 
+          onClick={onClose} 
+          color="error" 
+          variant="outlined"
+          disabled={isLoading}
+          sx={{ borderRadius: 1.5 }}
+        >
           Hủy
         </Button>
         <Button 
@@ -144,7 +213,12 @@ const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
           variant="contained" 
           color="primary"
           disabled={isLoading}
-          startIcon={isLoading ? <CircularProgress size={20} /> : null}
+          startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : null}
+          sx={{ 
+            borderRadius: 1.5,
+            minWidth: 130,
+            boxShadow: 2
+          }}
         >
           {isLoading ? 'Đang lưu...' : 'Lưu thay đổi'}
         </Button>

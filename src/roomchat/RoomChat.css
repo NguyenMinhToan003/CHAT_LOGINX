@@ -663,14 +663,14 @@ body {
 }
 
 .search-create-container .search-input {
-    flex: 0.8;
+    flex: 0.85;
     /* Takes up 80% of the container width */
     min-width: 0;
     /* Allows the input to shrink properly */
 }
 
 .search-create-container .MuiButton-root {
-    flex: 0.2;
+    flex: 0.15;
     /* Takes up 20% of the container width */
     min-width: 0;
     /* Allows the button to shrink properly */
