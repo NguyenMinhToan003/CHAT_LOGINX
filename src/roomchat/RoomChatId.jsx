@@ -309,19 +309,14 @@ const RoomChatId = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      {isLoading ? (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            height: '100vh',
-          }}
-        >
-          <CircularProgress /> loading ...
-        </Box>
-      ) : (
+      <AddMemberForm
+       setIsChange = {setIsChange}
+         setIsChange = {setIsChange}
+         room={room}
+       open={openAddMemberForm}
+       onClose={() => setOpenAddMemberForm(false)}
+     />
+         <GlobalLoading loading={isLoading} />
 
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', gap: 1 }}>
           <Box
