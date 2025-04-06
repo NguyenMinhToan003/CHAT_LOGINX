@@ -6,9 +6,11 @@ import { useNavigate } from 'react-router-dom'
 
 
 import { deletePost } from '../api/postAPI'
+import FormSharePost from './FormSharePost'
 
 const Post = ({ post, onDelete, onUpdate }) => {
   const navigate = useNavigate()
+  const [openSharePost, setOpenSharePost] = useState(false)
   const [postData, setPostData] = useState(post)
   const [countReaction, setCountReaction] =
     useState(
@@ -172,6 +174,8 @@ const Post = ({ post, onDelete, onUpdate }) => {
   }
 
   return <>
+    <FormSharePost open={openSharePost} onClose={() => setOpenSharePost(false)}
+      post={postData} />
     <div key={postData._id} className='post' id='header'>
       <div className='post-header'>
         <div className='post-user'>
@@ -306,7 +310,7 @@ const Post = ({ post, onDelete, onUpdate }) => {
           <i className='far fa-comment'></i>
           <span>Bình luận</span>
         </button>
-        <button className='action-btn share-btn'>
+        <button onClick={()=>setOpenSharePost(true)} className='action-btn share-btn'>
           <i className='far fa-share-square'></i>
           <span>Chia sẻ</span>
         </button>
