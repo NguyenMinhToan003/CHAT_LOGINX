@@ -28,12 +28,18 @@ import { emojiMap } from '../utils/checkIcon'
 import AddMemberForm from '../components/AddMemberForm'
 import './RoomChatId.css'
 import EditGroupForm from '../components/EditGroupForm'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 
 const emojiList = emojiMap
 
 const RoomChatId = () => {
   const [openEditGroupForm, setOpenEditGroupForm] = useState(false)
   const [openAddMemberForm, setOpenAddMemberForm] = useState(false)
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const navigate = useNavigate()
   const { socket } = useSocket()
   const { id } = useParams()
@@ -179,9 +185,18 @@ const RoomChatId = () => {
     }
   }
 
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true)
+  }
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false)
+  }
+
   const handleDeleteRoom = async () => {
     const response = await delateRoom({ roomId: id, userId: user._id })
     if (response) {
+      setOpenDeleteDialog(false)
       navigate('/roomchats')
     }
   }
@@ -192,8 +207,6 @@ const RoomChatId = () => {
       await fetchRoom()
     }
   }
-
-  
 
   const handlLeaveRoom = async () => {
     const response = await leaveRoom({ roomId: id, userId: user._id })
@@ -263,12 +276,53 @@ const RoomChatId = () => {
     <>
       <audio ref={audioRef} src={audio} />
       <AddMemberForm
-      setIsChange = {setIsChange}
+        setIsChange = {setIsChange}
         room={room}
-      open={openAddMemberForm}
-      onClose={() => setOpenAddMemberForm(false)}
-    />
-        <GlobalLoading loading={isLoading} />
+
+        open={openAddMemberForm}
+        onClose={() => setOpenAddMemberForm(false)}
+      />
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        PaperProps={{
+          className: "delete-dialog-paper"
+        }}
+      >
+        <DialogTitle className="delete-dialog-title" id="alert-dialog-title">
+          <DeleteOutlineOutlinedIcon /> Xác nhận
+        </DialogTitle>
+        <DialogContent className="delete-dialog-content">
+          <DialogContentText id="alert-dialog-description" className="delete-dialog-text">
+            Bạn có chắc chắn muốn xóa nhóm này?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className="delete-dialog-actions">
+          <Button onClick={handleCloseDeleteDialog} className="cancel-button">
+            Hủy
+          </Button>
+          <Button onClick={handleDeleteRoom} className="delete-button" autoFocus>
+            Xóa
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {isLoading ? (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            height: '100vh',
+          }}
+        >
+          <CircularProgress /> loading ...
+        </Box>
+      ) : (
+
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', gap: 1 }}>
           <Box
             sx={{
@@ -642,9 +696,8 @@ const RoomChatId = () => {
                 <Tooltip title="Xóa nhóm">
                   <IconButton
                     color="error"
-                    onClick={handleDeleteRoom}
+                    onClick={handleOpenDeleteDialog}
                     disabled={
-
                       room?.members?.some((m) => (m._id===user._id&&m.role==='admin')) ? false : true
                     }
                   >
