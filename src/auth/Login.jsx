@@ -59,7 +59,7 @@ const Login = () => {
       const response = await loginLocal(email, password)
       if (response._id) {
         localStorage.setItem('user', JSON.stringify(response))
-        window.location.href = '/index'
+        window.location.href = '/'
       } else {
         setError("Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin đăng nhập.")
       }

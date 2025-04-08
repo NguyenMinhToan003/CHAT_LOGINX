@@ -113,7 +113,7 @@ const RoomChat = () => {
   };
 
   const handleCancel = () => {
-    navigate("/index");
+    navigate("/");
   };
 
   return (

@@ -358,7 +358,7 @@ const Post = ({ post, onDelete, onUpdate }) => {
           <div className="post-user">
             <div
               className="avatar"
-              onClick={() => navigate(`/index/profile/${postData.author?._id || postData.authorID}`)}
+              onClick={() => navigate(`/profile/${postData.author?._id || postData.authorID}`)}
             >
               <img src={postData.author?.picture?.url || 'default-avatar.jpg'} alt="Author" />
             </div>
