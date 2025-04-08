@@ -589,7 +589,7 @@ const RoomChatPrivate = () => {
             }}
           >
             <Avatar
-              onClick={() => navigate(`/index/profile/${idUserOrder}`)}
+              onClick={() => navigate(`/profile/${idUserOrder}`)}
               src={room?.avatar?.url}
               sx={{
                 width: 80,

@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import Home from '../home/Home';
 import User from '../user/User';
 import RoomChat from '../roomchat/RoomChat';
 import RoomChatId from '../roomchat/RoomChatId';
@@ -13,6 +12,7 @@ import RoomChatPrivate from "../roomchat/RoomChatPrivate";
 import StatusAddSocial from "../StatusAddSocial/StatusAddSocial";
 import NotFound from "./NotFound";
 import Register from "../auth/Register";
+import SearchPage from '../searchpage/SearchPage';
 
 import SinglePost from "../components/SinglePost";
 
@@ -44,18 +44,11 @@ const AppRouter = () => {
             <Route index element={<Index />} />
             <Route path="profile/:id" element={<Profile />} />
             <Route path="profile" element={<Profile />} />
-        
-
             <Route path='notification' element={<FriendRequestList />} /> 
             <Route path="search" element={<SearchPage />} />
-
           </Route>
           <Route path="/addSocial/:code" element={<StatusAddSocial />} />
-
           <Route path="/post/:postId" element={<SinglePost />} />
-
-         
-
         </>
       ) : (
         // Nếu user chưa đăng nhập, chuyển hướng về "/"

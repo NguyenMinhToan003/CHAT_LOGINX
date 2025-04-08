@@ -311,7 +311,6 @@ const RoomChatId = () => {
       </Dialog>
       <AddMemberForm
        setIsChange = {setIsChange}
-         setIsChange = {setIsChange}
          room={room}
        open={openAddMemberForm}
        onClose={() => setOpenAddMemberForm(false)}
