@@ -1,0 +1,133 @@
+/* Delete Confirmation Dialog Styles */
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+  }
+  
+  .confirmation-dialog {
+    background-color: white;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    animation: scaleIn 0.3s ease;
+  }
+  
+  .confirmation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e4e6eb;
+  }
+  
+  .confirmation-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #050505;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #65676b;
+  }
+  
+  .close-button:hover {
+    color: #1877f2;
+  }
+  
+  .confirmation-content {
+    padding: 24px 20px;
+    text-align: center;
+  }
+  
+  .confirmation-icon {
+    font-size: 32px;
+    color: #fa383e;
+    margin-bottom: 16px;
+  }
+  
+  .confirmation-content p {
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: #050505;
+  }
+  
+  .confirmation-subtext {
+    font-size: 14px !important;
+    color: #65676b !important;
+  }
+  
+  .confirmation-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 20px;
+    background-color: #f2f2f2;
+    border-top: 1px solid #e4e6eb;
+    gap: 12px;
+  }
+  
+  .cancel-button, .confirm-button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    transition: all 0.2s ease;
+  }
+  
+  .cancel-button {
+    background-color: #e4e6eb;
+    color: #050505;
+  }
+  
+  .cancel-button:hover {
+    background-color: #d8dadf;
+  }
+  
+  .confirm-button {
+    background-color: #fa383e;
+    color: white;
+  }
+  
+  .confirm-button:hover {
+    background-color: #e4363c;
+  }
+  
+  .confirm-button:disabled, .cancel-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .loading-text {
+    margin-left: 8px;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }

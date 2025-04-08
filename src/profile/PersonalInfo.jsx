@@ -1,18 +1,14 @@
-import  { useState } from 'react';
+import { useState } from 'react';
+import { updateUserProfile } from '../api/userAPI';
 
-const PersonalInfo = ({ user, setUser }) => {
+const PersonalInfo = ({ user, setUser, onProfileUpdate, isOwnProfile }) => {
   const [isEditingInfo, setIsEditingInfo] = useState(false);
   const [personalInfo, setPersonalInfo] = useState({
-    workplace: 'Công ty ABC',
-    education: user.education || 'Đại học Bến Tre',
-    hometown: 'Chợ Lách, Bến Tre',
-    currentCity: user.currentCity || 'TP Hồ Chí Minh',
-    relationship: 'Độc thân',
+    work: user.work || '',
+    bio: user.bio || '',
     phone: user.phone || '',
     email: user.email || '',
     address: user.address || '',
-    website: 'www.mywebsite.com',
-    birthdate: '01/01/1990',
   });
 
   const handleInfoChange = (e) => {
@@ -20,18 +16,37 @@ const PersonalInfo = ({ user, setUser }) => {
     setPersonalInfo(prev => ({ ...prev, [name]: value }));
   };
 
-  const savePersonalInfo = () => {
-    setIsEditingInfo(false);
-    setUser(prev => ({
-      ...prev,
-      currentCity: personalInfo.currentCity,
-      education: personalInfo.education,
-      email: personalInfo.email,
-      phone: personalInfo.phone,
-      address: personalInfo.address,
-    }));
+  const savePersonalInfo = async () => {
+    try {
+      const updatedData = {
+        name: user.name || "Chưa cập nhật",
+        phone: personalInfo.phone,
+        email: personalInfo.email,
+        address: personalInfo.address,
+        bio: personalInfo.bio,
+        work: personalInfo.work,
+      };
+  
+      console.log("Dữ liệu gửi lên:", updatedData);
+  
+      await updateUserProfile(user._id, updatedData);
+  
+      setUser(prev => ({
+        ...prev,
+        ...updatedData,
+      }));
+  
+      if (onProfileUpdate) {
+        onProfileUpdate();
+      }
+  
+      setIsEditingInfo(false);
+    } catch (error) {
+      console.error('Error saving personal info:', error);
+      alert('Có lỗi khi cập nhật thông tin. Vui lòng thử lại sau.');
+    }
   };
-
+  
   return (
     <div className='personal-info-section' id='header'>
       {isEditingInfo ? (
@@ -39,11 +54,11 @@ const PersonalInfo = ({ user, setUser }) => {
           <h3>Chỉnh sửa thông tin cá nhân</h3>
           <div className='form-group'>
             <label>Nơi làm việc</label>
-            <input name='workplace' value={personalInfo.workplace} onChange={handleInfoChange} />
+            <input name="work" value={personalInfo.work} onChange={handleInfoChange} />
           </div>
           <div className='form-group'>
             <label>Học vấn</label>
-            <input name='education' value={personalInfo.education} onChange={handleInfoChange} />
+            <input name='bio' value={personalInfo.bio} onChange={handleInfoChange} />
           </div>
           <div className='form-group'>
             <label>Email</label>
@@ -63,8 +78,8 @@ const PersonalInfo = ({ user, setUser }) => {
       ) : (
         <div className='personal-info-display'>
           <h3>Thông tin cá nhân</h3>
-          <div><i className='fas fa-briefcase'></i> Làm việc tại <strong>{personalInfo.workplace}</strong></div>
-          <div><i className='fas fa-graduation-cap'></i> Học tại <strong>{personalInfo.education}</strong></div>
+          <div><i className='fas fa-briefcase'></i> Làm việc tại <strong>{personalInfo.work || 'Chưa cập nhật'}</strong></div>
+          <div><i className='fas fa-graduation-cap'></i> Học tại: <strong>{personalInfo.bio || 'Chưa cập nhật'}</strong></div>
           
           <h4>Thông tin liên hệ</h4>
           <div>
@@ -77,9 +92,12 @@ const PersonalInfo = ({ user, setUser }) => {
             <i className='fas fa-map-marker-alt'></i> Địa chỉ: <strong>{personalInfo.address || 'Chưa cập nhật'}</strong>
           </div>
           
-          <button onClick={() => setIsEditingInfo(true)}>
-            <i className='fas fa-pencil-alt'></i> Chỉnh sửa
-          </button>
+          {/* Chỉ hiển thị nút chỉnh sửa nếu đây là profile của chính người dùng */}
+          {isOwnProfile && (
+            <button onClick={() => setIsEditingInfo(true)}>
+              <i className='fas fa-pencil-alt'></i> Chỉnh sửa
+            </button>
+          )}
         </div>
       )}
     </div>

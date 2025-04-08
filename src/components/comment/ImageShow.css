@@ -1,0 +1,279 @@
+/* ImageSlideshow.css */
+
+/* Image grid in comments/replies */
+.comment-image-container, .reply-image-container {
+    display: grid;
+    grid-gap: 4px;
+    margin: 8px 0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .comment-image, .reply-image {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.2s;
+  }
+  
+  .comment-image:hover, .reply-image:hover {
+    transform: scale(0.98);
+  }
+  
+  .comment-image img, .reply-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Grid layouts based on image count */
+  .image-count-1 {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+  }
+  
+  .image-count-2 {
+    grid-template-columns: 1fr 1fr;
+    max-width: 400px;
+  }
+  
+  .image-count-3 {
+    grid-template-columns: 1fr 1fr;
+    max-width: 400px;
+  }
+  
+  .image-count-3 .comment-image:first-child,
+  .image-count-3 .reply-image:first-child {
+    grid-column: span 2;
+  }
+  
+  .image-count-4 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;
+  }
+  
+  .image-count-more {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    max-width: 400px;
+  }
+  
+  .image-count-more .comment-image:first-child,
+  .image-count-more .reply-image:first-child {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+  
+  .more-images-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  /* Slideshow Styles */
+  .slideshow-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .comment-slideshow-container,
+  .reply-slideshow-container {
+    width: 90%;
+    max-width: 1200px;
+    height: 90vh;
+    background-color: #2d2d2d;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  }
+  
+  .close-slideshow {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    transition: background-color 0.2s;
+  }
+  
+  .close-slideshow:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .slideshow-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .slideshow-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .slideshow-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+  }
+  
+  .nav-button {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    z-index: 5;
+  }
+  
+  .nav-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .prev-button {
+    left: 20px;
+  }
+  
+  .next-button {
+    right: 20px;
+  }
+  
+  .slideshow-footer {
+    height: 100px;
+    background-color: #1a1a1a;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .image-counter {
+    color: white;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .thumbnail-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 5px 0;
+    width: 100%;
+  }
+  
+  .thumbnail {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0.6;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  
+  .thumbnail.active {
+    opacity: 1;
+    border-color: #3897f0;
+  }
+  
+  .thumbnail:hover {
+    opacity: 0.9;
+  }
+  
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Make reply images slightly smaller */
+  .reply-image-container {
+    max-width: 350px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .comment-slideshow-container,
+    .reply-slideshow-container {
+      width: 95%;
+      height: 80vh;
+    }
+    
+    .nav-button {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .slideshow-footer {
+      height: 80px;
+    }
+    
+    .thumbnail {
+      width: 50px;
+      height: 50px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .comment-image-container,
+    .reply-image-container {
+      max-width: 100%;
+    }
+    
+    .nav-button {
+      width: 32px;
+      height: 32px;
+    }
+  }

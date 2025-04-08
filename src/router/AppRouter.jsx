@@ -13,6 +13,7 @@ import RoomChatPrivate from "../roomchat/RoomChatPrivate";
 import StatusAddSocial from "../StatusAddSocial/StatusAddSocial";
 import NotFound from "./NotFound";
 import Register from "../auth/Register";
+import SinglePost from "../components/SinglePost";
 
 const AppRouter = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -40,8 +41,17 @@ const AppRouter = () => {
             <Route index element={<Index />} />
             <Route path="profile/:id" element={<Profile />} />
             <Route path="profile" element={<Profile />} />
+            
+
+           
+           
           </Route>
           <Route path="/addSocial/:code" element={<StatusAddSocial />} />
+
+          <Route path="/post/:postId" element={<SinglePost />} />
+
+         
+
         </>
       ) : (
         // Nếu user chưa đăng nhập, chuyển hướng về "/"

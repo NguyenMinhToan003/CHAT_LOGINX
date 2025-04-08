@@ -75,3 +75,38 @@ export const getAllUser = async () => {
           throw error;
         }
       };
+
+
+      //cập nhậ thông tin trang cá nhân
+      export const updateUserProfile = async (userId, userData) => {
+        try {
+          const formData = new FormData();
+          formData.append('userId', userId);
+          
+          // Add user data fields to formData
+          if (userData.name) formData.append('name', userData.name);
+          if (userData.phone) formData.append('phone', userData.phone);
+          if (userData.email) formData.append('email', userData.email);
+          if (userData.address) formData.append('address', userData.address);
+          if(userData.bio) formData.append('bio',userData.bio);
+           if(userData.work) formData.append('work',userData.work);
+          
+          // Only append files if they exist and are not null/undefined
+          if (userData.files && userData.files.length > 0) {
+            for (let i = 0; i < userData.files.length; i++) {
+              formData.append('files', userData.files[i]);
+            }
+          }
+      
+          const response = await axiosInstance.post('/user/edit', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+          
+          console.log('Profile update response:', response.data);
+          return response?.data;
+        } catch (error) {
+          console.error('Error updating user profile:', error);
+          throw error;
+        }
+      };
+      
