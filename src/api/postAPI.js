@@ -103,9 +103,10 @@ export const updatePost = async ({ postId, content, authorId, files, deleteFiles
     formData.append('authorId', authorId);
 
     // Thêm danh sách public_id của các hình ảnh cần xóa (nếu có)
+    console.log("deleteFiles", deleteFiles)
     if (deleteFiles && deleteFiles.length > 0) {
-      deleteFiles.forEach((file) => {
-        formData.append('deleteFiles', file);
+      deleteFiles.forEach((file,index) => {
+        formData.append(`deleteFiles[${index}]`, file);
       });
     }
 
