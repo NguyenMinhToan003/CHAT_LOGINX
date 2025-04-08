@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -10,45 +10,45 @@ import {
   IconButton,
   Avatar,
   TextField,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { getFriends } from '../api/userAPI';
-import { getRoomChatByUserId } from '../api';
-import { createMessage } from '../api/messageAPI';
-import { findOrCreateRoomPrivate } from '../api/roomAPI';
+} from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import { getFriends } from '../api/userAPI'
+import { getRoomChatByUserId } from '../api'
+import { createMessage } from '../api/messageAPI'
+import { findOrCreateRoomPrivate } from '../api/roomAPI'
 
 const FormSharePost = ({ post, open, onClose }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const [friends, setFriends] = useState([]);
-  const [roomChats, setRoomChats] = useState([]);
-  const [selected, setSelected] = useState(null);
-  const [message, setMessage] = useState('');
-  const [type, setType] = useState('');
+  const user = JSON.parse(localStorage.getItem('user'))
+  const [friends, setFriends] = useState([])
+  const [roomChats, setRoomChats] = useState([])
+  const [selected, setSelected] = useState(null)
+  const [message, setMessage] = useState('')
+  const [type, setType] = useState('')
 
   const fetchData = async () => {
     try {
-      const resFriends = await getFriends(user._id);
-      setFriends(resFriends);
-      const resRoomChats = await getRoomChatByUserId(user._id, 'group');
-      setRoomChats(resRoomChats);
+      const resFriends = await getFriends(user._id)
+      setFriends(resFriends)
+      const resRoomChats = await getRoomChatByUserId(user._id, 'group')
+      setRoomChats(resRoomChats)
     } catch (error) {
-      console.error('Error fetching friends:', error);
+      console.error('Error fetching friends:', error)
     }
-  };
+  }
 
   useEffect(() => {
     if (open) {
-      fetchData();
-      setSelected(null);
-      setMessage('');
+      fetchData()
+      setSelected(null)
+      setMessage('')
     }
-  }, [open]);
+  }, [open])
 
   const handleShare = async () => {
-    let id = selected?._id;
+    let id = selected?._id
     if (type === 'friend') {
-      const findRoom = await findOrCreateRoomPrivate(user._id, selected._id);
-      id = findRoom._id || findRoom.insertedId;
+      const findRoom = await findOrCreateRoomPrivate(user._id, selected._id)
+      id = findRoom._id || findRoom.insertedId
     }
 
     const response = await createMessage(
@@ -57,16 +57,16 @@ const FormSharePost = ({ post, open, onClose }) => {
       message || 'Chia sẻ bài viết',
       null,
       post._id
-    );
+    )
 
     if (response) {
-      console.log('Chia sẻ thành công:', response);
+      console.log('Chia sẻ thành công:', response)
     } else {
-      console.error('Chia sẻ thất bại');
+      console.error('Chia sẻ thất bại')
     }
 
-    onClose();
-  };
+    onClose()
+  }
 
   return (
     <Dialog
@@ -194,8 +194,8 @@ const FormSharePost = ({ post, open, onClose }) => {
                           },
                         }}
                         onClick={() => {
-                          setSelected(friend);
-                          setType('friend');
+                          setSelected(friend)
+                          setType('friend')
                         }}
                       >
                         <Avatar
@@ -222,8 +222,8 @@ const FormSharePost = ({ post, open, onClose }) => {
                           },
                         }}
                         onClick={() => {
-                          setSelected(roomChat);
-                          setType('group');
+                          setSelected(roomChat)
+                          setType('group')
                         }}
                       >
                         <Avatar
@@ -317,7 +317,7 @@ const FormSharePost = ({ post, open, onClose }) => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default FormSharePost;
+export default FormSharePost

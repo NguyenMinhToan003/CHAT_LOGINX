@@ -13,7 +13,11 @@ import RoomChatPrivate from "../roomchat/RoomChatPrivate";
 import StatusAddSocial from "../StatusAddSocial/StatusAddSocial";
 import NotFound from "./NotFound";
 import Register from "../auth/Register";
+
 import SinglePost from "../components/SinglePost";
+
+import FriendRequestList from "../notifications/FriendRequestList";
+
 
 const AppRouter = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -26,7 +30,6 @@ const AppRouter = () => {
   }
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />  
       {/* Các route yêu cầu user phải đăng nhập */}
@@ -37,14 +40,15 @@ const AppRouter = () => {
           <Route path="/roomchats/:id" element={<RoomChatId />} />
           <Route path="/video-call/:id" element={<VideoCall />} />
           <Route path="/chat-user/:id" element={<RoomChatPrivate />} />
-          <Route path="/index" element={<Main />}>
+          <Route path="/" element={<Main />}>
             <Route index element={<Index />} />
             <Route path="profile/:id" element={<Profile />} />
             <Route path="profile" element={<Profile />} />
-            
+        
 
-           
-           
+            <Route path='notification' element={<FriendRequestList />} /> 
+            <Route path="search" element={<SearchPage />} />
+
           </Route>
           <Route path="/addSocial/:code" element={<StatusAddSocial />} />
 
@@ -55,7 +59,7 @@ const AppRouter = () => {
         </>
       ) : (
         // Nếu user chưa đăng nhập, chuyển hướng về "/"
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       )}
 
       <Route path="*" element={<NotFound />} />

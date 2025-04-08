@@ -82,7 +82,7 @@ const NotFound = () => {
           >
             Go Back
           </Link>
-          <NavLink to="/index">
+          <NavLink to="/">
             <Button
               variant="contained"
               sx={{

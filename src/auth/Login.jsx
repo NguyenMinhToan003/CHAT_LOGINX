@@ -35,7 +35,7 @@ const Login = () => {
     try {
       const user = await verifyToken(token)
       localStorage.setItem('user', JSON.stringify(user))
-      window.location.href = '/index'
+      window.location.href = '/'
     } catch (err) {
       setError("Xác thực thất bại! Vui lòng thử lại.")
     } finally {
