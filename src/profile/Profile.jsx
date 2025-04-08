@@ -6,6 +6,7 @@ import ProfileNav from './ProfileNav';
 import ProfileLeftColumn from './ProfileLeftColumn';
 import ProfileRightColumn from './ProfileRightColumn';
 import { getUserById, getPostByAuthorId } from '../api/userAPI';
+import PersonalInfo from './PersonalInfo';
 
 const Profile = () => {
   const { id } = useParams();
@@ -26,7 +27,7 @@ const Profile = () => {
       // Check if we're looking at our own profile or someone else's
       const isOwn = !id || id === localUser._id;
       setIsOwnProfile(isOwn);
-      
+
       // If we're viewing someone else's profile, set currentUser as local user
       // and profile user as the fetched user
       if (!isOwn) {
@@ -40,7 +41,7 @@ const Profile = () => {
         setCurrentUser(userData);
         localStorage.setItem('user', JSON.stringify(userData)); // Sync localStorage
       }
-      
+
       const postsData = await getPostByAuthorId({ authorId: userId, userId: localUser._id });
       setPosts(Array.isArray(postsData) ? postsData : []);
     } catch (error) {
@@ -59,16 +60,20 @@ const Profile = () => {
       {isLoading ? (
         <div>Đang tải...</div>
       ) : (
+
+
         <>
-          <ProfileHeader 
-            user={user} 
-            onProfileUpdate={fetchData} 
+          <ProfileHeader
+            user={user}
+            onProfileUpdate={fetchData}
             isOwnProfile={isOwnProfile}
             currentUser={currentUser}
           />
           <ProfileNav activeTab={activeTab} setActiveTab={setActiveTab} />
           <div className='profile-content'>
-            <ProfileLeftColumn user={user} setActiveTab={setActiveTab} />
+            <ProfileLeftColumn user={user} setActiveTab={setActiveTab}
+              isOwnProfile={isOwnProfile}
+            />
             <ProfileRightColumn
               user={user}
               activeTab={activeTab}
@@ -77,7 +82,12 @@ const Profile = () => {
               setUser={setUser}
               isOwnProfile={isOwnProfile}
               currentUser={currentUser}
+              onProfileUpdate={fetchData}
+
+
             />
+
+         
           </div>
         </>
       )}
