@@ -25,12 +25,12 @@ const Login = () => {
   const fetchUser = async () => {
     const params = new URLSearchParams(location.search)
     const token = params.get('token')
-    
+
     if (!token) {
       setLoading(false)
       return
     }
-    
+
     setLoading(true)
     try {
       const user = await verifyToken(token)
@@ -54,7 +54,7 @@ const Login = () => {
       setLoading(false)
       return
     }
-    
+
     try {
       const response = await loginLocal(email, password)
       if (response._id) {

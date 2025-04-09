@@ -1,17 +1,14 @@
+import { axiosInstance } from './index';
+
 export const fetchSearchResults = async (name) => {
   try {
-    // Gọi API với query param "name"
-    const response = await fetch(`http://localhost:8123/api/user/search?name=${encodeURIComponent(name)}`);
+    const response = await axiosInstance.get('/user/search', {
+      params: { name }
+    });
 
-    if (!response.ok) {
-      throw new Error('Có lỗi khi lấy dữ liệu từ API');
-    }
-
-    const data = await response.json();
-
-    return data;
+    return response.data;
   } catch (error) {
-    console.error('Lỗi khi tìm kiếm:', error);
+    console.error('Lỗi khi tìm kiếm:', error?.response?.data || error.message);
     return [];
   }
 };

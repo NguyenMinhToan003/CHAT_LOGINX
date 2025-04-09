@@ -1,18 +1,52 @@
 import { axiosInstance } from "./index";
 
+// Lấy danh sách yêu cầu kết bạn
 export const getFriendRequestList = async () => {
-    const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    console.error("Không tìm thấy userId trong localStorage");
+    return [];
+  }
 
-    if (!userId) {
-        console.error("Không tìm thấy userId trong localStorage");
-        return [];
-    }
+  try {
+    const response = await axiosInstance.get("/user/get-friend-request", {
+      params: { userId },
+    });
+    const filteredRequests = response.data.filter(
+      (request) => request.senderId === userId || request.receiverId === userId
+    );
+    return filteredRequests;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách yêu cầu kết bạn:", error?.response?.data || error.message);
+    return [];
+  }
+};
 
-    try {
-        const response = await axiosInstance.get(`http://localhost:8123/api/user/get-friend-request?userId=${userId}`);
-        return response.data;
-    } catch (error) {
-        console.error("Lỗi API get-friend-request:", error);
-        return [];
-    }
+// Phản hồi yêu cầu kết bạn
+export const respondFriendRequest = async (friendRequestId, status, userAction) => {
+  try {
+    const response = await axiosInstance.post("/user/respond-friend-request", {
+      friendRequestId,
+      status,
+      userAction,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi phản hồi yêu cầu kết bạn:", error?.response?.data || error.message);
+    return false;
+  }
+};
+
+// Hủy yêu cầu kết bạn
+export const deleteFriendRequest = async (friendRequestId, userAction) => {
+  try {
+    const response = await axiosInstance.post("/user/delete-request-friend", {
+      friendRequestId,
+      userAction,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi hủy yêu cầu kết bạn:", error?.response?.data || error.message);
+    return false;
+  }
 };
