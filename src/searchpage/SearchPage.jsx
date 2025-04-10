@@ -47,14 +47,22 @@ const SearchPage = () => {
       <div className="results-container">
         {results.length > 0 ? (
           results.map((user) => (
-            <div className="user-card" key={user._id || user.id}>
-              <img
-                src={user.picture?.url || "https://thuvienmeme.com/wp-content/uploads/2023/09/doi-cho-sach-jack-cho-thom-350x250.jpg"}
-                alt={user.name}
-                className="user-avatar"
-              />
-              <p className="user-name">{user.name}</p>
-            </div>
+            <a
+              href={`/profile/${user._id || user.id}`}
+              className="user-card-link"
+              key={user._id || user.id}
+            >
+              <div className="user-card">
+                <img
+                  src={user.picture?.url || "https://thuvienmeme.com/wp-content/uploads/2023/09/doi-cho-sach-jack-cho-thom-350x250.jpg"}
+                  alt={user.name}
+                  className="user-avatar"
+                />
+                <div className="user-info">
+                  <p className="user-name">{user.name}</p>
+                </div>
+              </div>
+            </a>
           ))
         ) : (
           <p className="no-results">Không tìm thấy kết quả.</p>

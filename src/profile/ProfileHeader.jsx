@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getUserById, updateProfilePicture } from '../api/userAPI';
+import { getUserById, updateProfilePicture, sendFriendRequest } from '../api/userAPI';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 
@@ -53,11 +53,16 @@ const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => 
     }
   };
 
-  const handleAddFriend = () => {
-    // Here you would implement the API call to add a friend
-    // For now, we'll just toggle the state to show a different button
-    setFriendRequestSent(true);
-    // In a real implementation, you would call an API like:
+  const handleAddFriend = async () => {
+    if (!currentUser?._id || !user?._id) return;
+
+    try {
+      const response = await sendFriendRequest(currentUser._id, user._id);
+      console.log("Gửi lời mời kết bạn:", response);
+      setFriendRequestSent(true);
+    } catch (error) {
+      console.error('Lỗi khi gửi lời mời kết bạn:', error);
+    }
   };
 
   return (
@@ -106,9 +111,9 @@ const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => 
           </div>
         </div>
         <div className='profile-details'>
-          <h1 className='profile-name' 
-              onClick={() => isOwnProfile && setIsEditingName(true)} 
-              style={{ cursor: isOwnProfile ? 'pointer' : 'default' }}>
+          <h1 className='profile-name'
+            onClick={() => isOwnProfile && setIsEditingName(true)}
+            style={{ cursor: isOwnProfile ? 'pointer' : 'default' }}>
             {user?.name || 'Loading...'}
             {isOwnProfile && <i className='fas fa-pencil-alt edit-icon'></i>}
           </h1>
@@ -135,7 +140,7 @@ const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => 
                   <i className='fas fa-user-plus'></i> Thêm bạn bè
                 </button>
               )}
-              <button onClick={()=>navigate(`/chat-user/${user._id}`)} className='message-btn'>
+              <button onClick={() => navigate(`/chat-user/${user._id}`)} className='message-btn'>
                 <i className='fas fa-comment'></i> Nhắn tin
               </button>
             </>

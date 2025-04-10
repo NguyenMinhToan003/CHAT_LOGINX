@@ -107,3 +107,15 @@ h2 {
 .reject:hover {
   background-color: #d8dadf;
 }
+.cancel {
+  background-color: #ff6666;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.cancel:hover {
+  background-color: #ff4c4c;
+}
