@@ -11,6 +11,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import GlobalLoading from '../components/GlobalLoading'
 import { registerLocal } from '../api/auth'
 import { useState } from 'react'
+import iconZalo from '../assets/images/zalo_icon.png'
 
 const host = `${import.meta.env.VITE_SERVER_HOST}/api`
 
@@ -79,6 +80,14 @@ const Register = () => {
       console.error('Error during login:', error)
     }
   }
+
+  const loginWithZalo = async () => {
+     try {
+       window.location.href = 'https://oauth.zaloapp.com/v4/permission?app_id=3009287701854810432&redirect_uri=http://localhost:8123/api/auth/zalo/callback&state=true'
+     } catch (error) {
+       console.error('Error during login:', error)
+     }
+   }
 
   return (
     <>
@@ -394,6 +403,30 @@ const Register = () => {
                 Đăng ký với Google
               </Typography>
             </Button>
+            <Button
+               onClick={()=> loginWithZalo()}
+               sx={{
+                 display: 'flex',
+                 justifyContent: 'center',
+                 alignItems: 'center',
+                 gap: 2,
+                 backgroundColor: '#fff',
+                 border: '1px solid #e0e0e0',
+                 borderRadius: '16px',
+                 padding: '12px 24px',
+                 width: '100%',
+                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                 ':hover': {
+                   backgroundColor: '#f3f9fa',
+                 },
+               }}
+             >
+               <Typography variant='span' sx={{ color: '#333', display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'center' }}>
+                 <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                   <img src={iconZalo} alt='zalo' style={{ width: 30, height: 30 }} />
+                 </Box> Đăng nhập với Zalo
+               </Typography>
+             </Button>
             <Button
               onClick={() => loginWithGithub()}
               sx={{

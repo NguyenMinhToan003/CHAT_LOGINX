@@ -94,6 +94,15 @@ const Login = () => {
     }
   }
 
+  const loginWithZalo = async () => {
+    try {
+      window.location.href = `https://oauth.zaloapp.com/v4/permission?app_id=3009287701854810432&redirect_uri=${host}/auth/zalo/callback&state=true`
+    } catch (error) {
+      console.error('Error during login:', error)
+    }
+  }
+
+
   return (
     <>
       <GlobalLoading loading={loading} />
