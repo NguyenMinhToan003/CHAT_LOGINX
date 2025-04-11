@@ -11,7 +11,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import GlobalLoading from '../components/GlobalLoading'
 import { registerLocal } from '../api/auth'
 import { useState } from 'react'
-import iconZalo from '../assets/images/zalo_icon.png'
+import iconZalo from '../../public/zalo_icon.png'
 
 const host = `${import.meta.env.VITE_SERVER_HOST}/api`
 
@@ -82,12 +82,12 @@ const Register = () => {
   }
 
   const loginWithZalo = async () => {
-     try {
-       window.location.href = 'https://oauth.zaloapp.com/v4/permission?app_id=3009287701854810432&redirect_uri=http://localhost:8123/api/auth/zalo/callback&state=true'
-     } catch (error) {
-       console.error('Error during login:', error)
-     }
-   }
+    try {
+      window.location.href = `https://oauth.zaloapp.com/v4/permission?app_id=3009287701854810432&redirect_uri=${host}/auth/zalo/callback&state=true`
+    } catch (error) {
+      console.error('Error during login:', error)
+    }
+  }
 
   return (
     <>
