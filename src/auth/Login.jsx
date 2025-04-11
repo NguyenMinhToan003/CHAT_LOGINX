@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { verifyToken } from '../api'
 import GlobalLoading from '../components/GlobalLoading'
 import { loginLocal } from '../api/auth'
+import iconZalo from '../assets/images/zalo_icon.png'
 
 const host = `${import.meta.env.VITE_SERVER_HOST}/api`
 
