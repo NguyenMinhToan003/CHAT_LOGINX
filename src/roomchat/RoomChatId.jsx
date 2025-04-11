@@ -13,6 +13,7 @@ import AddReactionIcon from '@mui/icons-material/AddReaction'
 import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
+import ClearIcon from '@mui/icons-material/Clear' 
 import Button from '@mui/material/Button'
 import InputBase from '@mui/material/InputBase'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'
@@ -438,17 +439,18 @@ const RoomChatId = () => {
                 <Box>
                   {repMessage && (
                     <Box
-                        sx={{
+                    sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         gap: 1,
                         padding: 1,
                         color: 'white',
+                        minHeight: 100,
                       }}
                     >
                       <Box>
-                        <Typography sx={{ color: 'text.primary', fontWeight: 'bold' }}>
+                        <Typography sx={{ color: 'text.primary', fontWeight: 'bold',paddingBottom:1}}>
                           Đang trả lời {repMessage.sender.name}
                         </Typography>
                         <Typography
@@ -477,7 +479,7 @@ const RoomChatId = () => {
                         </Typography>
                       </Box>
                       <IconButton onClick={() => setRepMessage(null)}>
-                        <ArrowBackIcon />
+                        <ClearIcon sx={{ color: 'text.secondary' }} />
                       </IconButton>
                     </Box>
                   )}
