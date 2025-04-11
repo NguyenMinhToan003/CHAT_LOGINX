@@ -102,7 +102,6 @@ const Login = () => {
     }
   }
 
-
   return (
     <>
       <GlobalLoading loading={loading} />
@@ -324,6 +323,30 @@ const Login = () => {
                 Đăng nhập với Google
               </Typography>
             </Button>
+                       <Button
+                           onClick={()=> loginWithZalo()}
+                           sx={{
+                             display: 'flex',
+                             justifyContent: 'center',
+                             alignItems: 'center',
+                             gap: 2,
+                             backgroundColor: '#fff',
+                             border: '1px solid #e0e0e0',
+                             borderRadius: '16px',
+                             padding: '12px 24px',
+                             width: '100%',
+                             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                             ':hover': {
+                               backgroundColor: '#f3f9fa',
+                             },
+                           }}
+                         >
+                           <Typography variant='span' sx={{ color: '#333', display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'center' }}>
+                             <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                               <img src={iconZalo} alt='zalo' style={{ width: 30, height: 30 }} />
+                             </Box> Đăng nhập với Zalo
+                           </Typography>
+                         </Button>
             <Button
               onClick={() => loginWithGithub()}
               sx={{
