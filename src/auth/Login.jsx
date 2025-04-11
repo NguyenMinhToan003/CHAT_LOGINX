@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { verifyToken } from '../api'
 import GlobalLoading from '../components/GlobalLoading'
 import { loginLocal } from '../api/auth'
+
 import iconZalo from '../../public/zalo_icon.png'
 const host = `${import.meta.env.VITE_SERVER_HOST}/api`
 
@@ -37,7 +38,7 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(user))
       window.location.href = '/'
     } catch (err) {
-      setError('Xác thực thất bại! Vui lòng thử lại.')
+      setError("Xác thực thất bại! Vui lòng thử lại.")
     } finally {
       setLoading(false)
     }
@@ -50,7 +51,7 @@ const Login = () => {
   const handleLogin = async () => {
     setLoading(true)
     if (!email || !password) {
-      setError('Vui lòng nhập đầy đủ thông tin đăng nhập.')
+      setError("Vui lòng nhập đầy đủ thông tin đăng nhập.")
       setLoading(false)
       return
     }
@@ -61,10 +62,10 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(response))
         window.location.href = '/'
       } else {
-        setError('Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin đăng nhập.')
+        setError("Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin đăng nhập.")
       }
     } catch (error) {
-      setError('Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin đăng nhập.')
+      setError("Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin đăng nhập.")
     } finally {
       setLoading(false)
     }
@@ -89,13 +90,6 @@ const Login = () => {
   const loginWithGoogle = async () => {
     try {
       window.location.href = `${host}/auth/google`
-    } catch (error) {
-      console.error('Error during login:', error)
-    }
-  }
-  const loginWithZalo = async () => {
-    try {
-      window.location.href = `https://oauth.zaloapp.com/v4/permission?app_id=3009287701854810432&redirect_uri=${host}/auth/zalo/callback&state=true`
     } catch (error) {
       console.error('Error during login:', error)
     }
@@ -127,7 +121,7 @@ const Login = () => {
         >
           <Box sx={{ width: '100%', maxWidth: '28rem', px: { xs: 2, md: 0 } }}>
             <Typography
-              variant='h4'
+              variant="h4"
               sx={{
                 marginBottom: 2,
                 textAlign: { xs: 'center', md: 'left' },
@@ -138,7 +132,7 @@ const Login = () => {
               Welcome 👋
             </Typography>
             <Typography
-              variant='body1'
+              variant="body1"
               sx={{
                 textAlign: { xs: 'center', md: 'left' },
                 display: 'block',
@@ -155,10 +149,10 @@ const Login = () => {
             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4, marginTop: 2 }}>
               <TextField
                 fullWidth
-                id='email'
-                label='email'
-                type='email'
-                color='success'
+                id="email"
+                label="email"
+                type="email"
+                color="success"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 sx={{
@@ -194,10 +188,10 @@ const Login = () => {
               />
               <TextField
                 fullWidth
-                id='password'
-                label='mật khẩu'
-                type='password'
-                color='success'
+                id="password"
+                label="mật khẩu"
+                type="password"
+                color="success"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 sx={{
@@ -247,10 +241,10 @@ const Login = () => {
                 Đăng nhập
               </Button>
               <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                <Typography variant='span' sx={{ color: '#555' }}>
+                <Typography variant="span" sx={{ color: '#555' }}>
                   Bạn không có tài khoản?
                 </Typography>
-                <NavLink to='/register'>
+                <NavLink to="/register">
                   <Button
                     sx={{
                       display: 'flex',
@@ -268,7 +262,7 @@ const Login = () => {
                       },
                     }}
                   >
-                    <Typography variant='span' sx={{ color: '#1e88e5' }}>
+                    <Typography variant="span" sx={{ color: '#1e88e5' }}>
                       Đăng ký
                     </Typography>
                   </Button>
@@ -301,7 +295,6 @@ const Login = () => {
           >
             <Button
               onClick={() => loginWithGoogle()}
-              color='error'
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -319,37 +312,12 @@ const Login = () => {
               }}
             >
               <IconGoogle />
-              <Typography variant='span' sx={{ color: '#333' }}>
+              <Typography variant="span" sx={{ color: '#333' }}>
                 Đăng nhập với Google
               </Typography>
             </Button>
             <Button
-              onClick={()=> loginWithZalo()}
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 2,
-                backgroundColor: '#fff',
-                border: '1px solid #e0e0e0',
-                borderRadius: '16px',
-                padding: '12px 24px',
-                width: '100%',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
-                ':hover': {
-                  backgroundColor: '#f3f9fa',
-                },
-              }}
-            >
-              <Typography variant='span' sx={{ color: '#333', display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'center' }}>
-                <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                  <img src={iconZalo} alt='zalo' style={{ width: 30, height: 30 }} />
-                </Box> Đăng nhập với Zalo
-              </Typography>
-            </Button>
-            <Button
               onClick={() => loginWithGithub()}
-              color='default'
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -367,13 +335,12 @@ const Login = () => {
               }}
             >
               <IconGitHub />
-              <Typography variant='span' sx={{ color: '#333' }}>
+              <Typography variant="span" sx={{ color: '#333' }}>
                 Đăng nhập với GitHub
               </Typography>
             </Button>
             <Button
               onClick={() => loginWithX()}
-              color='success'
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -390,8 +357,8 @@ const Login = () => {
                 },
               }}
             >
-              <IconX sx={{width:30, height:30}}/>
-              <Typography variant='span' sx={{ color: '#333' }}>
+              <IconX />
+              <Typography variant="span" sx={{ color: '#333' }}>
                 Đăng nhập với X
               </Typography>
             </Button>
