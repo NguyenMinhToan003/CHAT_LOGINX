@@ -54,7 +54,7 @@ const FormSharePost = ({ post, open, onClose }) => {
     const response = await createMessage(
       id,
       user._id,
-      message || 'Chia sẻ bài viết',
+      message || '<chiasebaiviet/>',
       null,
       post._id
     )

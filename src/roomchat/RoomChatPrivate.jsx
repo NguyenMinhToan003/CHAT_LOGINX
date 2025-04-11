@@ -369,6 +369,7 @@ const RoomChatPrivate = () => {
               {repMessage && (
                 <Box
                   sx={{
+                    height: 100,
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -378,7 +379,7 @@ const RoomChatPrivate = () => {
                   }}
                 >
                   <Box>
-                    <Typography sx={{ color: 'text.primary', fontWeight: 'bold' }}>
+                    <Typography sx={{ color: 'text.primary', fontWeight: 'bold', padding:2 }}>
                       Đang trả lời {repMessage.sender.name}
                     </Typography>
                     <Typography
