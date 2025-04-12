@@ -28,6 +28,7 @@ import Button from '@mui/material/Button'
 import InputBase from '@mui/material/InputBase'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import VideocamIcon from '@mui/icons-material/Videocam'
+import TypeFile from '../components/typeFile/TypeFile'
 
 
 const emojiList = emojiMap
@@ -368,92 +369,55 @@ const RoomChatPrivate = () => {
             </Box>
 
             <Box>
-              {repMessage && (
-                <Box
-                  sx={{
-                    height: 100,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: 1,
-                    padding: 1,
-                    color: 'white',
-                  }}
-                >
-                  <Box>
-                    <Typography sx={{ color: 'text.primary', fontWeight: 'bold', padding:2 }}>
-                      Đang trả lời {repMessage.sender.name}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        borderLeft: '3px solid #4caf50',
-                        paddingLeft: 1,
-                        color: 'text.secondary',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        lineHeight: '1.2rem',
-                        fontSize: '0.875rem',
+                           {repMessage && (
+                    <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-start',
+                        gap: 1,
+                        padding: 1,
+                        color: 'white',
+                        minHeight: 100,
+                        maxHeight: 200,
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
                       }}
                     >
-                      {repMessage.images.length > 0
-                        ? repMessage.images.map((image, index) => {
-                            if (image.type === 'image') {
-                              return (
-                                <img
-                                  key={index}
-                                  src={image.url}
-                                  alt=""
-                                  style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    marginRight: 5,
-                                  }}
-                                />
-                              )
-                            } else if (image.type === 'video') {
-                              return (
-                                <video
-                                  key={index}
-                                  src={image.url}
-                                  style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    marginRight: 5,
-                                  }}
-                                  controls
-                                />
-                              )
-                            } else {
-                              return (
-                                <a
-                                  key={index}
-                                  href={image.url}
-                                  download
-                                  style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: 5,
-                                    marginRight: 5,
-                                  }}
-                                >
-                                  {image.url}
-                                </a>
-                              )
-                            }
-                          })
-                        : repMessage.content}
-                    </Typography>
-                  </Box>
-                  <IconButton onClick={() => setRepMessage(null)}>
-                    <ClearIcon />
-                  </IconButton>
-                </Box>
-              )}
+                      <Box>
+                        <Typography sx={{ color: 'text.primary', fontWeight: 'bold',paddingBottom:1}}>
+                          Đang trả lời {repMessage.sender.name}
+                        </Typography>
+                        <Typography
+                            sx={{
+                            borderLeft: '3px solid #4caf50',
+                            paddingLeft: 1,
+                            color: 'text.secondary',
+                            display: 'flex',
+                            gap: 1,
+                            flexWrap: 'wrap',
+                            lineHeight: '1.2rem',
+                            fontSize: '0.875rem',
+                          }}
+                        >
+                            {
+                              repMessage.images.length > 0 ? repMessage.images.map((image, index) => {
+                                if (image.type === 'image')
+                                  return <img key={index} src={image.url} alt="" style={{ width: 100, height: 100, borderRadius: 5, marginRight: 5 }} />
+                                else if (image.type === 'video')
+                                  return <video key={index} src={image.url} alt="" style={{ width: 100, height: 100, borderRadius: 5, marginRight: 5 }} controls />
+                                else return <TypeFile file={image} key={index} isClick={false} />
+                              }) : <Typography sx={{ color: 'text.secondary', fontSize: '0.875rem' ,padding:1}}>
+                              {repMessage.content}
+                            </Typography>
+                          }
+                        </Typography>
+                      </Box>
+                      <IconButton onClick={() => setRepMessage(null)}>
+                        <ClearIcon sx={{ color: 'text.secondary' }} />
+                      </IconButton>
+                    </Box>
+                  )}
 
               <Box
                 sx={{

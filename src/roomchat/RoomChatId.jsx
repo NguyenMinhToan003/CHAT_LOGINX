@@ -36,6 +36,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import TypeFile from '../components/typeFile/TypeFile'
 
 const emojiList = emojiMap
 
@@ -319,7 +320,6 @@ const RoomChatId = () => {
        onClose={() => setOpenAddMemberForm(false)}
      />
          <GlobalLoading loading={isLoading} />
-
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', gap: 1 }}>
           <Box
             sx={{
@@ -363,12 +363,9 @@ const RoomChatId = () => {
                   <Button
                     startIcon={
                       <Avatar sx={{ width: 36, height: 36 }} src={room?.avatar?.url} />
-                    }
-                  >
+                  }>
                     <Typography sx={{ color: 'text.main' }}>
-                      {room?.name.length > 10
-                        ? room?.name.slice(0, 10) + '...'
-                        : room?.name}
+                    {room?.name}
                     </Typography>
                   </Button>
                 </Box>
@@ -424,7 +421,6 @@ const RoomChatId = () => {
                   
                   <Box ref={messagesEndRef} >
                     {
-
                       <Box sx={{
                         display: isSentMessage ? 'flex' : 'none', justifyContent: 'flex-end', alignItems: 'center', gap: 1, padding: 1,
                         transition: 'all 0.5s ease',
@@ -444,11 +440,14 @@ const RoomChatId = () => {
                     sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'center',
+                        alignItems: 'flex-start',
                         gap: 1,
                         padding: 1,
                         color: 'white',
                         minHeight: 100,
+                        maxHeight: 200,
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
                       }}
                     >
                       <Box>
@@ -460,11 +459,9 @@ const RoomChatId = () => {
                             borderLeft: '3px solid #4caf50',
                             paddingLeft: 1,
                             color: 'text.secondary',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            display: 'flex',
+                            gap: 1,
+                            flexWrap: 'wrap',
                             lineHeight: '1.2rem',
                             fontSize: '0.875rem',
                           }}
@@ -472,11 +469,13 @@ const RoomChatId = () => {
                             {
                               repMessage.images.length > 0 ? repMessage.images.map((image, index) => {
                                 if (image.type === 'image')
-                                  return <img key={index} src={image.url} alt="" style={{ width: 50, height: 50, borderRadius: 5, marginRight: 5 }} />
+                                  return <img key={index} src={image.url} alt="" style={{ width: 100, height: 100, borderRadius: 5, marginRight: 5 }} />
                                 else if (image.type === 'video')
-                                  return <video key={index} src={image.url} alt="" style={{ width: 50, height: 50, borderRadius: 5, marginRight: 5 }} controls />
-                                else return <a key={index} href={image.url} download style={{ width: 50, height: 50, borderRadius: 5, marginRight: 5 }}>{image.url}</a>
-                              }) : repMessage.content
+                                  return <video key={index} src={image.url} alt="" style={{ width: 100, height: 100, borderRadius: 5, marginRight: 5 }} controls />
+                                else return <TypeFile file={image} key={index} isClick={false} />
+                              }) : <Typography sx={{ color: 'text.secondary', fontSize: '0.875rem' ,padding:1}}>
+                              {repMessage.content}
+                            </Typography>
                           }
                         </Typography>
                       </Box>
