@@ -1,3 +1,9 @@
 body{
   scroll-behavior: smooth;
 }
+
+.link{
+  color: #e63946;
+  text-decoration: none;
+  font-weight: bold;
+}

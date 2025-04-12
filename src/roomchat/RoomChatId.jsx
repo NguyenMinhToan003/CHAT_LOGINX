@@ -13,7 +13,10 @@ import AddReactionIcon from '@mui/icons-material/AddReaction'
 import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
+import ClearIcon from '@mui/icons-material/Clear' 
 import Button from '@mui/material/Button'
+import SendIcon from '@mui/icons-material/Send'
+import ShareIcon from '@mui/icons-material/Share'
 import InputBase from '@mui/material/InputBase'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import { delateRoom, joinRoom, leaveRoom } from '../api/roomAPI'
@@ -438,17 +441,18 @@ const RoomChatId = () => {
                 <Box>
                   {repMessage && (
                     <Box
-                        sx={{
+                    sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         gap: 1,
                         padding: 1,
                         color: 'white',
+                        minHeight: 100,
                       }}
                     >
                       <Box>
-                        <Typography sx={{ color: 'text.primary', fontWeight: 'bold' }}>
+                        <Typography sx={{ color: 'text.primary', fontWeight: 'bold',paddingBottom:1}}>
                           Đang trả lời {repMessage.sender.name}
                         </Typography>
                         <Typography
@@ -477,7 +481,7 @@ const RoomChatId = () => {
                         </Typography>
                       </Box>
                       <IconButton onClick={() => setRepMessage(null)}>
-                        <ArrowBackIcon />
+                        <ClearIcon sx={{ color: 'text.secondary' }} />
                       </IconButton>
                     </Box>
                   )}
@@ -573,11 +577,22 @@ const RoomChatId = () => {
                         padding: 3,
                       }}
                     />
-                    <Tooltip title="Like">
-                      <IconButton color="success" onClick={() => handleSentMessageIcon('👍')}>
-                        <ThumbUpAltIcon />
-                      </IconButton>
-                    </Tooltip>
+                  {
+                    message.length > 0 
+                      ? (
+                        <Tooltip title="Gửi tin nhắn">
+                          <IconButton color="primary" onClick={handleSentMessageText}>
+                            <SendIcon />
+                          </IconButton>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="Thích">
+                          <IconButton color="success" onClick={() => handleSentMessageIcon('👍')}>
+                            <ThumbUpAltIcon />
+                          </IconButton>
+                        </Tooltip>
+                    )
+                   }
                     
                   </Box>
                 </Box>
@@ -658,6 +673,10 @@ const RoomChatId = () => {
                   backgroundColor: 'background.default',
                   padding: 1,
                   borderRadius: 1,
+                  overflowY: 'auto',
+                  overflowX: 'hidden',
+                  width: '100%',
+                  
                 }}
               >
                 <Tooltip title="Thêm thành viên">
@@ -670,8 +689,14 @@ const RoomChatId = () => {
                   open={openEditGroupForm}
                   onClose={() => setOpenEditGroupForm(false)}
                   setIsChange={setIsChange}
-                />
-
+              />
+              <Tooltip title="Chia sẻ nhóm">
+                <IconButton
+                  color='info'
+                >
+                  <ShareIcon/>
+                </IconButton>
+              </Tooltip>
                 <Tooltip title="Chỉnh sửa thông tin">
                   <IconButton
                     color="success"

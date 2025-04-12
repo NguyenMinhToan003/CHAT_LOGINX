@@ -16,6 +16,7 @@ import { getFriends } from '../api/userAPI'
 import { getRoomChatByUserId } from '../api'
 import { createMessage } from '../api/messageAPI'
 import { findOrCreateRoomPrivate } from '../api/roomAPI'
+import {socket} from '../socket'
 
 const FormSharePost = ({ post, open, onClose }) => {
   const user = JSON.parse(localStorage.getItem('user'))
@@ -54,17 +55,33 @@ const FormSharePost = ({ post, open, onClose }) => {
     const response = await createMessage(
       id,
       user._id,
-      message || 'Chia sẻ bài viết',
+      message || '<chiasebaiviet/>',
       null,
       post._id
     )
-
-    if (response) {
-      console.log('Chia sẻ thành công:', response)
-    } else {
-      console.error('Chia sẻ thất bại')
+    if (response.insertedId) {
+      let data = {
+        status: 'read',
+        content: message || '<chiasebaiviet/>',
+        _id: response.insertedId,
+        sender: {
+          _id: user?._id,
+          name: user?.name,
+          picture: user?.picture,
+        },
+        roomId: id,
+        images: [],
+        followedMessage: null,
+        embedPost: {
+          _id: post._id,
+          author:post.author,
+          assets: post.assets,
+          content: post.content,
+        }
+      }
+      
+      socket.emit('message', data)
     }
-
     onClose()
   }
 
