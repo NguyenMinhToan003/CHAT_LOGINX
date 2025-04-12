@@ -9,9 +9,13 @@ import "./FriendRequestList.css";
 const FriendRequestList = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const userId = localStorage.getItem("userId");
+
+  const storedUser = localStorage.getItem("user");
+  const userId = storedUser ? JSON.parse(storedUser)._id : null;
 
   useEffect(() => {
+    console.log("userId hiện tại trong localStorage:", userId);
+
     if (!userId) {
       console.error("Không tìm thấy userId trong localStorage.");
       setLoading(false);
@@ -21,7 +25,6 @@ const FriendRequestList = () => {
     const fetchRequests = async () => {
       try {
         const data = await getFriendRequestList();
-        // Chỉ giữ các request đang chờ xử lý
         const pendingRequests = data.filter((req) => req.status === "pending");
         setFriendRequests(pendingRequests);
       } catch (error) {
@@ -36,18 +39,24 @@ const FriendRequestList = () => {
 
   const handleAction = async (friendRequestId, action, userActionId) => {
     let result;
+    let newStatus = "";
 
     if (action === "accept") {
       result = await respondFriendRequest(friendRequestId, "accepted", userActionId);
+      newStatus = "accepted";
     } else if (action === "reject") {
       result = await respondFriendRequest(friendRequestId, "rejected", userActionId);
+      newStatus = "rejected";
     } else if (action === "cancel") {
       result = await deleteFriendRequest(friendRequestId, userActionId);
+      newStatus = "cancelled";
     }
 
     if (result) {
       setFriendRequests((prev) =>
-        prev.filter((req) => req._id !== friendRequestId)
+        prev.map((req) =>
+          req._id === friendRequestId ? { ...req, handledStatus: newStatus } : req
+        )
       );
     } else {
       alert("Không thể xử lý yêu cầu.");
@@ -83,7 +92,13 @@ const FriendRequestList = () => {
                 ) : null}
 
                 <div className="actions">
-                  {request.status === "pending" ? (
+                  {request.handledStatus ? (
+                    <p className="handled-message">
+                      {request.handledStatus === "accepted" && "✅ Đã chấp nhận yêu cầu."}
+                      {request.handledStatus === "rejected" && "❌ Đã từ chối yêu cầu."}
+                      {request.handledStatus === "cancelled" && "🚫 Đã thu hồi yêu cầu."}
+                    </p>
+                  ) : request.status === "pending" ? (
                     request.senderId === userId ? (
                       <button
                         className="cancel"
@@ -91,7 +106,7 @@ const FriendRequestList = () => {
                           handleAction(request._id, "cancel", request.senderId)
                         }
                       >
-                        Thu hồi
+                        Thu hồi lời gửi kết bạn
                       </button>
                     ) : (
                       <>
@@ -109,7 +124,7 @@ const FriendRequestList = () => {
                             handleAction(request._id, "reject", request.receiverId)
                           }
                         >
-                          Xóa yêu cầu
+                          Từ chối
                         </button>
                       </>
                     )

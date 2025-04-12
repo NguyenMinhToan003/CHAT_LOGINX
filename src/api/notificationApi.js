@@ -2,9 +2,11 @@ import { axiosInstance } from "./index";
 
 // Lấy danh sách yêu cầu kết bạn
 export const getFriendRequestList = async () => {
-  const userId = localStorage.getItem("userId");
+  const storedUser = localStorage.getItem("user");
+  const userId = storedUser ? JSON.parse(storedUser)._id : null;
+
   if (!userId) {
-    console.error("Không tìm thấy userId trong localStorage");
+    console.error("DSYCKB Không tìm thấy userId trong localStorage");
     return [];
   }
 

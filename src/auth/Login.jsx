@@ -35,6 +35,9 @@ const Login = () => {
     try {
       const user = await verifyToken(token)
       localStorage.setItem('user', JSON.stringify(user))
+      //nkmt thêm để lưu userId vào localStorage sau khi đăng nhập để làm load ds kết bạn
+      localStorage.setItem('userId', user._id);
+      //nkmt thêm để lưu userId vào localStorage sau khi đăng nhập để làm load ds kết bạn
       window.location.href = '/'
     } catch (err) {
       setError("Xác thực thất bại! Vui lòng thử lại.")
