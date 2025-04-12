@@ -1,59 +1,61 @@
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useSocket } from '../provider/SocketProvider';
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useSocket } from '../provider/SocketProvider'
 import { 
   createMessage, 
   getAllMessage, 
   getRoomChat
-} from '../api';
-import { deleteMessage ,createMessageImage} from '../api/messageAPI';
-import { findOrCreateRoomPrivate } from '../api/roomAPI';
-import MessageItem from '../components/MessageItem';
-import GlobalLoading from '../components/GlobalLoading';
-import audio from '../assets/sound/message-notification.mp3';
-import { emojiMap } from '../utils/checkIcon';
-import Box from '@mui/material/Box';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import AddReactionIcon from '@mui/icons-material/AddReaction';
-import Avatar from '@mui/material/Avatar';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import InputBase from '@mui/material/InputBase';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import VideocamIcon from '@mui/icons-material/Videocam';
+} from '../api'
+import SendIcon from '@mui/icons-material/Send'
+import { deleteMessage ,createMessageImage} from '../api/messageAPI'
+import { findOrCreateRoomPrivate } from '../api/roomAPI'
+import MessageItem from '../components/MessageItem'
+import GlobalLoading from '../components/GlobalLoading'
+import ClearIcon from '@mui/icons-material/Clear' 
+import audio from '../assets/sound/message-notification.mp3'
+import { emojiMap } from '../utils/checkIcon'
+import Box from '@mui/material/Box'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import Tooltip from '@mui/material/Tooltip'
+import IconButton from '@mui/material/IconButton'
+import AttachFileIcon from '@mui/icons-material/AttachFile'
+import AddReactionIcon from '@mui/icons-material/AddReaction'
+import Avatar from '@mui/material/Avatar'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import InputBase from '@mui/material/InputBase'
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
+import VideocamIcon from '@mui/icons-material/Videocam'
 
 
-const emojiList = emojiMap;
+const emojiList = emojiMap
 
 const RoomChatPrivate = () => {
-  const { onlineUsers, socket, handleCallVideo } = useSocket();
-  const navigate = useNavigate();
-  const { id: idUserOrder } = useParams();
-  const inputRef = useRef(null);
-  const audioRef = useRef(null);
-  const messagesEndRef = useRef(null);
+  const { onlineUsers, socket, handleCallVideo } = useSocket()
+  const navigate = useNavigate()
+  const { id: idUserOrder } = useParams()
+  const inputRef = useRef(null)
+  const audioRef = useRef(null)
+  const messagesEndRef = useRef(null)
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem('user'))
   if (!user) {
-    window.location.href = '/';
+    window.location.href = '/'
   }
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [toggleShowInfoRoom, setToggleShowInfoRoom] = useState(false);
-  const [room, setRoom] = useState(null);
-  const [id, setId] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState('');
-  const [repMessage, setRepMessage] = useState(null);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [isSentMessage, setIsSentMessage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [toggleShowInfoRoom, setToggleShowInfoRoom] = useState(false)
+  const [room, setRoom] = useState(null)
+  const [id, setId] = useState(null)
+  const [messages, setMessages] = useState([])
+  const [message, setMessage] = useState('')
+  const [repMessage, setRepMessage] = useState(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [isSentMessage, setIsSentMessage] = useState(false)
 
-  const handleChangeMessage = (e) => setMessage(e.target.value);
+  const handleChangeMessage = (e) => setMessage(e.target.value)
 
   const handleSetRepMessage = (message) => {
     setRepMessage((prev) =>
@@ -65,23 +67,23 @@ const RoomChatPrivate = () => {
             sender: message.sender,
             images: message.images,
           }
-    );
-  };
+    )
+  }
 
   const handleSentMessageImage = async (e) => {
-    setIsSentMessage(true);
-    const files = Array.from(e.target.files);
-    if (!files.length) return;
+    setIsSentMessage(true)
+    const files = Array.from(e.target.files)
+    if (!files.length) return
 
-    const formData = new FormData();
-    files.forEach((file) => formData.append('files', file));
-    formData.append('roomId', id);
-    formData.append('sender', user._id);
+    const formData = new FormData()
+    files.forEach((file) => formData.append('files', file))
+    formData.append('roomId', id)
+    formData.append('sender', user._id)
     if (repMessage) {
-      formData.append('followMessageId', repMessage._id);
+      formData.append('followMessageId', repMessage._id)
     }
 
-    const response = await createMessageImage(formData);
+    const response = await createMessageImage(formData)
     if (response.insertedId) {
       const data = {
         status: 'read',
@@ -94,21 +96,21 @@ const RoomChatPrivate = () => {
         roomId: id,
         images: response.images,
         followedMessage: repMessage,
-      };
-      socket.emit('message', data);
-      setRepMessage(null);
-      setIsSentMessage(false);
+      }
+      socket.emit('message', data)
+      setRepMessage(null)
+      setIsSentMessage(false)
     }
-  };
+  }
 
   const handleSentMessageIcon = async (emoji) => {
-    setIsSentMessage(true);
-    let response;
+    setIsSentMessage(true)
+    let response
     if (repMessage !== null) {
-      response = await createMessage(id, user?._id, emoji, repMessage._id);
-      setRepMessage(null);
+      response = await createMessage(id, user?._id, emoji, repMessage._id)
+      setRepMessage(null)
     } else {
-      response = await createMessage(id, user?._id, emoji);
+      response = await createMessage(id, user?._id, emoji)
     }
 
     if (response.insertedId) {
@@ -124,23 +126,23 @@ const RoomChatPrivate = () => {
         roomId: id,
         images: [],
         followedMessage: repMessage,
-      };
-      socket.emit('message', data);
+      }
+      socket.emit('message', data)
     }
-    setShowEmojiPicker(false);
-    setIsSentMessage(false);
-  };
+    setShowEmojiPicker(false)
+    setIsSentMessage(false)
+  }
 
   const handleSentMessageText = async () => {
-    setIsSentMessage(true);
-    if (!message.trim()) return;
+    setIsSentMessage(true)
+    if (!message.trim()) return
 
-    let response;
+    let response
     if (repMessage === null) {
-      response = await createMessage(id, user?._id, message);
+      response = await createMessage(id, user?._id, message)
     } else {
-      response = await createMessage(id, user?._id, message, repMessage._id);
-      setRepMessage(null);
+      response = await createMessage(id, user?._id, message, repMessage._id)
+      setRepMessage(null)
     }
 
     if (response.insertedId) {
@@ -156,28 +158,28 @@ const RoomChatPrivate = () => {
         roomId: id,
         images: [],
         followedMessage: repMessage,
-      };
-      socket.emit('message', data);
-      setMessage('');
-      setIsSentMessage(false);
+      }
+      socket.emit('message', data)
+      setMessage('')
+      setIsSentMessage(false)
     }
-  };
+  }
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSentMessageText();
+      e.preventDefault()
+      handleSentMessageText()
     }
-  };
+  }
 
   const handleDeleteMessage = async (id) => {
-    await deleteMessage(id, user._id);
-    await fetchRoom();
-  };
+    await deleteMessage(id, user._id)
+    await fetchRoom()
+  }
 
   const handleVideoCallFunc = () => {
     handleCallVideo({
@@ -185,66 +187,66 @@ const RoomChatPrivate = () => {
       name: room.name,
       picture: room.avatar,
       socketId: idUserOrder,
-    });
-  };
+    })
+  }
 
   const fetchRoom = async () => {
     try {
-      setIsLoading(true);
-      let response = await findOrCreateRoomPrivate(user._id, idUserOrder);
+      setIsLoading(true)
+      let response = await findOrCreateRoomPrivate(user._id, idUserOrder)
       if (response?.insertedId) {
-        response = await getRoomChat(response.insertedId);
+        response = await getRoomChat(response.insertedId)
       }
-      setId(response._id);
+      setId(response._id)
 
-      const roomData = response;
-      const isOnline = onlineUsers.some((user) => user.userId === idUserOrder);
-      roomData.isOnline = isOnline;
-      setRoom(roomData);
+      const roomData = response
+      const isOnline = onlineUsers.some((user) => user.userId === idUserOrder)
+      roomData.isOnline = isOnline
+      setRoom(roomData)
 
-      const resMess = await getAllMessage(response._id, user._id);
+      const resMess = await getAllMessage(response._id, user._id)
       if (Array.isArray(resMess.messages)) {
-        setMessages(resMess.messages);
-        socket.emit('join-room', { roomId: response._id, user: user._id });
+        setMessages(resMess.messages)
+        socket.emit('join-room', { roomId: response._id, user: user._id })
       }
     } catch (error) {
-      console.error('Lỗi khi fetch room chat:', error);
+      console.error('Lỗi khi fetch room chat:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleCancel = () => {
     if (socket) {
-      socket.emit('leave-room', { roomId: id, user: user._id });
+      socket.emit('leave-room', { roomId: id, user: user._id })
     }
-    navigate('/roomchats');
-  };
+    navigate('/roomchats')
+  }
 
   useEffect(() => {
-    if (!socket) return;
-    fetchRoom();
-  }, [id, socket]);
+    if (!socket) return
+    fetchRoom()
+  }, [id, socket])
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isSentMessage]);
+    scrollToBottom()
+  }, [messages, isSentMessage])
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket) return
 
     const handleMessage = (data) => {
-      setMessages((prev) => [...prev, data]);
+      setMessages((prev) => [...prev, data])
       if (audioRef.current && data.sender._id !== user._id) {
-        audioRef.current.play();
+        audioRef.current.play()
       }
-    };
+    }
 
-    socket.on('message', handleMessage);
+    socket.on('message', handleMessage)
     return () => {
-      socket.off('message', handleMessage);
-    };
-  }, [socket]);
+      socket.off('message', handleMessage)
+    }
+  }, [socket])
 
   return (
     <>
@@ -411,7 +413,7 @@ const RoomChatPrivate = () => {
                                     marginRight: 5,
                                   }}
                                 />
-                              );
+                              )
                             } else if (image.type === 'video') {
                               return (
                                 <video
@@ -425,7 +427,7 @@ const RoomChatPrivate = () => {
                                   }}
                                   controls
                                 />
-                              );
+                              )
                             } else {
                               return (
                                 <a
@@ -441,14 +443,14 @@ const RoomChatPrivate = () => {
                                 >
                                   {image.url}
                                 </a>
-                              );
+                              )
                             }
                           })
                         : repMessage.content}
                     </Typography>
                   </Box>
                   <IconButton onClick={() => setRepMessage(null)}>
-                    <ArrowBackIcon />
+                    <ClearIcon />
                   </IconButton>
                 </Box>
               )}
@@ -550,7 +552,7 @@ const RoomChatPrivate = () => {
                 {message.length > 0 ? (
                   <Tooltip title="Send message">
                     <IconButton color="success" onClick={handleSentMessageText}>
-                      <ThumbUpAltIcon />
+                      <SendIcon />
                     </IconButton>
                   </Tooltip>
                 ) : (
@@ -655,7 +657,7 @@ const RoomChatPrivate = () => {
         </Box>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default RoomChatPrivate;
+export default RoomChatPrivate
