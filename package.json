@@ -21,6 +21,7 @@
     "jsonwebtoken": "9.0.2",
     "linkify-html": "4.2.0",
     "linkifyjs": "4.2.0",
+    "notistack": "^3.0.2",
     "peerjs": "1.5.4",
     "postcss": "8.5.3",
     "react": "19.0.0",

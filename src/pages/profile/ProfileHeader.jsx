@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { getUserById, updateProfilePicture, sendFriendRequest } from '~/api/userAPI';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import { unfriend } from '../api/notificationApi';
+import { unfriend } from '~/api/notificationApi';
 
 const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => {
   const navigate = useNavigate()
