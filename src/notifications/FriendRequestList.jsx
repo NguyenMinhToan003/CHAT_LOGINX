@@ -9,9 +9,12 @@ import "./FriendRequestList.css";
 const FriendRequestList = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const userId = localStorage.getItem("userId");
+  const storedUser = localStorage.getItem("user");
+  const userId = storedUser ? JSON.parse(storedUser)._id : null;
 
   useEffect(() => {
+    console.log("userId hiện tại trong localStorage:", userId);
+
     if (!userId) {
       console.error("Không tìm thấy userId trong localStorage.");
       setLoading(false);
@@ -20,10 +23,8 @@ const FriendRequestList = () => {
 
     const fetchRequests = async () => {
       try {
-        const data = await getFriendRequestList();
-        // Chỉ giữ các request đang chờ xử lý
-        const pendingRequests = data.filter((req) => req.status === "pending");
-        setFriendRequests(pendingRequests);
+        const data = await getFriendRequestList(userId);
+        setFriendRequests(data);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách yêu cầu kết bạn:", error);
       } finally {
@@ -36,18 +37,24 @@ const FriendRequestList = () => {
 
   const handleAction = async (friendRequestId, action, userActionId) => {
     let result;
+    let newStatus = "";
 
     if (action === "accept") {
       result = await respondFriendRequest(friendRequestId, "accepted", userActionId);
+      newStatus = "accepted";
     } else if (action === "reject") {
       result = await respondFriendRequest(friendRequestId, "rejected", userActionId);
+      newStatus = "rejected";
     } else if (action === "cancel") {
       result = await deleteFriendRequest(friendRequestId, userActionId);
+      newStatus = "cancelled";
     }
 
     if (result) {
       setFriendRequests((prev) =>
-        prev.filter((req) => req._id !== friendRequestId)
+        prev.map((req) =>
+          req._id === friendRequestId ? { ...req, status: newStatus } : req
+        )
       );
     } else {
       alert("Không thể xử lý yêu cầu.");
@@ -75,46 +82,64 @@ const FriendRequestList = () => {
               />
               <div className="request-info">
                 <p className="name">{request.sender[0]?.name || "Không có tên"}</p>
-                {request.senderId === userId ? (
+
+                {request.senderId === userId && (
                   <p className="sent-request">
                     Đã gửi yêu cầu đến:{" "}
                     <strong>{request.receiver[0]?.name || "Không rõ tên"}</strong>
                   </p>
-                ) : null}
+                )}
 
-                <div className="actions">
-                  {request.status === "pending" ? (
-                    request.senderId === userId ? (
+                {request.status === "accepted" ||
+                  request.status === "rejected" ||
+                  request.status === "cancelled" ? (
+                  <p
+                    className={`handled-message ${request.status === "accepted"
+                        ? "accepted"
+                        : request.status === "rejected"
+                          ? "rejected"
+                          : "cancelled"
+                      }`}
+                  >
+                    {request.status === "accepted"
+                      ? "✅ Đã là bạn bè"
+                      : request.status === "rejected"
+                        ? "❌ Đã từ chối"
+                        : "🚫 Đã thu hồi yêu cầu"}
+                  </p>
+                ) : request.status === "pending" ? (
+                  request.senderId === userId ? (
+                    <div className="actions">
                       <button
                         className="cancel"
                         onClick={() =>
                           handleAction(request._id, "cancel", request.senderId)
                         }
                       >
-                        Thu hồi
+                        Thu hồi lời gửi kết bạn
                       </button>
-                    ) : (
-                      <>
-                        <button
-                          className="accept"
-                          onClick={() =>
-                            handleAction(request._id, "accept", request.receiverId)
-                          }
-                        >
-                          Chấp nhận
-                        </button>
-                        <button
-                          className="reject"
-                          onClick={() =>
-                            handleAction(request._id, "reject", request.receiverId)
-                          }
-                        >
-                          Xóa yêu cầu
-                        </button>
-                      </>
-                    )
-                  ) : null}
-                </div>
+                    </div>
+                  ) : (
+                    <div className="actions">
+                      <button
+                        className="accept"
+                        onClick={() =>
+                          handleAction(request._id, "accept", request.receiverId)
+                        }
+                      >
+                        Chấp nhận
+                      </button>
+                      <button
+                        className="reject"
+                        onClick={() =>
+                          handleAction(request._id, "reject", request.receiverId)
+                        }
+                      >
+                        Từ chối
+                      </button>
+                    </div>
+                  )
+                ) : null}
               </div>
             </li>
           ))}

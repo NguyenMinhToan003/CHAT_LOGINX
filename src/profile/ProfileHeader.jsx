@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getUserById, updateProfilePicture, sendFriendRequest } from '../api/userAPI';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
+import { unfriend } from '../api/notificationApi';
 
 const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => {
   const navigate = useNavigate()
@@ -64,6 +65,19 @@ const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => 
       console.error('Lỗi khi gửi lời mời kết bạn:', error);
     }
   };
+
+  const handleUnFriend = async () => {
+    if (!currentUser?._id || !user?._id) return;
+
+    try {
+      const response = await unfriend(user._id, currentUser._id);
+      console.log("Hủy kết bạn:", response);
+
+    } catch (error) {
+      console.error('Lỗi khi hủy kết bạn:', error);
+    }
+  };
+
 
   return (
     <>
@@ -136,9 +150,13 @@ const ProfileHeader = ({ user, onProfileUpdate, isOwnProfile, currentUser }) => 
                   <i className='fas fa-user-clock'></i> Đã gửi lời mời kết bạn
                 </button>
               ) : (
-                <button className='add-friend-btn' onClick={handleAddFriend}>
+                <> <button className='add-friend-btn' onClick={handleAddFriend}>
                   <i className='fas fa-user-plus'></i> Thêm bạn bè
                 </button>
+                  <button className='add-friend-btn' onClick={handleUnFriend}>
+                    <i className='fas fa-user-plus'></i> Hủy kết bạn
+                  </button>
+                </>
               )}
               <button onClick={() => navigate(`/chat-user/${user._id}`)} className='message-btn'>
                 <i className='fas fa-comment'></i> Nhắn tin

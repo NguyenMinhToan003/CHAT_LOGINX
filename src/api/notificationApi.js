@@ -1,25 +1,11 @@
+
 import { axiosInstance } from "./index";
 
 // Lấy danh sách yêu cầu kết bạn
-export const getFriendRequestList = async () => {
-  const userId = localStorage.getItem("userId");
-  if (!userId) {
-    console.error("Không tìm thấy userId trong localStorage");
-    return [];
-  }
+export const getFriendRequestList = async (userId) => {
 
-  try {
-    const response = await axiosInstance.get("/user/get-friend-request", {
-      params: { userId },
-    });
-    const filteredRequests = response.data.filter(
-      (request) => request.senderId === userId || request.receiverId === userId
-    );
-    return filteredRequests;
-  } catch (error) {
-    console.error("Lỗi khi lấy danh sách yêu cầu kết bạn:", error?.response?.data || error.message);
-    return [];
-  }
+  const response = await axiosInstance.get(`/user/get-friend-request?userId=${userId}`)
+  return response.data
 };
 
 // Phản hồi yêu cầu kết bạn
@@ -50,3 +36,10 @@ export const deleteFriendRequest = async (friendRequestId, userAction) => {
     return false;
   }
 };
+
+export const unfriend = async (userId, friendId) => {
+  const respond = await axiosInstance.post(`/user/unfriend`, {
+    userId, friendId
+  })
+  return respond.data
+}
