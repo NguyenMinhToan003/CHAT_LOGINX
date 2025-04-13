@@ -1,17 +1,17 @@
 /* eslint-disable react/no-unescaped-entities */
-import IconGoogle from '../assets/images/Google'
-import IconGitHub from '../assets/images/GitHub'
-import IconX from '../assets/images/X'
+import IconGoogle from '~/assets/images/Google'
+import IconGitHub from '~/assets/images/GitHub'
+import IconX from '~/assets/images/X'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import { NavLink, useNavigate } from 'react-router-dom'
-import GlobalLoading from '../components/GlobalLoading'
-import { registerLocal } from '../api/auth'
+import GlobalLoading from '~/components/GlobalLoading'
+import { registerLocal } from '~/api/auth'
 import { useState } from 'react'
-import iconZalo from '../assets/images/zalo_icon.png'
+import iconZalo from '~/assets/images/zalo_icon.png'
 
 const host = `${import.meta.env.VITE_SERVER_HOST}/api`
 

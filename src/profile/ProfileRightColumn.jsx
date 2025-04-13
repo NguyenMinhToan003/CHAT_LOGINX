@@ -2,9 +2,9 @@ import { useState, useRef } from 'react';
 import PersonalInfo from './PersonalInfo';
 import PostCreationForm from './PostCreationForm';
 import PostComponent from './PostComponent';
-import Feed from '../components/Feeds';
-import { createPost } from '../api/postAPI';
-import FeedHeader from '../components/FeedHeader';
+import Feed from '~/components/Feeds';
+import { createPost } from '~/api/postAPI';
+import FeedHeader from '~/components/FeedHeader';
 
 const ProfileRightColumn = ({ 
   user, 

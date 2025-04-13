@@ -5,7 +5,7 @@ import ProfileHeader from './ProfileHeader';
 import ProfileNav from './ProfileNav';
 import ProfileLeftColumn from './ProfileLeftColumn';
 import ProfileRightColumn from './ProfileRightColumn';
-import { getUserById, getPostByAuthorId } from '../api/userAPI';
+import { getUserById, getPostByAuthorId } from '~/api/userAPI';
 import PersonalInfo from './PersonalInfo';
 
 const Profile = () => {

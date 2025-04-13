@@ -1,7 +1,7 @@
 
 import "./index.css"
-import Contacts from "../components/Contact"
-import Feeds from "../components/Feeds"
+import Contacts from "~/components/Contact"
+import Feeds from "~/components/Feeds"
 
 const Index = () => {
   return (

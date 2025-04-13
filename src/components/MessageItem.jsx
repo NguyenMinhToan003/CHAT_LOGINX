@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import RedoIcon from '@mui/icons-material/Redo';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Button from '@mui/material/Button';
-import { emojiMap } from '../utils/checkIcon';
+import { emojiMap } from '~/utils/checkIcon';
 import linkifyHtml from 'linkify-html';
 import TypeFile from './typeFile/TypeFile';
 import EmbedPostMessage from './EmbedPostMessage';

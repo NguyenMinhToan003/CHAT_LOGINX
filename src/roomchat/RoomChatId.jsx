@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { createMessage, getAllMessage, getRoomChat } from '../api'
+import { getRoomChat } from '~/api/roomAPI'
+import { createMessage, getAllMessage } from '~/api/messageAPI'
 import { useNavigate, useParams } from 'react-router-dom'
-import audio from '../assets/sound/message-notification.mp3'
-import { useSocket } from '../provider/SocketProvider'
+import audio from '~/assets/sound/message-notification.mp3'
+import { useSocket } from '~/provider/SocketProvider'
 import Box from '@mui/material/Box'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
@@ -19,24 +20,24 @@ import SendIcon from '@mui/icons-material/Send'
 import ShareIcon from '@mui/icons-material/Share'
 import InputBase from '@mui/material/InputBase'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'
-import { delateRoom, joinRoom, leaveRoom } from '../api/roomAPI'
+import { delateRoom, joinRoom, leaveRoom } from '~/api/roomAPI'
 import EditCalendarOutlinedIcon from '@mui/icons-material/EditCalendarOutlined'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
-import MessageItem from '../components/MessageItem'
-import { createMessageImage, deleteMessage } from '../api/messageAPI'
-import GlobalLoading from '../components/GlobalLoading'
+import MessageItem from '~/components/MessageItem'
+import { createMessageImage, deleteMessage } from '~/api/messageAPI'
+import GlobalLoading from '~/components/GlobalLoading'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
-import { emojiMap } from '../utils/checkIcon'
-import AddMemberForm from '../components/AddMemberForm'
+import { emojiMap } from '~/utils/checkIcon'
+import AddMemberForm from '~/components/AddMemberForm'
 import './RoomChatId.css'
-import EditGroupForm from '../components/EditGroupForm'
+import EditGroupForm from '~/components/EditGroupForm'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-import TypeFile from '../components/typeFile/TypeFile'
+import TypeFile from '~/components/typeFile/TypeFile'
 
 const emojiList = emojiMap
 
@@ -286,7 +287,7 @@ const RoomChatId = () => {
         open={openAddMemberForm}
         onClose={() => setOpenAddMemberForm(false)}
       />
-      {/* Delete Confirmation Dialog */}
+
       <Dialog
         open={openDeleteDialog}
         onClose={handleCloseDeleteDialog}

@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useSocket } from '../provider/SocketProvider'
+import { useSocket } from '~/provider/SocketProvider'
 import { 
   createMessage, 
   getAllMessage, 
   getRoomChat
-} from '../api'
+} from '~/api'
 import SendIcon from '@mui/icons-material/Send'
-import { deleteMessage ,createMessageImage} from '../api/messageAPI'
-import { findOrCreateRoomPrivate } from '../api/roomAPI'
-import MessageItem from '../components/MessageItem'
-import GlobalLoading from '../components/GlobalLoading'
+import { deleteMessage ,createMessageImage} from '~/api/messageAPI'
+import { findOrCreateRoomPrivate } from '~/api/roomAPI'
+import MessageItem from '~/components/MessageItem'
+import GlobalLoading from '~/components/GlobalLoading'
 import ClearIcon from '@mui/icons-material/Clear' 
-import audio from '../assets/sound/message-notification.mp3'
-import { emojiMap } from '../utils/checkIcon'
+import audio from '~/assets/sound/message-notification.mp3'
+import { emojiMap } from '~/utils/checkIcon'
 import Box from '@mui/material/Box'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
@@ -28,7 +28,7 @@ import Button from '@mui/material/Button'
 import InputBase from '@mui/material/InputBase'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import VideocamIcon from '@mui/icons-material/Videocam'
-import TypeFile from '../components/typeFile/TypeFile'
+import TypeFile from '~/components/typeFile/TypeFile'
 
 
 const emojiList = emojiMap

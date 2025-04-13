@@ -13,8 +13,8 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import CircularProgress from '@mui/material/CircularProgress';
-import { getAllUser, getFriends, searchUser } from '../api/userAPI';
-import { joinRoom } from '../api/roomAPI';
+import { getAllUser, getFriends, searchUser } from '~/api/userAPI';
+import { joinRoom } from '~/api/roomAPI';
 
 
 const AddMemberForm = ({ open, onClose, room, setIsChange }) => {

@@ -3,7 +3,7 @@ import {
   getFriendRequestList,
   respondFriendRequest,
   deleteFriendRequest,
-} from "../api/notificationApi";
+} from "~/api/notificationApi";
 import "./FriendRequestList.css";
 
 const FriendRequestList = () => {

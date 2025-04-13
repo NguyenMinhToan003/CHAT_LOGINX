@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getFriends } from '../api/userAPI';
+import { getFriends } from '~/api/userAPI';
 import { useNavigate } from 'react-router-dom';
 
 const Contacts = () => {

@@ -20,7 +20,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import { updateRoom } from '../api/roomAPI';
+import { updateRoom } from '~/api/roomAPI';
 
 const EditGroupForm = ({ open, onClose, room, setIsChange }) => {
   const [name, setName] = useState('');

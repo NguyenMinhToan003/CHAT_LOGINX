@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CommentModal from './comment/Comment';
-import { reactPost, deletePost, updatePost } from '../api/postAPI';
-import { convertTime } from '../utils/convertTime';
+import { reactPost, deletePost, updatePost } from '~/api/postAPI';
+import { convertTime } from '~/utils/convertTime';
 import FormSharePost from './FormSharePost';
 import DeleteConfirmationDialog from './DeleteDiaLog';
 
