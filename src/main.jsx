@@ -7,16 +7,17 @@ import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from '@emotion/react'
 import theme from './theme.js'
 import { CssBaseline } from '@mui/material'
+import { SnackbarProvider } from 'notistack'
 
 const user = JSON.parse(localStorage.getItem('user')) || null
 createRoot(document.getElementById('root')).render(
     <ThemeProvider theme={theme}>
     <CssBaseline />
     <BrowserRouter>
-
-
     <SocketProvider user={user}>
-        <App />
+        <SnackbarProvider maxSnack={4} autoHideDuration={2000} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                    <App />
+        </SnackbarProvider>
     </SocketProvider>
         </BrowserRouter>
 

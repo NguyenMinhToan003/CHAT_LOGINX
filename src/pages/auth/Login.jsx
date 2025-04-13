@@ -151,7 +151,7 @@ const Login = () => {
             >
               {error
                 ? <span style={{ color: 'red' }}>{error}</span>
-                : 'Hôm nay là một ngày mới. Hãy đăng nhập để bắt đầu với cảm nghĩ của bạn.'
+                : 'Hãy chia sẻ cảm xúc của bạn trên mạng xã hội.'
               }
             </Typography>
             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4, marginTop: 2 }}>

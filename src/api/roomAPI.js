@@ -10,6 +10,10 @@ export const joinRoom = async ({ roomId, members }) => {
   return response.data
 }
 
+export const getRoomChatByUserId = async (userId,type) => {
+  const response = await axiosInstance.get(`/roomchat/get-list-room-info-by-userId?userId=${userId}&type=${type}`)
+  return response?.data;
+}
 export const leaveRoom = async ({ roomId, userId }) => {
   const response = await axiosInstance.post('/roomchat/leave', { roomId, userId })
   return response.data
