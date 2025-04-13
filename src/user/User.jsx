@@ -1,9 +1,9 @@
 
 import { useEffect, useState } from 'react'
-import { getAllUser } from '../api'
+import { getAllUser } from '~/api'
 import { FaGithub, FaTwitter, FaGoogle } from 'react-icons/fa' 
 import './User.css'
-import { useSocket } from '../provider/SocketProvider'
+import { useSocket } from '~/provider/SocketProvider'
 import { NavLink } from 'react-router-dom'
 
 const User = () => {

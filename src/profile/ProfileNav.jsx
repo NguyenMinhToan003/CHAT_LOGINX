@@ -1,5 +1,5 @@
 import React from 'react';
-import Feed from '../components/Feeds';
+import Feed from '~/components/Feeds';
 const ProfileNav = ({ activeTab, setActiveTab }) => {
   return (
     <div className='profile-navigation'>

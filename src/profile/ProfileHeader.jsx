@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getUserById, updateProfilePicture, sendFriendRequest } from '../api/userAPI';
+import { getUserById, updateProfilePicture, sendFriendRequest } from '~/api/userAPI';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 

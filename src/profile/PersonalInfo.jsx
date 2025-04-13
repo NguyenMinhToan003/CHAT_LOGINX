@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { updateUserProfile } from '../api/userAPI';
+import { updateUserProfile } from '~/api/userAPI';
 
 const PersonalInfo = ({ user, setUser, onProfileUpdate, isOwnProfile }) => {
   const [isEditingInfo, setIsEditingInfo] = useState(false);

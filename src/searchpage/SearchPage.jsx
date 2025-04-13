@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { fetchSearchResults } from '../api/SearchPageAPI';
+import { fetchSearchResults } from '~/api/SearchPageAPI';
 import './SearchPage.css';
 
 const SearchPage = () => {

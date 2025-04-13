@@ -1,5 +1,9 @@
 import { axiosInstance } from "./index"
 
+export const getRoomChat = async (id) => {
+  const response = await axiosInstance.get(`/roomchat/get-room-info?roomId=${id}`)
+  return response?.data;
+}
 
 export const joinRoom = async ({ roomId, members }) => {
   const response = await axiosInstance.post('/roomchat/join', { roomId, members })

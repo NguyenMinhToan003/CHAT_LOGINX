@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getPostById, getPostByAuthorId } from '../api/postAPI';
-import { getUserById } from '../api/userAPI';
+import { getPostById, getPostByAuthorId } from '~/api/postAPI';
+import { getUserById } from '~/api/userAPI';
 import Post from './Post';
 import {
   CircularProgress,

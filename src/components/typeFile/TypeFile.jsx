@@ -4,7 +4,7 @@ import { BiSolidFilePdf } from 'react-icons/bi';
 import { RiFolderZipFill } from "react-icons/ri";
 
 import { GoFileDirectoryFill } from 'react-icons/go';
-import { checkTypeByFileName } from '../../utils/checkFileType';
+import { checkTypeByFileName } from '~/utils/checkFileType';
 
 
 const fileTypeConfig = {

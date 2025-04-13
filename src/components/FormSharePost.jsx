@@ -12,11 +12,11 @@ import {
   TextField,
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-import { getFriends } from '../api/userAPI'
-import { getRoomChatByUserId } from '../api'
-import { createMessage } from '../api/messageAPI'
-import { findOrCreateRoomPrivate } from '../api/roomAPI'
-import {socket} from '../socket'
+import { getFriends } from '~/api/userAPI'
+import { getRoomChatByUserId } from '~/api'
+import { createMessage } from '~/api/messageAPI'
+import { findOrCreateRoomPrivate } from '~/api/roomAPI'
+import {socket} from '~/socket'
 
 const FormSharePost = ({ post, open, onClose }) => {
   const user = JSON.parse(localStorage.getItem('user'))

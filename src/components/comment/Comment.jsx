@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { createComment, getCommentFollowCommentId, getComments } from '../../api/commentAPI';
-import { deleteComment } from '../../api/postAPI'; // Đảm bảo import deleteComment từ postAPI
+import { createComment, getCommentFollowCommentId, getComments } from '~/api/commentAPI';
+import { deleteComment } from '~/api/postAPI'; // Đảm bảo import deleteComment từ postAPI
 import EmojiPicker from './EmojTicker';
 import {
   Box,

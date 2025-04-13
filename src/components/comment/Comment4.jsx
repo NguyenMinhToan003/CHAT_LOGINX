@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import './Comment.css';
-import { createComment, getCommentFollowCommentId, getComments } from '../../api/commentAPI';
+import { createComment, getCommentFollowCommentId, getComments } from '~/api/commentAPI';
 import EmojiPicker from './EmojTicker'; // Import the new component
 
 // Component hiển thị hình ảnh trong bình luận

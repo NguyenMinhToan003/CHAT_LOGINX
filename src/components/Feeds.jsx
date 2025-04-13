@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import FeedHeader from "./FeedHeader";
 import Post from "./Post";
-import { getPosts, searchPost } from "../api/postAPI";
+import { getPosts, searchPost } from "~/api/postAPI";
 import {
   CircularProgress,
   TextField,

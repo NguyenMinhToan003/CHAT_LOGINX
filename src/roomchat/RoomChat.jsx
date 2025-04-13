@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { createRoomChat, getAllUser, getRoomChatByUserId } from '../api';
+import { createRoomChat, getAllUser, getRoomChatByUserId } from '~/api';
 import { useNavigate } from 'react-router-dom';
 import './RoomChat.css';
 import { Avatar, Button } from '@mui/material';
