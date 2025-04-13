@@ -29,7 +29,7 @@ const Contacts = () => {
             navigate(`/profile/${contact._id}`)
           }}>
             <div className='contact-avatar'>
-              <img src={contact.picture.url} />
+              <img src={contact?.picture?.url} />
               {contact.online && <span className='online-status'></span>}
             </div>
             <span className='contact-name'>{contact.name}</span>
