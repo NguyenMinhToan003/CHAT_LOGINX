@@ -52,7 +52,7 @@ export const SocketProvider = ({ user, children }) => {
      
       setSocket(newSocket)
       newSocket.emit('addNewUser', user)
-      newSocket.emit('join-room', user._id)
+      newSocket.emit('join-room', {roomId: user._id})
       await connectRooms(newSocket)
     })
 

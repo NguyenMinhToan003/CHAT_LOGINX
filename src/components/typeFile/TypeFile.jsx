@@ -41,7 +41,7 @@ const TypeFile = ({ file, isClick = true }) => {
   })
   
   const config = fileTypeConfig[fileTypeKey] || fileTypeConfig.isUnknown;
-
+  const name = file.name.split('-')[2].trim(); // Lấy tên file trước dấu "-"
   return (
     <Box
       onClick={() => isClick && window.open(file.url, '_blank')}
@@ -77,7 +77,7 @@ const TypeFile = ({ file, isClick = true }) => {
           fontSize: '0.875rem',
         }}
       >
-        {file.name}
+        {name}
       </Typography>
     </Box>
   );
