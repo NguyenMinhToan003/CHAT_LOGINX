@@ -7,8 +7,8 @@ import audio from '~/assets/sound/zalo-calling.mp3'
 
 
 const IsCommingCall = ({ handleAcceptCall, handleHangup, onCommingCall }) => {
+  console.log('onCommingCall', onCommingCall) 
   const audioRef = useRef(null)
-  
   useEffect(() => {
     if (onCommingCall?.isRinging) {
       audioRef.current.play()
