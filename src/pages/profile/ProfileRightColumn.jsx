@@ -62,28 +62,18 @@ const ProfileRightColumn = ({
         />
       )}
       
-      {showPostForm && (
-        <PostCreationForm 
-          user={user}
-          postContent={postContent}
-          setPostContent={setPostContent}
-          postImages={postImages}
-          setPostImages={setPostImages}
-          fileInputRef={fileInputRef}
-          handleNewPost={handleNewPostCreationForm}
-          closePostForm={() => setShowPostForm(false)}
-        />
-      )}
+      
+  
 
-      {/* Chỉ hiển thị FeedHeader khi là trang của mình */}
+      {/* Chỉ hiển thị FeedHeader khi là trang của mình 
       {isOwnProfile && (
         <FeedHeader onNewPost={handleNewPost} 
         
         />
         
-
-        
       )}
+
+      */}
       
       {activeTab === 'posts' && (
         <div className='posts-container'>

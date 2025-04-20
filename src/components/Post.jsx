@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CommentModal from './comment/Comment';
 import { reactPost, deletePost, updatePost } from '~/api/postAPI';
+import { getComments } from '~/api/commentAPI'; // Thêm import getComments
 import { convertTime } from '~/utils/convertTime';
 import FormSharePost from './FormSharePost';
 import DeleteConfirmationDialog from './DeleteDiaLog';
@@ -18,6 +19,7 @@ import {
   Box,
   Typography,
   Grid,
+  CircularProgress, // Thêm CircularProgress để hiển thị loading
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 
@@ -45,14 +47,52 @@ const Post = ({ post, onDelete, onUpdate }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
   const [updateContent, setUpdateContent] = useState(post.content || '');
-  const [updateFiles, setUpdateFiles] = useState([]); // Hình ảnh mới
-  const [existingAssets, setExistingAssets] = useState(post.assets || []); // Hình ảnh hiện tại
+  const [updateFiles, setUpdateFiles] = useState([]);
+  const [existingAssets, setExistingAssets] = useState(post.assets || []);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(false); // Thêm state để theo dõi trạng thái loading
 
   if (!postData || !postData._id) {
     console.error("Invalid post data:", postData);
     return <div>Bài viết không hợp lệ hoặc thiếu dữ liệu.</div>;
   }
+//dong hinh anh
+  useEffect(() => {
+    const handleScroll = () => {
+      if (showFullGallery) {
+        handleCloseFullGallery();
+      }
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showFullGallery]);
+
+  // Lấy số lượng comment ban đầu khi component được render
+  useEffect(() => {
+    const fetchInitialComments = async () => {
+      setIsLoadingComments(true);
+      try {
+        const comments = await getComments(postData._id);
+        setPostData((prev) => ({
+          ...prev,
+          comments: comments.length,
+        }));
+      } catch (error) {
+        console.error("Lỗi khi lấy số lượng comment ban đầu:", error);
+      } finally {
+        setIsLoadingComments(false);
+      }
+    };
+    fetchInitialComments();
+  }, [postData._id]);
+
+  const handleCommentCountChange = (newCommentCount) => {
+    setPostData((prev) => ({
+      ...prev,
+      comments: newCommentCount,
+    }));
+  };
 
   const handleCloseComments = () => {
     if (!isEmojiPickerOpen) {
@@ -155,24 +195,21 @@ const Post = ({ post, onDelete, onUpdate }) => {
   const handleUpdateSubmit = async () => {
     setIsUpdating(true);
     try {
-      // Tính danh sách public_id của các hình ảnh bị xóa (so sánh với postData.assets ban đầu)
       const deleteFiles = postData.assets
         ? postData.assets
             .filter((asset) => !existingAssets.some((existing) => existing.url === asset.url))
-            .map((asset) => asset.public_id) // Lấy public_id thay vì URL
+            .map((asset) => asset.public_id)
         : [];
   
-      // Gửi yêu cầu cập nhật
       const updatedPost = await updatePost({
         postId: postData._id,
         content: updateContent,
         authorId: user._id,
         files: updateFiles,
-        deleteFiles, // Truyền deleteFiles thay vì removedAssets
+        deleteFiles,
       });
   
       if (updatedPost.acknowledged) {
-        // Cập nhật lại postData với nội dung và hình ảnh mới
         const newAssets = updateFiles.length > 0 
           ? updateFiles.map((file) => ({ url: URL.createObjectURL(file) }))
           : [];
@@ -201,22 +238,49 @@ const Post = ({ post, onDelete, onUpdate }) => {
     }
   };
 
-  const handleReaction = async (postId, reaction) => {
-    setActiveReactionPost(null);
+const handleReaction = async (postId, reaction) => {
+  setActiveReactionPost(null);
+
+  // Lưu trạng thái cảm xúc trước đó
+  const previousReaction = postReactions[postId];
+
+  try {
+    // Gọi API để gửi phản ứng
+    const response = await reactPost({ postId, userId: user._id, type: reaction });
+
+    // Cập nhật cảm xúc của người dùng
     setPostReactions((prev) => ({ ...prev, [postId]: reaction }));
-    try {
-      const response = await reactPost({ postId, userId: user._id, type: reaction });
-      setCountReaction((prev) => prev + 1);
-      if (response?.data) {
-        setPostData((prev) => ({
-          ...prev,
-          interactions: response.data.interactions,
-        }));
-      }
-    } catch (error) {
-      console.error('Lỗi khi gửi reaction:', error);
+
+    // Tính toán lại số lượng cảm xúc từ dữ liệu server
+    if (response?.data?.interactions) {
+      const { likes = 0, hahas = 0, hearts = 0, wows = 0, sads = 0, angrys = 0 } = response.data.interactions;
+      const newCount = likes + hahas + hearts + wows + sads + angrys;
+
+      // Cập nhật postData và countReaction
+      setPostData((prev) => ({
+        ...prev,
+        interactions: response.data.interactions,
+      }));
+      setCountReaction(newCount);
+    } else {
+      // Fallback: Cập nhật thủ công nếu server không trả về interactions đầy đủ
+      setCountReaction((prev) => {
+        if (!previousReaction) {
+          // Nếu chưa có phản ứng trước đó, tăng số lượng
+          return prev + 1;
+        } else if (previousReaction !== reaction) {
+          // Nếu đổi phản ứng, số lượng không đổi (giảm cũ, tăng mới)
+          return prev;
+        }
+        return prev; // Nếu cùng phản ứng, không thay đổi
+      });
     }
-  };
+  } catch (error) {
+    console.error('Lỗi khi gửi reaction:', error);
+    // Khôi phục trạng thái trước đó nếu có lỗi
+    setPostReactions((prev) => ({ ...prev, [postId]: previousReaction }));
+  }
+};
 
   const handleOpenFullGallery = (index) => {
     setSelectedImageIndex(index);
@@ -447,12 +511,16 @@ const Post = ({ post, onDelete, onUpdate }) => {
             )}
           </div>
           <div className="engagement-stats">
-            <span className="comments-count">
-              {(postData.comments || 0) >= 1000
-                ? `${Math.floor((postData.comments || 0) / 100) / 10}K`
-                : postData.comments || 0}{' '}
-              bình luận
-            </span>
+            {isLoadingComments ? (
+              <CircularProgress size={16} sx={{ mr: 1 }} />
+            ) : (
+              <span className="comments-count">
+                {(postData.comments || 0) >= 1000
+                  ? `${Math.floor((postData.comments || 0) / 100) / 10}K`
+                  : postData.comments || 0}{' '}
+                bình luận
+              </span>
+            )}
           </div>
         </div>
 
@@ -563,6 +631,7 @@ const Post = ({ post, onDelete, onUpdate }) => {
             postData={postData}
             onClose={handleCloseComments}
             onEmojiPickerChange={setIsEmojiPickerOpen}
+            onCommentCountChange={handleCommentCountChange}
           />
         )}
       </div>
@@ -574,7 +643,6 @@ const Post = ({ post, onDelete, onUpdate }) => {
         isLoading={isDeleting}
       />
 
-      {/* Dialog cập nhật bài viết */}
       <Dialog open={openUpdateDialog} onClose={handleCloseUpdateDialog} maxWidth="md" fullWidth>
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6">Cập nhật bài viết</Typography>
@@ -584,7 +652,6 @@ const Post = ({ post, onDelete, onUpdate }) => {
         </DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-            {/* Nội dung bài viết */}
             <TextField
               label="Nội dung bài viết"
               multiline
@@ -595,7 +662,6 @@ const Post = ({ post, onDelete, onUpdate }) => {
               variant="outlined"
             />
 
-            {/* Hiển thị hình ảnh hiện tại */}
             {existingAssets.length > 0 && (
               <Box>
                 <Typography variant="subtitle1" gutterBottom>
@@ -623,7 +689,6 @@ const Post = ({ post, onDelete, onUpdate }) => {
               </Box>
             )}
 
-            {/* Thêm hình ảnh mới */}
             <Box>
               <Typography variant="subtitle1" gutterBottom>
                 Thêm hình ảnh mới
