@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createComment, getCommentFollowCommentId, getComments } from '~/api/commentAPI';
-import { deleteComment } from '~/api/postAPI'; // Đảm bảo import deleteComment từ postAPI
+import { deleteComment } from '~/api/postAPI';
 import EmojiPicker from './EmojTicker';
 import {
   Box,
@@ -31,7 +31,7 @@ import {
   SentimentSatisfiedAlt as SentimentSatisfiedAltIcon,
 } from '@mui/icons-material';
 
-const CommentModal = ({ postId, postData, onClose, onEmojiPickerChange }) => {
+const CommentModal = ({ postId, postData, onClose, onEmojiPickerChange, onCommentCountChange }) => {
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
   const user = JSON.parse(localStorage.getItem('user'));
@@ -71,6 +71,10 @@ const CommentModal = ({ postId, postData, onClose, onEmojiPickerChange }) => {
   const fetchComments = async () => {
     const res = await getComments(postId);
     setComments(res);
+    // Cập nhật số lượng comment ban đầu
+    if (onCommentCountChange) {
+      onCommentCountChange(res.length);
+    }
   };
 
   const handleCommentSubmit = async (e) => {
@@ -89,6 +93,10 @@ const CommentModal = ({ postId, postData, onClose, onEmojiPickerChange }) => {
     setComments([newComment, ...comments]);
     setCommentText('');
     setOpenEmojiPicker(false);
+    // Cập nhật số lượng comment sau khi thêm
+    if (onCommentCountChange) {
+      onCommentCountChange(comments.length + 1);
+    }
   };
 
   const toggleReplies = async (commentId) => {
@@ -142,9 +150,12 @@ const CommentModal = ({ postId, postData, onClose, onEmojiPickerChange }) => {
         [commentId]: [newReply, ...prev[commentId]],
       }));
     }
+    // Cập nhật số lượng comment sau khi thêm reply
+    if (onCommentCountChange) {
+      onCommentCountChange(comments.length + 1);
+    }
   };
 
-  // Hàm xử lý xóa comment
   const handleDeleteComment = async (commentId) => {
     try {
       const confirmDelete = window.confirm("Bạn có chắc muốn xóa bình luận này không?");
@@ -152,6 +163,10 @@ const CommentModal = ({ postId, postData, onClose, onEmojiPickerChange }) => {
 
       await deleteComment({ commentId, authorId: user._id });
       setComments(comments.filter((comment) => comment._id !== commentId));
+      // Cập nhật số lượng comment sau khi xóa
+      if (onCommentCountChange) {
+        onCommentCountChange(comments.length - 1);
+      }
     } catch (error) {
       console.error("Lỗi khi xóa bình luận:", error);
       alert("Không thể xóa bình luận. Vui lòng thử lại!");
